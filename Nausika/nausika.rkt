@@ -2,8 +2,6 @@
 
 
 
-;ブランチテスト
-
 (require srfi/1)
 (require srfi/13)
 (require racket/struct)
@@ -281,7 +279,9 @@
       (if (and (string=? Flag "D?") Event) (item-drop? env)
       (if (and (string=? Flag "U?") Event) (use? env)
       (if (and (string=? Flag "U") Event) (use-item env)
-         (main-input env)))))))))))))))))
+     (if (and (string=? Flag "END") Event) (display "END")
+             (if (and (string=? Flag "EP") Event) (display "EP")
+         (main-input env)))))))))))))))))))
 
 ;メインINPUT関数　＆　メインEVAL関数　＆　メインLOOP関数
 (define (main-input env)
@@ -460,6 +460,7 @@
                              (main-read (master page ac hp new-equip enemies Cdamage #f Cturn choice))))))))))))
  
   
+
 
 
 (define env (master 167 30 30 *equip* #f 0 #t 1 #f))
