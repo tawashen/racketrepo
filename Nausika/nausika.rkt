@@ -1,0 +1,493 @@
+#lang racket
+
+
+
+;ブランチテスト
+
+(require srfi/1)
+(require srfi/13)
+(require racket/struct)
+(require racket/match)
+
+(require "util/util.rkt")
+(require "message.rkt")
+(require "monster.rkt")
+(require "item.rkt")
+(require "page.rkt")
+
+
+;ツール関係;;ページからリスト作成関数
+(define (page-lst page)
+  (filter (lambda (x) (= page (item-page x))) item-list))
+
+
+;indexからitem構造体を返す関数
+(define (return-struct itemlist index)
+  (if (null? itemlist)
+     '()
+     (if (string=? index (item-name (car itemlist)))
+        (car itemlist)
+        (return-struct (cdr itemlist) index))))
+
+
+
+
+
+
+
+;master構造体(常に持ち歩く用)
+(struct master (page ac hp equip enemies Cdamage Event Cturn choice) #:transparent)
+;master環境変数インスタンス つまり世界の初期値
+(define m-env (master 001 15 15 *equip* #f 0 #t 1 #f))
+
+
+
+(define (battle-end-lose)
+  (wait)
+  (display (format "あなたは死にました~%おめでたくない!~%")))
+
+
+;バトル関数に流し込むページごとの敵構造体のリストを返す
+(define (battle-ready-list lst page)
+  (if (null? lst)
+      '()
+      (if (= page (enemy-page (car lst)))
+          (cons (car lst) (battle-ready-list (cdr lst) page))
+          (battle-ready-list (cdr lst) page))))
+
+;バトルREAD関数
+(define (battle-read env)
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+        (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+  (if (null? (master-enemies env))
+     (if (number? (car arg))
+        (if (< Cturn (car arg))
+           (main-read (master (cadr arg) ac hp equip enemies 0 #t 1 #f))
+           (main-read (master (caddr arg) ac hp equip enemies 0 #t 1 #f)))
+        (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
+              (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+                (newline)
+    (display (format "~aが現れた！~%" (enemy-name (car enemies)))) (wait)
+  (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
+
+;バトルINPUT関数
+(define (battle-input env) 
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+      (display-G (format (cdr (assq 'turn *battle-messages*)) Cturn))
+      (display-G (format (cdr (assq 'status *battle-messages*))
+                      (cond ((equip? equip "剣") `(,ac "[+2]"))
+                        ((equip? equip "短剣") `(,ac "[+1]"))
+                        ((equip? equip "短剣(セラミック製)") `(,ac "[+1]"))
+                        (else ac)) hp))
+    (newline)
+    (if (not (enemy-human (car enemies)))
+       (let ((num (string->number
+                (input (cdr (assq 'selectM *battle-messages*))))))
+         (cond ((= num 1) (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num)))
+              (else (battle-input env))))
+       (let ((num (string->number
+                (input (cdr (assq 'select *battle-messages*))))))
+         (cond ((> num 2) (battle-input env))
+              ((< num 1) (battle-input env))
+              (else (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num))))))))
+    
+;バトルEVAL関数
+(define (battle-eval env) 
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (match-let (((enemy name Eac Ehp page human) (car enemies)))
+    (if (= choice 1)
+      (let ((Cac (cond ((equip? equip "剣") (+ ac 2))
+                      ((equip? equip "鉄製の刀") (+ ac 2))
+                    ((equip? equip "短剣") (+ ac 1))
+                    ((equip? equip "短剣(セラミック製)") (+ ac 1))
+                    (else ac))))
+      (let ((damage (- (+ (dice) Cac) (+ (dice) Eac))))
+        (cond ((= damage 0)(battle-print
+                             (master page ac hp equip enemies 0 Event (+ Cturn 1) choice)))
+             ((> damage 0) (battle-print
+                            (master page ac hp equip
+                                   (cons (enemy name Eac (- Ehp (abs damage)) page human) (cdr enemies))
+                                   damage hp (+ Cturn 1) #f)))
+             ((< damage 0) (battle-print
+                              (master page ac (- hp (if (equip? equip "額あて")
+                                                      (abs (+ damage 1)) (abs damage)))
+                                               equip enemies damage hp (+ Cturn 1) #f))))))
+         (if (equip? equip "光弾") 
+                  (begin (display-G (format (cdr (assq 'koudan *battle-messages*))))
+                          (battle-print (master page ac hp (equip-change equip "光弾" -1)
+                                              (cons (enemy name Eac (- Ehp 3) page human) (cdr enemies)) 3 hp (+ Cturn 1) #f)))
+                  (begin (display-G (format (cdr (assq 'tamanasi *battle-messages*))))
+                        (battle-print (master page ac (- hp 3) equip enemies -3 hp (+ Cturn 1) #f))))))))
+
+;バトルPRINT関数
+(define (battle-print env) 
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (match-let (((enemy name Eac Ehp page human) (car enemies)))
+      (cond ((= Cdamage 0) (wait) (display-G (format (cdr (assq 'tie *battle-messages*)))) (wait)
+                          (battle-input env))
+           ((> Cdamage 0) (display-G (format (cdr (assq 'atack *battle-messages*))))
+                         (wait) (display-G (format (cdr (assq 'damagep *battle-messages*)) (abs Cdamage))) (wait)
+                         (battle-loop env))
+           ((< Cdamage 0) (display-G (format (cdr (assq 'atacked *battle-messages*)) name))
+                         (wait) (display-G (format (cdr (assq 'damagedp *battle-messages*))
+                                                (if (equip? equip "額あて")
+                                                   `(,(abs Cdamage) "[-1]")
+                                                   (abs Cdamage))))
+                                                   (wait) (battle-loop env))))))
+
+;バトルLOOP関数
+(define (battle-loop env) 
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (match-let (((enemy name Eac Ehp page human) (car enemies)))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+      (if (string=? "K" (car arg)) ;ここからクシャナ戦用判定
+         (cond ((<= Ehp 10) (main-read (master (cadr arg) ac hp equip enemies 0 #t 1 choice)))
+              ((<= hp 2) (main-read (master (caddr arg) ac hp equip enemies 1 #t 1 choice)))
+              (else (battle-input (master page ac hp equip enemies Cdamage Event Cturn choice))))                   
+      (cond ((<= Ehp 0)　;以前からある通常戦闘用判定
+             (begin (display-G (format (cdr (assq 'win *battle-messages*)) name))
+                   (battle-read (master page ac hp equip (cdr enemies) 0 Event Cturn #f))))
+             ((<= hp 0) (battle-end-lose))
+           (else (battle-input (master page ac hp equip enemies Cdamage Event Cturn choice)))))))))
+
+
+
+
+
+
+;装備品確認関数
+(define (equip-look lst)
+  (newline)
+  (display "あなたの持ち物")
+  (for-each display (map (match-lambda (`(,index . ,quantity)
+                      (format "[~a:~a]" index quantity)))
+      (filter (lambda (x) ((compose not zero?) (cdr x))) lst))))
+
+;drop-choice関数
+(define (drop-choice lst)
+  (newline)
+  (for-each display (map (match-lambda (`(,number ,index . ,value)
+                                        (format "[~a:~a]" number index)))
+                        (enumerate (filter (lambda (x) ((compose not zero?) (cdr x))) lst) 0))))
+
+#|
+;filter-att関数
+(define (filter-att lst att)
+  (newline)
+  (for-each display (map (match-lambda (`(,number ,index . ,value)
+                                        (format "[~a:~a]" number index)))
+                        (enumerate (filter (lambda (x) ((compose not zero?) (cdr x)))
+                                          (filter (lambda (y) (string=? att (item-att y))) item-list)
+                                      
+|#
+
+
+;在庫表示関数C
+(define (show-zaiko env)
+  (equip-look (master-equip env))
+  (newline)(newline)
+ (for-each display (cons "[0:買い物を終える]" (map (match-lambda (`(,index . ,id) ;なるほどねぇid超便利！
+            (format "[~a:~a 銀貨~a枚]" index (item-name id)　(item-cost id))))
+  (enumerate (page-lst (master-page env)) 1))))) ;なるほどここでリスト合成
+
+
+;ショップREAD関数
+(define (shop-read env)
+  (shop-input env))
+
+
+;買い物関数（装備品を増やしお金を減らす）
+(define (buy-item equiplist index itemlist)
+  (let ((equiplist2 (equip-change equiplist index
+                                 (item-times (return-struct itemlist index)))))
+  (equip-change equiplist2 "銀貨" (- (item-cost (return-struct itemlist index))))))
+
+ 
+; ショップINPUT関数C
+(define (shop-input env)
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+  (show-zaiko env)(newline)
+  (let ((num (string->number
+          (input (cdr (assq 'kaukane *shop-messages*))))))
+      (cond ((> num (length (page-lst (master-page env))))
+              (display-G "はぁ？")(newline)(wait)(wait)(shop-input env))
+           ((zero? num) (main-read (master page ac hp equip enemies Cdamage #f Cturn choice)))
+         (else (shop-eval (master page ac hp equip enemies Cdamage Event Cturn
+                                 (item-name (list-ref (page-lst page) (- num 1)))))))))))
+
+
+;ショップEVAL+LOOP関数
+(define (shop-eval env)
+   (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (let ((newlist (buy-item (master-equip env) choice item-list)))
+      (shop-read (master page ac hp newlist enemies Cdamage Event Cturn #f)))))
+
+
+
+;使用可能属性アイテム「名」リスト作成関数
+(define (item-able item-list)
+  (map (lambda (y) (item-name y))
+   (filter (lambda (x) (number? (item-point x))) item-list)))
+
+;現在使用可能アイテムリスト作成関数　依存(使用可能アイテム「名」リスト作成関数)
+(define (item-usable-list env)
+  (filter (lambda (y) ((compose not (compose not member)) (car y) (item-able item-list)))
+                          (filter (lambda (x) ((compose not zero?) (cdr x))) (master-equip env))))
+
+;使用可能アイテム表示関数　依存（使用可能アイテムリスト作成関数）
+(define (item-look env)
+    (for-each display (cons "[0:使わない]" (map (match-lambda (`(,index . (,name . ,quantity))
+                      (format "[~a:~a ~a個]" index name quantity)))
+                          (enumerate (item-usable-list env) 1)))))
+
+
+;アイテム使用READ関数
+(define (item-read env)
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+  (item-look env)
+  (newline)
+  (let ((num (string->number (input (format (cdr (assoc 'select *item-messages*)))))))
+       (cond ((> num (length (item-usable-list env)))
+                       (display-G "はぁ?")(newline)(wait)(wait)(item-read env))
+              ((zero? num) (main-read env))
+              (else (item-eval (master page ac hp equip enemies Cdamage Event Cturn
+                                 (car (list-ref (item-usable-list env) (- num 1))))))))))
+
+;アイテム使用EVAL関数
+(define (item-eval env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+      (let ((new-hp (+ hp (item-point (return-struct item-list choice)))) 
+                   (new-equip (equip-change equip choice -1)))
+            (let ((new-equip2 (equip-change new-equip "銀貨" 0)) (new-hp2 (if (< 15 new-hp) 15 new-hp)))
+              (item-print (master page ac new-hp2 new-equip2 enemies Cdamage Event Cturn choice))))))
+
+;アイテム使用PRINT&LOOP関数
+(define (item-print env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+      (display-G (format (cdr (assoc 'use *item-messages*)) choice)) (wait)
+      (display-G (format (cdr (assoc 'heal *item-messages*)) (item-point (return-struct item-list choice))))
+      (newline)
+      (item-read env)))
+
+
+
+;メインREAD関数
+(define (main-read env)
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+      (display image) (display page)
+      (if (and (string=? Flag "B") Event)
+         (battle-read (master page ac hp equip (battle-ready-list enemy-list page) 0 #f 1 choice))
+      (if (and (string=? Flag "S") Event) (shop-read env)
+      (if (and (string=? Flag "C") Event) (item-check env)
+      (if (and (string=? Flag "HPAC") Event) (st-change env)
+      (if (and (string=? Flag "SAI") Event) (saikoro env)
+      (if (and (string=? Flag "D") Event) (drop-item env)
+      (if (and (string=? Flag "NO") Event) (input-num env)
+      (if (and (string=? Flag "ES") Event) (escape env)
+      (if (and (string=? Flag "G") Event) (item-get env)
+      (if (and (string=? Flag "G?") Event) (item-get? env)
+      (if (and (string=? Flag "D?") Event) (item-drop? env)
+      (if (and (string=? Flag "U?") Event) (use? env) 
+         (main-input env))))))))))))))))
+
+;メインINPUT関数　＆　メインEVAL関数　＆　メインLOOP関数
+(define (main-input env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+    (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+      (newline)
+                (for-each display (cons "[0:アイテムを使う]" (map (match-lambda (`(,index . ,no)
+                    (format "[~a:~aへ]" index no))) (enumerate C-list 1))))      
+                (let ((num (string->number (input (format (cdr (assoc 'select *main-messages*)) hp *max-hp* ac)))))
+                     (cond ((> num (length C-list))
+                               (display-G "はぁ?")(newline)(wait)(wait)(main-read env))
+                            ((zero? num)
+                            ; (item-read env))
+                             (equip-look (master-equip env)) (newline) (item-read env))  ;もともとは　(item-read env)
+                            (else (main-read (master (list-ref C-list (- num 1)) ac hp equip enemies Cdamage #t Cturn #f))))))))
+ 
+
+;アイテムチェック関数
+(define (item-check env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (if (assoc (car arg) (filter (lambda (x) ((compose not zero?) (cdr x))) equip))
+              (main-read (master (cadr arg) ac hp equip enemies Cdamage #t Cturn choice))
+              (main-read (master (caddr arg) ac hp equip enemies Cdamage #t Cturn choice))))))
+              
+;ステータス変更関数
+(define (st-change env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (newline)
+           (if (> 3 (length arg))
+           (main-read (master page
+                             (+ ac (list-ref arg 1))
+                             (+ hp (list-ref arg 0))
+                             equip enemies Cdamage #f Cturn choice))
+           (main-read (master page
+                             (+ ac (list-ref arg 1))
+                             (+ hp (list-ref arg 0))
+                             (equip-change equip (caddr arg) (cadddr arg)) enemies Cdamage #f Cturn choice))))))
+         
+;真サイコロ関数 ;サイコロの結果、偶数奇数で強制的にページ移動に変更
+(define (saikoro env)
+      (let ((rnd (random 1 7)))
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (match arg
+             (n (if (zero? n)
+                 (begin ((newline) (display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd))) (sleep 3)
+               (if (even? rnd)
+                  (main-read (master (car C-list) ac hp equip enemies Cdamage #t Cturn choice))
+                  (main-read (master (cadr C-list) ac hp equip enemies Cdamage #t Cturn choice)))))
+                (if (string? n) (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 2 rnd)))
+               (sleep 3)(main-read (master page ac hp equip enemies Cdamage #f Cturn choice))))
+                 (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
+               (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))))
+
+
+
+;数字入力関数
+(define (input-num env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (newline)
+               (let ((num (string->number (input (format (cdr (assoc 'input *main-messages*)))))))
+                     (cond (((compose not member) num C-list)
+                             (display (format (cdr (assoc 'miss *main-messages*)))) (newline) (wait)
+                             (main-read (master arg ac hp equip enemies Cdamage Event Cturn choice)))
+                          (else (main-read (master num ac hp equip enemies Cdamage #t Cturn choice))))))))
+           
+;Escape関数
+(define (escape env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (newline)
+           (let ((num (string->number (input (format (cdr (assoc 'escape *main-messages*)))))))
+             (cond ((= num 1) (main-read (master (car arg) ac (- hp 1) equip enemies Cdamage Event Cturn choice)))
+                  ((= num 2) (main-read (master (cadr arg) ac hp equip enemies Cdamage #t Cturn choice)))
+                  (else (escape env)))))))
+                  
+;use?関数
+(define (use? env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (newline)
+           (let ((num (string->number (input (format (cdr (assoc 'use? *main-messages*)) (car arg))))))
+             (cond ((= num 1) (main-read (master (cadr arg) ac hp (equip-change equip (car arg) -1) enemies Cdamage #t Cturn choice)))
+                  ((= num 2) (main-read (master (caddr arg) ac hp equip enemies Cdamage #t Cturn choice)))
+                  (else (use? env)))))))  
+  
+
+;アイテムドロップ関数
+(define (drop-item env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (newline) (display (format (cdr (assoc 'droped *main-messages*)) (car arg)))
+           (sleep 2)
+           (let ((new-equip 
+           (match-let ((`(,index . ,val) (assoc (car arg) equip)))
+             (alist-cons index (+ (cdr arg) val) (alist-delete index equip))))) 
+           (main-read (master page ac hp new-equip enemies Cdamage #f Cturn choice))))))
+
+;特定属性の手持ちアイテムを表示する関数
+(define (filter-att lst att)
+ (newline)
+ (for-each display (map (match-lambda (`(,number ,index . ,value)
+            (format "[~a:~a ~a個]" number index value)))
+                (enumerate (filter (lambda (q) ((compose not zero?) (cdr q)))
+                     (map (lambda (z) (assoc z *equip*)) (map (lambda (x) (item-name x))
+                         (filter (lambda (y) (string=? att (item-att y))) item-list)))) 0))))
+  
+
+;属性別アイテム使用関数
+(define (use-item env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (drop-choice equip)
+               (newline)
+           (if (number? arg)
+               (let ((num (string->number (input (format (cdr (assoc 'drop? *main-messages*)))))))
+                 (if (> num (length (filter (lambda (x) ((compose not zero?) (cdr x))) equip))) (item-drop? env)
+                 (if (< num 0) (item-drop? env)
+                    (let ((new-equip (alist-delete
+                             (car (list-ref (filter (lambda (x) ((compose not zero?) (cdr x))) equip) num)) equip)))
+                             (main-read (master page ac hp new-equip enemies Cdamage #f Cturn choice))))))
+               (let ((num (string->number (input (format (cdr (assoc 'drop-it? *main-messages*)) (car arg))))))
+               (newline)
+               (if (= num 1) (drop-item env)
+                   (if (= num 2) (main-read (master page ac hp equip enemies Cdamage #f Cturn choice))
+                   (item-drop? env))))))))
+
+  
+  
+;アイテムゲット関数
+(define (item-get env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (let ((new-equip 
+                     (let loop ((args arg) (equips equip))
+                      (if (null? equips)   '()
+                          (if (assoc (car (car equips)) args)
+                              (alist-cons (car (car equips)) (+ (cdr (car equips)) (cdr (assoc (car (car equips)) args)))
+                                          (alist-delete `(,(car (car equips))) (loop args (cdr equips))))
+                              (alist-cons (car (car equips)) (cdr (car equips))
+                                          (alist-delete `(,(car (car equips))) (loop args (cdr equips)))))))))
+                        (begin (newline) (main-read (master page ac hp new-equip enemies Cdamage #f Cturn choice)))))))
+
+;アイテムゲット?関数
+(define (item-get? env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (newline)(display page)
+           (let ((num (string->number (input (format (cdr (assoc 'get? *main-messages*)) (car arg))))))
+             (cond ((= num 1) (let ((new-equip (equip-change equip (car arg) (cdr arg))))
+                                (let ((last-equip (equip-change new-equip "銀貨" 0)))
+                  (display (format (cdr (assoc 'ture *main-messages*)) (car arg)))(sleep 2)
+                  (main-read (master page ac hp last-equip enemies Cdamage #f Cturn choice))))) 
+                  ((= num 2) (main-read (master page ac hp equip enemies Cdamage #f Cturn choice)))
+                  (else (item-get? env)))))))
+
+;アイテムドロップ？関数
+(define (item-drop? env)
+    (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+         (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
+           (drop-choice equip)
+               (newline)
+           (if (number? arg)
+               (let ((num (string->number (input (format (cdr (assoc 'drop? *main-messages*)))))))
+                 (if (> num (length (filter (lambda (x) ((compose not zero?) (cdr x))) equip))) (item-drop? env)
+                 (if (< num 0) (item-drop? env)
+                    (let ((new-equip (alist-delete
+                             (car (list-ref (filter (lambda (x) ((compose not zero?) (cdr x))) equip) num)) equip)))
+                             (main-read (master page ac hp new-equip enemies Cdamage #f Cturn choice))))))
+               (let ((num (string->number (input (format (cdr (assoc 'drop-it? *main-messages*)) (car arg))))))
+               (newline)
+               (if (= num 1) (drop-item env)
+                   (if (= num 2) (main-read (master page ac hp equip enemies Cdamage #f Cturn choice))
+                   (item-drop? env))))))))
+ 
+
+
+(define env (master 042 30 30 *equip* #f 0 #t 1 #f))
+
+
+
+
+
+
+ 
+(main-read env)
+ 
+
+
+
+
+
+
+
+
+
+      
