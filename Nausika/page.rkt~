@@ -297,7 +297,7 @@
 (define P166 (pages 166 "N" ? '(174 060) (bitmap/file "picture/166.png") 0))
 
  
-(define P167 (pages 167 "U" 095 '(182) (bitmap/file "picture/167.png") "L"))
+(define P167 (pages 167 "N" ? '(182) (bitmap/file "picture/167.png") 0))
 
 
   
