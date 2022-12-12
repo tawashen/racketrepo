@@ -138,7 +138,7 @@
   (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
     (match-let (((enemy name Eac Ehp page human) (car enemies)))
          (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
-      (if (string=? "K" (car arg)) ;ここからクシャナ戦用判定
+      (if (string?  (car arg)) ;ここからクシャナ戦用判定
          (cond ((<= Ehp 10) (main-read (master (cadr arg) ac hp equip enemies 0 #t 1 choice)))
               ((<= hp 2) (main-read (master (caddr arg) ac hp equip enemies 1 #t 1 choice)))
               (else (battle-input (master page ac hp equip enemies Cdamage Event Cturn choice))))                   
@@ -463,7 +463,7 @@
 
 
 
-(define env (master 167 30 30 *equip* #f 0 #t 1 #f))
+(define env (master 128 30 30 *equip* #f 0 #t 1 #f))
 
 
 
