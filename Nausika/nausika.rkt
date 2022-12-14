@@ -279,7 +279,7 @@
       (if (and (string=? Flag "D?") Event) (item-drop? env)
       (if (and (string=? Flag "U?") Event) (use? env)
       (if (and (string=? Flag "U") Event) (use-item env)
-      (if (and (string=? Flag "STATUS") Event) (status-choice env)
+      (if (and (string=? Flag "STATUS?") Event) (status-choice env)
       (if (and (string=? Flag "END") Event) (display "END")
       (if (and (string=? Flag "EP") Event) (display "EP")
          (main-input env))))))))))))))))))))
@@ -467,16 +467,23 @@
     (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
          (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
          (newline)
+           (if (string=? "ac" (car arg))
            (let ((newC-list
                   (let loop ((arg-list (cdr arg)) (ac ac))
                     (if (null? arg-list) '()
                        (if (> ac (car (car arg-list))) (cdr (car arg-list))
                           (loop (cdr arg-list) ac))))))
-             (sleep 5) (main-read (master newC-list ac hp equip enemies Cdamage #f Cturn choice))))))
+             (sleep 5) (main-read (master newC-list ac hp equip enemies Cdamage #t Cturn choice)))
+           (let ((newC-list2
+                  (let loop ((arg-list (cdr arg)) (num (cdr (assoc (car arg) equip))))
+                            (if (null? arg-list) '()
+                               (if (> num (car (car arg-list))) (cdr (car arg-list))
+                                  (loop (cdr arg-list) num))))))
+             (sleep 5) (main-read (master newC-list2 ac hp equip enemies Cdamage #t Cturn choice)))))))
                     
            
 
-(define env (master 086 30 30 *equip* #f 0 #t 1 #f))
+(define env (master 008 30 30 *equip* #f 0 #t 1 #f))
 
 
 

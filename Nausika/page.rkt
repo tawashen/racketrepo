@@ -21,8 +21,8 @@
 
 
 ;持ち物の個数による場合分け、汎用性を目指してHAVE関数を設定したい（後回し）
-(define P008 (pages 008 "HAVE" ? '(115 149 103) (bitmap/file "picture/008.png")
-                   '("光弾" ("(> n 4)" . 115) ("(> n 2)" . 149) ("(< n 2)"))))
+(define P008 (pages 008 "STATUS?" ? '(115 149 103) (bitmap/file "picture/008.png")
+                   '("光弾" . ((4 . 115) (2 . 149) (-inf.0 . 103)))))
 
   
 
@@ -58,7 +58,6 @@
 (define P029 (pages 029 "D?" ? '(002 092) (bitmap/file "picture/029.png") 0))
 (define P030 (pages 030 "N" ? '(093 025 056) (bitmap/file "picture/030.png") 0))
 
-;宿屋での宿泊
 (define P031 (pages 031 "HPAC" ? '(114 081) (bitmap/file "picture/031.png") '(2 0 "銀貨" -5)))
 
   
@@ -93,7 +92,6 @@
 (define P050 (pages 050 "N" ? '(134) (bitmap/file "picture/050.png") 0))
 (define P051 (pages 051 "SAI" ? '(162 133) (bitmap/file "picture/051.png") 0))
 
-;強制するなら　("三叉路" ((> n 5) . 171) ((> n 3) . YesNo)
 (define P053 (pages 053 "N" ? '(126 076 159 040 171) (bitmap/file "picture/053.png") 0))
 
   
@@ -169,7 +167,7 @@
 ;(define P086 (pages 086 "STATUS" ? '(999) (bitmap/file "picture/086.png")
 ;                   `((st . ,(lambda () (let ((ac 10)) (cond ((> ac 15) 203) ((> ac 11) 148) (else 155))))))))
 
-(define P086 (pages 086 "STATUS" ? '(999)
+(define P086 (pages 086 "STATUS?" ? '(999)
                    (bitmap/file "picture/086.png") '("ac" . ((15 . 203) (11 . 148) (0 . 155)))))
 
   
@@ -199,7 +197,7 @@
 (define P102 (pages 102 "N" ? '(114 031 081) (bitmap/file "picture/102.png") 0))
 
 (define P103 (pages 103 "C" ? '(999) (bitmap/file "picture/103.png") '("守り石" 234 235)))
-(define P234 (pages 234 "N" ? '(100 158 235) "" 0))
+(define P234 (pages 234 "U?" ? '(999) "" '("守り石" 158 235)))
 (define P235 (pages 235 "B" ? '(106) "" '("" 0)))
 
 (define P104 (pages 104 "C" ? '(999) (bitmap/file "picture/104.png") '("守り石" 236 237)))
@@ -294,7 +292,7 @@
 (define P247 (pages 247 "N" ? '(213 217) "" 0))
 
 (define P157 (pages 157 "N" ? '(164 050 215) (bitmap/file "picture/157.png") 0))
-(define P158 (pages 158 "HPAC" ? '(106) (bitmap/file "picture/158.png") '(0 1 "守り石" -1)))
+(define P158 (pages 158 "HPAC" ? '(106) (bitmap/file "picture/158.png") '(0 1)))
 (define P159 (pages 159 "N" ? '(116 053 146) (bitmap/file "picture/159.png") 0))
 (define P160 (pages 160 "N" ? '(209) (bitmap/file "picture/160.png") '("守り石" . -1)))
 (define P161 (pages 161 "N" ? '(041) (bitmap/file "picture/161.png") 0))
