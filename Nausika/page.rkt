@@ -163,8 +163,14 @@
 
 
 ;ステータスチェックで選択肢の絞り込み（後回し）
-(define P086 (pages 086 "STATUS" ? '(203 148 155)
-                   (bitmap/file "picture/086.png") '("AC" ("(> n 15)") ("(> n 11)") ("< n 12"))))
+;(define P086 (pages 086 "STATUS" ? '(203 148 155)
+;                   (bitmap/file "picture/086.png") '("AC" ("(> n 15)") ("(> n 11)") ("< n 12"))))
+
+;(define P086 (pages 086 "STATUS" ? '(999) (bitmap/file "picture/086.png")
+;                   `((st . ,(lambda () (let ((ac 10)) (cond ((> ac 15) 203) ((> ac 11) 148) (else 155))))))))
+
+(define P086 (pages 086 "STATUS" ? '(999)
+                   (bitmap/file "picture/086.png") '("ac" . ((15 . 203) (11 . 148) (0 . 155)))))
 
   
 (define P087 (pages 087 "HPAC" ? '(081) (bitmap/file "picture/087.png") '(0 3 "ペンダント" 29)))
