@@ -65,7 +65,7 @@
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
               (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
                 (newline)
-    (display (format "~aが現れた！~%" (enemy-name (car enemies))))
+    (displayG (format "~aが現れた！~%" (enemy-name (car enemies))))
                 (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
 
@@ -329,18 +329,29 @@
       (let ((rnd (random 1 7)))
     (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
          (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
-           (match arg
-             (n (if (zero? n)
+           (if (pair? arg) ;ペアで
+               (if (even? rnd)　;偶数だったら
+                   (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
+                           (sleep 3)(main-read (master (car arg) ac hp equip enemies Cdamage #t Cturn choice))))
+                    (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
+                           (sleep 3)(main-read (master (cadr arg) ac hp equip enemies Cdamage #t Cturn choice)))))
+               (if (string? arg)
+               　　　　(begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 2 rnd)))
+           　　　　　　    (sleep 3)(main-read (master page ac hp equip enemies Cdamage #f Cturn choice))))
+           　　　　    (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
+                           (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))
+
+
+#|
+            (zero? arg)
                  (begin ((newline) (display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd))) (sleep 3)
-               (if (even? rnd)
-                  (main-read (master (car C-list) ac hp equip enemies Cdamage #t Cturn choice))
-                  (main-read (master (cadr C-list) ac hp equip enemies Cdamage #t Cturn choice)))))
+              
                 (if (string? n) (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 2 rnd)))
                (sleep 3)(main-read (master page ac hp equip enemies Cdamage #f Cturn choice))))
                  (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
                (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))))
 
-
+|#
 
 ;数字入力関数
 (define (input-num env)

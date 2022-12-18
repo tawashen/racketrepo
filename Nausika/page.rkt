@@ -384,7 +384,7 @@
 
 ;サイコロの結果、奇数だとそのまま偶数だと兵士２のみ
 (define P213 (pages 213 "SAI" 0 '(999) (bitmap/file "picture/213.png") '(251 178)))
-(define P251 (pages 251 "B" 0 '(137) (bitmap/file "picture/213.png") '(0 0)))
+(define P251 (pages 251 "B" 0 '(137) "" '(0 0)))
 
 (define P214 (pages 214 "N" 0 '(206) (bitmap/file "picture/214.png") 0))
 (define P215 (pages 215 "N" 0 '(113 083 157) (bitmap/file "picture/215.png") 0))
