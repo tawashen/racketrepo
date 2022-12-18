@@ -1,0 +1,1 @@
+("7.9" racket ("f645f85c2d70cda3eba612886d83a91d132d41bd" . "4a3f202b91834c135429b3fb3f9116a06dc3ac8b") (collects #"2htdp" #"image.rkt") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))

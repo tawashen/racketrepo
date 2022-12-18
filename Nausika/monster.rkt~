@@ -8,8 +8,8 @@
 (define usiabu18a (enemy  "ウシアブA" 10 20 262 #f)) ;以下モンスターインスタンス
 (define usiabu18b (enemy "ウシアブB" 5 6 262 #f))
 (define eihei44 (enemy "衛兵" 10 9 44 #t))
-(define hamusi103a (enemy "翅蟲A" 6 10 235 #f))
-(define hamusi103b (enemy "翅蟲B"6 11 235 #f))
+(define hamusi103a (enemy "翅蟲A" 6 10 103 #f))
+(define hamusi103b (enemy "翅蟲B"6 11 103 #f))
 (define eihei111 (enemy "衛兵"10 9 111 #t))
 (define heisi131a (enemy "兵士" 9 9 131 #t))
 (define heisi131b(enemy "兵士" 10 8 131 #t))
