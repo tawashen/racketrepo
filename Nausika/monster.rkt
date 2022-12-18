@@ -27,6 +27,7 @@
 (define heisi205a (enemy "兵士" 10 9 205 #t (bitmap/file "picture/heisi2.png")))
 (define heisi205b (enemy "兵士" 10 10 205 #t (bitmap/file "picture/heisi2.png")))
 (define heisi208 (enemy "兵士" 11 9 208 #t (bitmap/file "picture/heisi2.png")))
+(define hamusi277 (enemy "翅蟲A" 6 10 277 #f (bitmap/file "picture/hanemusi.png")))
 (define kusyana128 (enemy "クシャナ様" 15 20 128 #t (bitmap/file "picture/kusyana1.png")))
 
 ;敵のリスト
@@ -53,4 +54,5 @@
 ,heisi205a
 ,heisi205b
 ,heisi208
+,hamusi277
 ,kusyana128))
