@@ -65,7 +65,8 @@
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
               (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
                 (newline)
-    (display (format "~aが現れた！~%" (enemy-name (car enemies)))) (wait)
+    (display (format "~aが現れた！~%" (enemy-name (car enemies))))
+                (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
 
 ;バトルINPUT関数
@@ -92,7 +93,7 @@
 ;バトルEVAL関数
 (define (battle-eval env) 
   (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-    (match-let (((enemy name Eac Ehp page human) (car enemies)))
+    (match-let (((enemy name Eac Ehp Mpage human image) (car enemies)))
     (if (= choice 1)
       (let ((Cac (cond ((equip? equip "剣") (+ ac 2))
                       ((equip? equip "鉄製の刀") (+ ac 2))
@@ -104,7 +105,7 @@
                              (master page ac hp equip enemies 0 Event (+ Cturn 1) choice)))
              ((> damage 0) (battle-print
                             (master page ac hp equip
-                                   (cons (enemy name Eac (- Ehp (abs damage)) page human) (cdr enemies))
+                                   (cons (enemy name Eac (- Ehp (abs damage)) Mpage human image) (cdr enemies))
                                    damage hp (+ Cturn 1) #f)))
              ((< damage 0) (battle-print
                               (master page ac (- hp (if (equip? equip "額あて")
@@ -113,14 +114,14 @@
          (if (equip? equip "光弾") 
                   (begin (display-G (format (cdr (assq 'koudan *battle-messages*))))
                           (battle-print (master page ac hp (equip-change equip "光弾" -1)
-                                              (cons (enemy name Eac (- Ehp 3) page human) (cdr enemies)) 3 hp (+ Cturn 1) #f)))
+                                              (cons (enemy name Eac (- Ehp 3) Mpage human image) (cdr enemies)) 3 hp (+ Cturn 1) #f)))
                   (begin (display-G (format (cdr (assq 'tamanasi *battle-messages*))))
                         (battle-print (master page ac (- hp 3) equip enemies -3 hp (+ Cturn 1) #f))))))))
 
 ;バトルPRINT関数
 (define (battle-print env) 
   (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-    (match-let (((enemy name Eac Ehp page human) (car enemies)))
+    (match-let (((enemy name Eac Ehp Mpage human image) (car enemies)))
       (cond ((= Cdamage 0) (wait) (display-G (format (cdr (assq 'tie *battle-messages*)))) (wait)
                           (battle-input env))
            ((> Cdamage 0) (display-G (format (cdr (assq 'atack *battle-messages*))))
@@ -136,7 +137,7 @@
 ;バトルLOOP関数
 (define (battle-loop env) 
   (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-    (match-let (((enemy name Eac Ehp page human) (car enemies)))
+    (match-let (((enemy name Eac Ehp Mpage human Mimage) (car enemies)))
          (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list page)))
       (if (string?  (car arg)) ;ここからクシャナ戦用判定
          (cond ((<= Ehp 10) (main-read (master (cadr arg) ac hp equip enemies 0 #t 1 choice)))
@@ -483,7 +484,7 @@
                     
            
 
-(define env (master 008 30 30 *equip* #f 0 #t 1 #f))
+(define env (master 213 30 30 *equip* #f 0 #t 1 #f))
 
 
 

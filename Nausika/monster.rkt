@@ -1,32 +1,33 @@
 #lang racket
 
 (provide (all-defined-out))
+(require 2htdp/image)
 
+(struct enemy (name ac hp page human image) #:mutable #:transparent) ;モンスター構造体
 
-(struct enemy (name ac hp page human) #:mutable #:transparent) ;モンスター構造体
-
-(define usiabu18a (enemy  "ウシアブA" 10 20 262 #f)) ;以下モンスターインスタンス
-(define usiabu18b (enemy "ウシアブB" 5 6 262 #f))
-(define eihei44 (enemy "衛兵" 10 9 44 #t))
-(define hamusi103a (enemy "翅蟲A" 6 10 235 #f))
-(define hamusi103b (enemy "翅蟲B"6 11 235 #f))
-(define eihei111 (enemy "衛兵"10 9 111 #t))
-(define heisi131a (enemy "兵士" 9 9 131 #t))
-(define heisi131b(enemy "兵士" 10 8 131 #t))
-(define heisi135a (enemy "兵士" 11 10 239 #t))
-(define heisi135b (enemy "兵士" 12 10 239 #t))
-(define heisi135c (enemy "兵士"12 12 239 #t))
-(define eihei162 (enemy "衛兵" 9 9 162 #t))
-(define heisi178a (enemy "兵士" 11 9 178 #t))
-(define heisi178b (enemy "兵士" 12 10 178 #t))
-(define eihei190 (enemy "衛兵" 10 10 190 #t))
-(define heisi199a (enemy "兵士" 10 10 199 #t))
-(define heisi199b (enemy "兵士" 10 11 199 #t))
-(define heisi199c (enemy "兵士" 11 11 199 #t))
-(define heisi205a (enemy "兵士" 10 9 205 #t))
-(define heisi205b (enemy "兵士" 10 10 205 #t))
-(define heisi208 (enemy "兵士" 11 9 208 #t))
-(define kusyana128 (enemy "クシャナ様" 15 20 128 #t))
+(define usiabu18a (enemy  "ウシアブA" 10 20 262 #f (bitmap/file "picture/usiabu1.png"))) ;以下モンスターインスタンス
+(define usiabu18b (enemy "ウシアブB" 5 6 262 #f (bitmap/file "picture/usiabu2.png")))
+(define eihei44 (enemy "衛兵" 10 9 44 #t (bitmap/file "picture/heisi1.png")))
+(define hamusi103a (enemy "翅蟲A" 6 10 235 #f (bitmap/file "picture/hanemusi.png")))
+(define hamusi103b (enemy "翅蟲B"6 11 235 #f (bitmap/file "picture/hanemusi.png")))
+(define eihei111 (enemy "衛兵"10 9 111 #t (bitmap/file "picture/heisi1.png")))
+(define heisi131a (enemy "兵士" 9 9 131 #t (bitmap/file "picture/heisi2.png")))
+(define heisi131b(enemy "兵士" 10 8 131 #t (bitmap/file "picture/heisi2.png")))
+(define heisi135a (enemy "兵士" 11 10 239 #t (bitmap/file "picture/heisi2.png")))
+(define heisi135b (enemy "兵士" 12 10 239 #t (bitmap/file "picture/heisi2.png")))
+(define heisi135c (enemy "兵士"12 12 239 #t (bitmap/file "picture/heisi2.png")))
+(define eihei162 (enemy "衛兵" 9 9 162 #t (bitmap/file "picture/heisi1.png")))
+(define heisi178a (enemy "兵士" 11 9 178 #t (bitmap/file "picture/heisi2.png")))
+(define heisi178b (enemy "兵士" 12 10 178 #t (bitmap/file "picture/heisi2.png")))
+(define heisi251 (enemy "兵士" 12 10 251 #t (bitmap/file "picture/heisi2.png")))
+(define eihei190 (enemy "衛兵" 10 10 190 #t (bitmap/file "picture/heisi1.png")))
+(define heisi199a (enemy "兵士" 10 10 199 #t (bitmap/file "picture/heisi2.png")))
+(define heisi199b (enemy "兵士" 10 11 199 #t (bitmap/file "picture/heisi2.png")))
+(define heisi199c (enemy "兵士" 11 11 199 #t (bitmap/file "picture/heisi2.png")))
+(define heisi205a (enemy "兵士" 10 9 205 #t (bitmap/file "picture/heisi2.png")))
+(define heisi205b (enemy "兵士" 10 10 205 #t (bitmap/file "picture/heisi2.png")))
+(define heisi208 (enemy "兵士" 11 9 208 #t (bitmap/file "picture/heisi2.png")))
+(define kusyana128 (enemy "クシャナ様" 15 20 128 #t (bitmap/file "picture/kusyana1.png")))
 
 ;敵のリスト
 (define enemy-list `(
@@ -44,6 +45,7 @@
 ,eihei162
 ,heisi178a
 ,heisi178b
+,heisi251
 ,eihei190
 ,heisi199a
 ,heisi199b
