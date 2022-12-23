@@ -34,7 +34,7 @@
 (define P023 (pages 023 "N" 0 '(071 085 024 003) (bitmap/file "picture/023.png") 0))
 (define P024 (pages 024 "SAI" 0 '(194 201) (bitmap/file "picture/024.png") 0))
 (define P025 (pages 025 "N" 0 '(030 099 218) (bitmap/file "picture/025.png") 0))
-(define P026 (pages 026 "N" 0 '(032 118) (bitmap/file "picture/026.png") 0))
+(define P026 (pages 026 "S" 0 '(032 118) (bitmap/file "picture/026.png") 0))
 (define P027 (pages 027 "N" 0 '(082) (bitmap/file "picture/027.png") 0))
 (define P028 (pages 028 "N" 015 '(081) (bitmap/file "picture/028.png") 0))
 (define P029 (pages 029 "D?" 0 '(002 092) (bitmap/file "picture/029.png") 0))
