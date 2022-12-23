@@ -52,7 +52,7 @@
            (main-read (master (caddr arg) ac hp equip enemies 0 #t 1 #f)))
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
               (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-                (newline) (display "Hit Enter-key!" ) (newline) (HAK)
+                (HAK)
     (display-G (format "~aが現れた！~%" (enemy-name (car enemies))))
                 (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
@@ -475,17 +475,16 @@
            (if (pair? arg) ;ペアで
                (if (even? rnd) ;偶数だったら
                    (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
-                           (sleep 3)(main-read (master (car arg) ac hp equip enemies Cdamage #t Cturn choice))))
+                           (HAK) (main-read (master (car arg) ac hp equip enemies Cdamage #t Cturn choice))))
                     (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
-                           (sleep 3)(main-read (master (cadr arg) ac hp equip enemies Cdamage #t Cturn choice)))))
-               (if (string? arg)
+                           (HAK) (main-read (master (cadr arg) ac hp equip enemies Cdamage #t Cturn choice)))))
+               ;ペアじゃない＝Wだった場合は以下
                    (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 2 rnd)))
-                     (sleep 3)
+                     (HAK)
                      (if (> ac (+ 3 (* 2 rnd)))
                         (main-read (master (car C-list) ac hp equip enemies Cdamage #t Cturn choice))
-                        (main-read (master (cadr C-list) ac hp equip enemies Cdamage #t Cturn choice)))))
-                   (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
-                           (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))
+                        (main-read (master (cadr C-list) ac hp equip enemies Cdamage #t Cturn choice))))))))))
+             
 
 
 (define (end env)
@@ -514,6 +513,6 @@
     (main-read (master 001 rnd2 (+ rnd1 7) *equip* #f 0 #t 1 #f)))) 
   
   
-;(define env (master 200 10 15 *equip* #f 0 #t 1 #f))
+(define env (master 071 10 15 *equip* #f 0 #t 1 #f))
 
-;(main-read env)
+(main-read env)

@@ -88,9 +88,6 @@
 
 ;Hit any key関数
 (define (HAK)
-  (newline)
-  (display "Hit Enter-key!")
-  (newline)
   (let ((key (read-line)))
     (if (string=? "" key) (newline)
         HAK)))
