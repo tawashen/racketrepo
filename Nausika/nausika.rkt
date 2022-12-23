@@ -494,9 +494,26 @@
 (define (ep env)
   (newline) (HAK) (display (bitmap/file "picture/ending.png"))
   (newline) (HAK))
+
+
+(define (start)
+  (display (bitmap/file "picture/op01.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op02.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op03.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op04.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op05.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op06.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op07.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op08.jpg")) (newline) (HAK)
+  (display (bitmap/file "picture/op09.jpg")) (newline) (HAK)
+  (let ((rnd1 (random 1 7)) (rnd2 (random 1 7)))
+    (display-G (format (cdr (assoc 'saikoro *main-messages*)) rnd1))
+    (newline) (HAK)
+    (display-G (format (cdr (assoc 'saikoro *main-messages*)) rnd2))
+    (newline) (HAK)
+    (main-read (master 001 rnd2 (+ rnd1 7) *equip* #f 0 #t 1 #f)))) 
   
+  
+;(define env (master 200 10 15 *equip* #f 0 #t 1 #f))
 
-
-(define env (master 200 10 15 *equip* #f 0 #t 1 #f))
-
-(main-read env)
+;(main-read env)
