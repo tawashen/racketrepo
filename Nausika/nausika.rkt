@@ -6,6 +6,7 @@
 (require srfi/13)
 (require racket/struct)
 (require racket/match)
+(require 2htdp/image)
 
 (require "util/util.rkt")
 (require "message.rkt")
@@ -63,7 +64,7 @@
            (main-read (master (caddr arg) ac hp equip enemies 0 #t 1 #f)))
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
               (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-                (newline)
+                (newline) (sleep 10)
     (display-G (format "~aが現れた！~%" (enemy-name (car enemies))))
                 (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
@@ -112,6 +113,7 @@
                                                equip enemies damage hp (+ Cturn 1) #f))))))
          (if (equip? equip "光弾") 
                   (begin (display-G (format (cdr (assq 'koudan *battle-messages*))))
+                         (newline) (display (bitmap/file "picture/hikaridama.png"))  (newline)
                           (battle-print (master page ac hp (equip-change equip "光弾" -1)
                                               (cons (enemy name Eac (- Ehp 3) Mpage human image) (cdr enemies)) 3 hp (+ Cturn 1) #f)))
                   (begin (display-G (format (cdr (assq 'tamanasi *battle-messages*))))
@@ -123,11 +125,11 @@
     (match-let (((enemy name Eac Ehp Mpage human image) (car enemies)))
       (cond ((= Cdamage 0) (wait) (display-G (format (cdr (assq 'tie *battle-messages*)))) (wait)
                           (battle-input env))
-           ((> Cdamage 0) (display-G (format (cdr (assq 'atack *battle-messages*))))
-                         (wait) (display-G (format (cdr (assq 'damagep *battle-messages*)) (abs Cdamage))) (wait)
+           ((> Cdamage 0) (display (bitmap/file "picture/nausika2.png"))(newline) (display-G (format (cdr (assq 'atack *battle-messages*)))) 
+                         (newline)(wait) (display-G (format (cdr (assq 'damagep *battle-messages*)) (abs Cdamage))) (wait)
                          (battle-loop env))
-           ((< Cdamage 0) (display-G (format (cdr (assq 'atacked *battle-messages*)) name))
-                         (wait) (display-G (format (cdr (assq 'damagedp *battle-messages*))
+           ((< Cdamage 0)  (display image) (newline) (display-G (format (cdr (assq 'atacked *battle-messages*)) name)) 
+                         (newline)(wait) (display-G (format (cdr (assq 'damagedp *battle-messages*))
                                                 (if (equip? equip "額あて")
                                                    `(,(abs Cdamage) "[-1]")
                                                    (abs Cdamage))))
@@ -498,7 +500,7 @@
                            (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))
 
 
-(define env (master 149 30 30 *equip* #f 0 #t 1 #f))
+(define env (master 128 15 15 *equip* #f 0 #t 1 #f))
 
 
 

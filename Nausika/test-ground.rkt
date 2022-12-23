@@ -10,6 +10,7 @@
 (require "monster.rkt")
 (require "item.rkt")
 (require "page.rkt")
+(require vlc)
 
 
 (define-syntax status-check
@@ -23,7 +24,8 @@
 (define table `(((< 12 6) "T") ((> 10 6) "A") (else "W")))
 ;((cdr (assq 'Page181 table)))
 
-table
+;table
+
 
 (define-syntax kakko-tenkai
   (syntax-rules ()
@@ -32,9 +34,9 @@ table
 
 (kakko-tenkai ((< 12 5 "T") (> 12 10 "A")))
 
-(define test (kakko-tenkai ((< 12 5 "T") (> 12 10 "A"))))
-
-(status-check test)
+(status-check (kakko-tenkai ((< 12 5 "T") (> 12 10 "A"))))
+;test
+;(status-check test)
 
 
 
