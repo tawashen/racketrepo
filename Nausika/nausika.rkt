@@ -32,7 +32,6 @@
 
 
 
-
 ;master構造体(常に持ち歩く用)
 (struct master (page ac hp equip enemies Cdamage Event Cturn choice) #:transparent)
 ;master環境変数インスタンス つまり世界の初期値

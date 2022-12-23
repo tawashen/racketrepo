@@ -1,1 +1,1 @@
-("7.9" racket ("a7b1822e183d97825fef6823a7ebee8679b73c21" . "4a3f202b91834c135429b3fb3f9116a06dc3ac8b") (collects #"2htdp" #"image.rkt") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
+("8.6" ta6le ("1d19ca4076fe9225e169cffd78f07ed88394c099" . "9f1ee4f5f19a79ad3f5ac125a6fbf51f3075f72a") (collects #"2htdp" #"image.rkt") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))

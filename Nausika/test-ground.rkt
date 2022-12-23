@@ -13,28 +13,29 @@
 
 
 (define-syntax status-check
-    (syntax-rules (else)
-        ((_ ((pred1 status1 value1 page1) (pred2 status2 value2 page2) ...))
-            (cond ((pred1 status1 value1)
-                   (display (page1)))
-  ;              (main-read (master page ac hp new-equip enemies Cdamage #t Cturn choice)))
-            (else (status-check pred2 status2 value2 page2) ...)))))
+    (syntax-rules ()
+      ((_ ((pred1 b1 ...) ...))
+      (cond (pred1 (begin b1 ...)) ...))))
 
+
+      
 ;評価させない式をLmabdaで包んで関数化
-(define table `(,(lambda () (cond ((< 12 6) "T") ((> 10 6) "A") (else "W")))))
+(define table `(((< 12 6) "T") ((> 10 6) "A") (else "W")))
 ;((cdr (assq 'Page181 table)))
 
 table
 
+(define-syntax kakko-tenkai
+  (syntax-rules ()
+    ((_ ((o n1 n2 sym ...) ...))
+     `(((o n1 n2) sym ...) ...))))
 
+(kakko-tenkai ((< 12 5 "T") (> 12 10 "A")))
 
+(define test (kakko-tenkai ((< 12 5 "T") (> 12 10 "A"))))
 
- ;Lambdaで実行させる時には()でくくると覚えるか
+(status-check test)
 
-
-
-
-;(status-check y)
 
 
 (define-syntax begin1
