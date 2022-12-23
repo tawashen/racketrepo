@@ -64,7 +64,7 @@
            (main-read (master (caddr arg) ac hp equip enemies 0 #t 1 #f)))
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
               (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-                (newline) (sleep 10)
+                (newline) (display "Hit Enter-key!" ) (newline) (HAK)
     (display-G (format "~aが現れた！~%" (enemy-name (car enemies))))
                 (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
@@ -498,6 +498,9 @@
                         (main-read (master (cadr C-list) ac hp equip enemies Cdamage #t Cturn choice)))))
                    (begin ((newline)(display (format (cdr (assoc 'saikoro *main-messages*)) (* 1 rnd)))
                            (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))
+
+
+
 
 
 (define env (master 128 15 15 *equip* #f 0 #t 1 #f))

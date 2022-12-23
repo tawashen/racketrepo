@@ -84,3 +84,10 @@
 ;ドラクエ風に文字を表示する
 (define (display-G str)
  (string-for-each (lambda (x) (sleep 0.05) (flush-output) (display x)) str))
+
+
+;Hit any key関数
+(define (HAK)
+  (let ((key (read-line)))
+    (if (string=? "" key) (newline)
+        HAK)))
