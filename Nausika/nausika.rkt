@@ -1,14 +1,12 @@
 #lang racket
 
-
-
 (require srfi/1)
 (require srfi/13)
 (require racket/struct)
 (require racket/match)
 (require 2htdp/image)
 
-(require "util/util.rkt")
+(require "util.rkt")
 (require "message.rkt")
 (require "monster.rkt")
 (require "item.rkt")
