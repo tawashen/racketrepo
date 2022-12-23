@@ -27,20 +27,10 @@
         (return-struct (cdr itemlist) index))))
 
 
-
-
-
-
 ;master構造体(常に持ち歩く用)
 (struct master (page ac hp equip enemies Cdamage Event Cturn choice) #:transparent)
 ;master環境変数インスタンス つまり世界の初期値
 (define m-env (master 001 15 15 *equip* #f 0 #t 1 #f))
-
-
-
-(define (battle-end-lose)
-  (wait)
-  (display (format "あなたは死にました~%おめでたくない!~%")))
 
 
 ;バトル関数に流し込むページごとの敵構造体のリストを返す
@@ -145,7 +135,7 @@
       (cond ((<= Ehp 0)　;以前からある通常戦闘用判定
              (begin (display-G (format (cdr (assq 'win *battle-messages*)) name))
                    (battle-read (master page ac hp equip (cdr enemies) 0 Event Cturn #f))))
-             ((<= hp 0) (battle-end-lose))
+             ((<= hp 0) (end env))
            (else (battle-input (master page ac hp equip enemies Cdamage Event Cturn choice)))))))))
 
 
@@ -281,8 +271,8 @@
       (if (and (string=? Flag "U") Event) (use-item env)
       (if (and (string=? Flag "STATUS?") Event) (status-choice env)
       (if (and (string=? Flag "YESNO") Event) (yes-no env)
-      (if (and (string=? Flag "END") Event) (display "END")
-      (if (and (string=? Flag "EP") Event) (display "EP")
+      (if (and (string=? Flag "END") Event) (end env)
+      (if (and (string=? Flag "EP") Event) (ep env)
          (main-input env)))))))))))))))))))))
 
 ;メインINPUT関数　＆　メインEVAL関数　＆　メインLOOP関数
@@ -498,26 +488,15 @@
                            (sleep 3)(main-read (master arg ac hp equip enemies Cdamage #t Cturn choice))))))))))
 
 
+(define (end env)
+           (newline) (HAK) (display "あなたは死にました・・ゲームオーバー・・"))
+
+(define (ep env)
+  (newline) (HAK) (display (bitmap/file "picture/ending.png"))
+  (newline) (HAK))
+  
 
 
+(define env (master 200 10 15 *equip* #f 0 #t 1 #f))
 
-(define env (master 128 15 15 *equip* #f 0 #t 1 #f))
-
-
-
-
-
-
- 
 (main-read env)
- 
-
-
-
-
-
-
-
-
-
-      

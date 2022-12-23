@@ -1,12 +1,8 @@
 #lang racket
 
 (provide (all-defined-out))
-
 (require 2htdp/image)
-
 (struct pages (page-num flag pre-page C-list image arg))
-
-
 
 
 (define P000 (pages 000 "N" 0 '(999) "" 0))
