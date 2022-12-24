@@ -294,7 +294,7 @@
 (define P218 (pages 218 "D" 0 '(025 056) (bitmap/file "picture/218.png") '("カイ" . -1)))
 (define P219 (pages 219 "N" 0 '(002) (bitmap/file "picture/219.png") 0))
 (define P220 (pages 220 "N" 0 '(196) (bitmap/file "picture/220.png") 0))
-(define P229 (pages 229 "N" 0 '(999) (bitmap/file "picture/ending.png") 0))
+(define P229 (pages 229 "END" 0 '(999) (bitmap/file "picture/ending.png") 0))
 
 
 

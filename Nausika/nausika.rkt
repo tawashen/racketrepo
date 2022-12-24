@@ -513,6 +513,6 @@
     (main-read (master 001 rnd2 (+ rnd1 7) *equip* #f 0 #t 1 #f)))) 
   
   
-(define env (master 071 10 15 *equip* #f 0 #t 1 #f))
+;(define env (master 071 10 15 *equip* #f 0 #t 1 #f))
 
-(main-read env)
+;(main-read env)
