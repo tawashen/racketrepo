@@ -55,6 +55,7 @@
                 (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
 
+
 ;バトルINPUT関数
 (define (battle-input env) 
   (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
@@ -68,13 +69,16 @@
     (if (not (enemy-human (car enemies)))
        (let ((num (string->number
                 (input (cdr (assq 'selectM *battle-messages*))))))
+         (if (number? num)
          (cond ((= num 1) (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num)))
-              (else (battle-input env))))
+              (else (battle-input env)))
+         (battle-input env)))
        (let ((num (string->number
                 (input (cdr (assq 'select *battle-messages*))))))
          (cond ((> num 2) (battle-input env))
               ((< num 1) (battle-input env))
               (else (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num))))))))
+
     
 ;バトルEVAL関数
 (define (battle-eval env) 
