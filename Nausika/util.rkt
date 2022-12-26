@@ -22,9 +22,6 @@
           (range start (+ (length seq) start))
           seq))))
 
-
-
-
 ;プロンプト付きINPUT関数
 (define input
  (case-lambda
@@ -32,12 +29,11 @@
   ((prompt) (display prompt)(newline)
        (read-line))))
 
-
-
 ;Equip更新関数 Cametanさん提供版
 (define (equip-change lst index num)
  (match-let ((`(,index . ,val) (assoc index lst)))
   (alist-cons index (+ num val) (alist-delete index lst))))
+
 
 
 ;Equip更新関数

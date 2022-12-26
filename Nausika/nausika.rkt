@@ -29,8 +29,6 @@
 
 ;master構造体(常に持ち歩く用)
 (struct master (page ac hp equip enemies Cdamage Event Cturn choice) #:transparent)
-;master環境変数インスタンス つまり世界の初期値
-(define m-env (master 001 15 15 *equip* #f 0 #t 1 #f))
 
 
 ;バトル関数に流し込むページごとの敵構造体のリストを返す
@@ -286,8 +284,7 @@
                      (cond ((> num (length C-list))
                                (display-G "はぁ?")(newline)(wait)(wait)(main-read env))
                             ((zero? num)
-                            ; (item-read env))
-                             (equip-look (master-equip env)) (newline) (item-read env))  ;もともとは　(item-read env)
+                             (equip-look (master-equip env)) (newline) (item-read env)) 
                             (else (main-read (master (list-ref C-list (- num 1)) ac hp equip enemies Cdamage #t Cturn #f))))))))
  
 
