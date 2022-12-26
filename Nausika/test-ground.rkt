@@ -13,3 +13,12 @@
 
 
 ;(start-vlc "picture/battle1.mp4")
+
+(define-syntax status-check
+  (syntax-rules ()
+    ((_ `((pred1 b1 ...) ...))
+     (cond (pred1 (begin b1 ...)) ...))))
+
+(define test `(((> 10 5) "T") ((> 10 3) "G")))
+;(status-check (((> 10 5) "T") ((> 10 3) "G")))
+(status-check test)
