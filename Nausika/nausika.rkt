@@ -12,6 +12,11 @@
 (require "item.rkt")
 (require "page.rkt")
 
+(require 2htdp/universe 2htdp/image)
+(define *width* 680)
+(define *height* 500)
+;(empty-scene *width* *height* "white")
+
 
 ;ツール関係;;ページからリスト作成関数
 (define (page-lst page)
