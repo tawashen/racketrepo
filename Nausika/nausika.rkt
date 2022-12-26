@@ -18,7 +18,8 @@
 (define *height* 500)
 (empty-scene *width* *height* "white")
 
-
+(big-bang (master 262 10 15 *equip* #f 0 #t 1 #f)
+  
 
 ;ツール関係;;ページからリスト作成関数
 (define (page-lst page)
@@ -519,6 +520,6 @@
     (main-read (master 001 rnd2 (+ rnd1 7) *equip* #f 0 #t 1 #f)))) 
   
   
-(define env (master 262 10 15 *equip* #f 0 #t 1 #f))
+;(define env (master 262 10 15 *equip* #f 0 #t 1 #f))
 
-(main-read env)
+;(main-read env)
