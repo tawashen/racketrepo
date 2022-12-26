@@ -5,6 +5,7 @@
 (require racket/struct)
 (require racket/match)
 (require 2htdp/image)
+(require lang/posn)
 
 (require "util.rkt")
 (require "message.rkt")
@@ -15,7 +16,8 @@
 (require 2htdp/universe 2htdp/image)
 (define *width* 680)
 (define *height* 500)
-;(empty-scene *width* *height* "white")
+(empty-scene *width* *height* "white")
+
 
 
 ;ツール関係;;ページからリスト作成関数
@@ -56,8 +58,8 @@
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
               (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
                 (HAK)
-    (display-G (format "~aが現れた！~%" (enemy-name (car enemies))))
-                (display (enemy-image (car enemies))) (newline) (wait)
+    (text (format "~aが現れた！~%" (enemy-name (car enemies))) 20 "green") ;koko
+                (place-image (enemy-image (car enemies)) 100 100 (rectangle 680 500 "solid" "goldenrod")) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
 
 ;バトルINPUT関数
@@ -73,8 +75,10 @@
     (if (not (enemy-human (car enemies)))
        (let ((num (string->number
                 (input (cdr (assq 'selectM *battle-messages*))))))
+         (if (number? num)
          (cond ((= num 1) (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num)))
-              (else (battle-input env))))
+              (else (battle-input env)))
+         (battle-input env)))
        (let ((num (string->number
                 (input (cdr (assq 'select *battle-messages*))))))
          (cond ((> num 2) (battle-input env))
@@ -515,6 +519,6 @@
     (main-read (master 001 rnd2 (+ rnd1 7) *equip* #f 0 #t 1 #f)))) 
   
   
-;(define env (master 071 10 15 *equip* #f 0 #t 1 #f))
+(define env (master 262 10 15 *equip* #f 0 #t 1 #f))
 
-;(main-read env)
+(main-read env)

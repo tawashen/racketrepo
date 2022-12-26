@@ -1,0 +1,16 @@
+#lang racket
+
+(require srfi/1)
+(require srfi/13)
+(require racket/struct)
+(require racket/match)
+(require 2htdp/image)
+(require lang/posn)
+
+(require 2htdp/universe 2htdp/image)
+(define *width* 680)
+(define *height* 500)
+(empty-scene *width* *height* "white")
+ 
+ (text "tawashen" 20 "green") ;koko
+                (place-image (rectangle 50 50 "solid" "white") 340 250 (rectangle 680 500 "solid" "goldenrod"))
