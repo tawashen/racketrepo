@@ -1,0 +1,22 @@
+#lang racket
+
+(require srfi/1)
+(require srfi/13)
+(require racket/struct)
+(require racket/match)
+(require 2htdp/image)
+(require lang/posn)
+
+(require "util.rkt")
+(require "message.rkt")
+(require "monster.rkt")
+(require "item.rkt")
+(require "page.rkt")
+
+(require 2htdp/universe 2htdp/image)
+(define *width* 680)
+(define *height* 500)
+(empty-scene *width* *height* "white")
+
+;模擬戦闘ゲームワールド構造体
+(struct master (Page Hp Mp Buki Bougu Enemies Cdamage Event Cturn Choice BG BR CR) #:transparent)
