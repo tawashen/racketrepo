@@ -72,14 +72,35 @@
 (define env (master 044 20 20 '("" . 0) '("" . 0) *equip*  (battle-ready-list enemy-list 044) 0 #t 1 #f "" "" ""))
 
 
+;バトルテキスト関数
+(define (battle-text string)
+  (text string 20 "red"))
+
+;(battle-text "hahah")
+
+;バトルPI関数
+(define (battle-place-image page-image text-image text-back-image enemy-image back-image scene)
+  (place-image page-image 70 240
+              (place-image text-image 120 560
+                          (place-image text-back-image 340 600
+                                       (place-image enemy-image 400 240
+                                                   (place-image back-image 340 250
+                                                               scene))))))
+
 ;バトルREAD関数
 (define (battle-read env)
   (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR) env))
              (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list Page)))
   (if (null? Enemies)
-   
       (text "V V V Victory!" 20 "red")
-     ; (begin   
+      (battle-place-image image (battle-text "hahaha") (rectangle 600 140 "solid" "white")
+                         (enemy-image (car Enemies)) (bitmap/file "picture/haikei1.jpeg")
+                         (rectangle 680 680 "solid" "goldenrod"))))))
+
+                                                                 
+
+#|
+      ; (begin   
       (place-image image 70 240
       (place-image  (text (format "~aが現れた!~%" (enemy-name (car Enemies)))
                                20 "blue") 120 560
@@ -88,6 +109,11 @@
                                           (place-image (bitmap/file "picture/haikei1.jpeg") 340 250
                                                       (rectangle 680 680 "solid" "goldenrod"))))))))))
              ;   (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR))))))
+
+|#
+
+
+                         
  
 ;バトルINPUT関数
 (define (battle-input env) 
@@ -171,6 +197,7 @@
 ;(place-image (bitmap/file "picture/hikaridama.png") 200 200 (empty-scene *width* *height* "white"))
 
  ; (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR)
+
 
 (big-bang (master 044 15 15 '("" . 0) '("" . 0) *equip*
                  (battle-ready-list enemy-list 044) 0 #t 0 #f "" "" "")
