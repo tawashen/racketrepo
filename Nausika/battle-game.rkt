@@ -16,6 +16,46 @@
 (require 2htdp/universe 2htdp/image)
 (define *width* 680)
 (define *height* 500)
+(define *window* (empty-scene *width* *height* "Medium Gray"))
+
+(define (place-back back scene)
+ (if back
+  (place-image (bitmap/file back)
+       (/ *width* 2)
+       (/ *height* 2)
+       scene)
+  scene))
+
+(define (message-area scene)
+ (place-image
+  (rectangle 840 100 "solid" "white")
+  (/ *width* 2)
+  (* (/ *height* 4) 3)
+  scene))
+
+#|
+(define (change w a-key)
+ (cond ((key=? a-key "\r") (world-go w "\r"))
+   ((key=? a-key " ") (world-go w " "))
+   ((key=? a-key "1") (world-go w "1"))
+   ((key=? a-key "2") (world-go w "2"))
+   ((key=? a-key "y") (world-go w "y"))
+   ((key=? a-key "n") (world-go w "n"))
+   ((key=? a-key "up") (world-go w "up"))
+   ((key=? a-key "down") (world-go w "down"))
+   (else w)))
+|#
+;(place-back "picture/hikaridama.png" *window*)
+
+;(message-area *window*)
+
+;(define (place-world w)
+
+
+(define (place-world w)
+ (battle-read w))
+
+
 ;(empty-scene *width* *height* "white")
 
 ;模擬戦闘ゲームワールド構造体
@@ -36,11 +76,13 @@
 (define (battle-read env)
   (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR) env))
   (if (null? Enemies)
-      (display "V V V Victory!")
-      (begin    (text (format "~aが現れた!~%" (enemy-name (car Enemies))) 20 "green")
-                (place-image (enemy-image (car Enemies)) 100 100 (rectangle 680 500 "solid" "goldenrod"))
-                (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR))))))
-
+      (text "V V V Victory!" 20 "red")
+      (begin   
+                (place-image  (text (format "~aが現れた!~%" (enemy-name (car Enemies)))
+                               20 "green") 50 50 (rectangle 200 200 "solid" "gray"))
+                             ; (enemy-image (car Enemies)) 100 100 (rectangle 680 500 "solid" "goldenrod"))
+                (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR)))))
+ 
 ;バトルINPUT関数
 (define (battle-input env) 
   (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR) env))
@@ -117,14 +159,16 @@
              ((<= Hp 0) (text "lose" 20 "red"))
              ((> Hp 0) (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG  BR CR))))))))))
 
+
 ;(battle-read env)
 
-(place-image (bitmap/file "picture/hikaridama.png") 200 200 (empty-scene *width* *height* "white"))
+;(place-image (bitmap/file "picture/hikaridama.png") 200 200 (empty-scene *width* *height* "white"))
 
+ ; (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR)
 #|
-(big-bang (master 001 15 15 '() '() '() 0 #t 0 #f "" "" "")
- (on-key change)
+(big-bang (master 044 15 15 '("" . 0) '("" . 0) *equip* (battle-ready-list enemy-list 044) 0 #t 0 #f "" "" "")
  (to-draw place-world)
- (stop-when game-ends? place-world)
+
  (name "模擬戦闘"))
 |#
+
