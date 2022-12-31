@@ -4,6 +4,9 @@
 (provide (all-defined-out))
 
 
+;バトルGUIメッセージ
+(define *battle-gui-messages* '((appear . "~aが現れた！")))
+
 
 ;分離式戦闘用メッセージ
 (define *shop-messages* '((kaukane . "何を買うかね?")
