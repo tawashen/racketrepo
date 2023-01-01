@@ -66,14 +66,15 @@
 (define (battle-go env delta)
     (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Mes Cturn Choice BG BR CR) env))
             (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list (master-Page env))))
+    
               (if (and (string=? "B" Flag) Event) 
-                   (cond ((string=? "\r" delta)
-                    (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
-                                      "start" Cturn 1 BG BR CR))
+                   (cond 
+                     ((string=? "\r" delta) (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
+                                      "start" Cturn 1 BG BR CR)) 
                      (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
                                       "end" Cturn 1 BG BR CR)))
-                   (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
-                                      "other" Cturn 1 BG BR CR)))))
+                   (battle-read (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "other" Cturn 1 BG BR CR))))))
                   
 
 
@@ -93,58 +94,48 @@
              (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list Page)))
   (if (null? Enemies)
       (text "V V V Victory!" 20 "red")
+      
+      ;(master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+       ;                               "end" Cturn 1 BG BR CR)))))
        (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Mes Cturn Choice BG BR CR))))))
-#|
-      (if (and (string=? Flag "B") Event)
-         (battle-read (master page ac hp equip (battle-ready-list enemy-list page) 0 #f 1 choice))
-      (if (and (string=? Flag "S") Event) (shop-read env)
-      (if (and (string=? Flag "C") Event) (item-check env)
-      (if (and (string=? Flag "HPAC") Event) (st-change env)
-      (if (and (string=? Flag "SAI") Event) (saikoro env)
-      (if (and (string=? Flag "D") Event) (drop-item env)
-      (if (and (string=? Flag "NO") Event) (input-num env)
-      (if (and (string=? Flag "ES") Event) (escape env)
-      (if (and (string=? Flag "G") Event) (item-get env)
-      (if (and (string=? Flag "G?") Event) (item-get? env)
-      (if (and (string=? Flag "D?") Event) (item-drop? env)
-      (if (and (string=? Flag "U?") Event) (use? env)
-      (if (and (string=? Flag "U") Event) (use-item env)
-      (if (and (string=? Flag "STATUS?") Event) (status-choice env)
-      (if (and (string=? Flag "YESNO") Event) (yes-no env)
-      (if (and (string=? Flag "END") Event) (end env)
-      (if (and (string=? Flag "EP") Event) (ep env)
-         (main-input env)))))))))))))))))))))
-
-  |#             
-               ;  ((null? (
-#|
-
-
-         |#                                                        
-
-#|
-      ; (begin   
-      (place-image image 70 240
-      (place-image  (text (format "~aが現れた!~%" (enemy-name (car Enemies)))
-                               20 "blue") 120 560
-                                          (place-image (rectangle 600 140 "solid" "white") 340 600
-                             (place-image (enemy-image (car Enemies)) 400 240
-                                          (place-image (bitmap/file "picture/haikei1.jpeg") 340 250
-                                                      (rectangle 680 680 "solid" "goldenrod"))))))))))
-             ;   (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Cturn Choice BG BR CR))))))
-
-|#
 
 
                         
  
 ;バトルINPUT関数
-(define (battle-input env) 
+(define (battle-input env delta) 
   (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Mes Cturn Choice BG BR CR) env))
                 (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list Page)))
-    (place-world env) (sleep 3)
-   (place-world  env))))
-  
+                (cond ((string=? "1" delta) (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                               "戦闘開始" Cturn 1 BG BR CR))
+                     (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                  "戦闘終了" Cturn 1 BG BR CR))))))
+
+#|
+;バトルINPUT関数
+(define (battle-input env) 
+  (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
+      (display-G (format (cdr (assq 'turn *battle-messages*)) Cturn))
+      (display-G (format (cdr (assq 'status *battle-messages*))
+                      (cond ((equip? equip "剣") `(,ac "[+2]"))
+                        ((equip? equip "短剣") `(,ac "[+1]"))
+                        ((equip? equip "短剣(セラミック製)") `(,ac "[+1]"))
+                        (else ac)) hp))
+    (newline)
+    (if (not (enemy-human (car enemies)))
+       (let ((num (string->number
+                (input (cdr (assq 'selectM *battle-messages*))))))
+         (if (number? num)
+         (cond ((= num 1) (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num)))
+              (else (battle-input env)))
+         (battle-input env)))
+       (let ((num (string->number
+                (input (cdr (assq 'select *battle-messages*))))))
+         (cond ((> num 2) (battle-input env))
+              ((< num 1) (battle-input env))
+              (else (battle-eval (master page ac hp equip enemies Cdamage Event Cturn num))))))))
+    
+|#
 
 #|
 ;バトルEVAL関数
@@ -202,7 +193,21 @@
                   ((key=? a-key "7") (battle-go w "7"))
                      ((key=? a-key "8") (battle-go w "8"))
                         ((key=? a-key "9") (battle-go w "9"))
+     ((key=? a-key "\r") (battle-read w "\r"))
+   ((key=? a-key " ") (battle-read w " "))
+   ((key=? a-key "1") (battle-read w "1"))
+#|
+   ((key=? a-key "2") (battle-input w "2"))
+      ((key=? a-key "3") (battle-input w "3"))
+         ((key=? a-key "4") (battle-input w "4"))
+            ((key=? a-key "5") (battle-input w "5"))
+               ((key=? a-key "6") (battle-input w "6"))
+                  ((key=? a-key "7") (battle-input w "7"))
+                     ((key=? a-key "8") (battle-input w "8"))
+                        ((key=? a-key "9") (battle-input w "9")) |#
    (else w)))
+
+
 
 #|
 ;バトルLOOP関数
@@ -231,8 +236,8 @@
 
 (big-bang (master 044 15 15 '("" . 0) '("" . 0) *equip*
                  (battle-ready-list enemy-list 044) 0 #t
-                 ;(format (cdr (assq 'appear *battle-gui-messages*)) "enemy")
-                 "" 0 1 "" "" "")
+                 (format (cdr (assq 'appear *battle-gui-messages*)) "enemy")
+                  0 1 "" "" "")
   (on-key change)
   (to-draw place-world)
  (name "模擬戦闘"))
