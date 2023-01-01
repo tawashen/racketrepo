@@ -64,32 +64,16 @@
 
 ;バトルGO関数
 (define (battle-go env delta)
+    (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Mes Cturn Choice BG BR CR) env))
             (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list (master-Page env))))
- (let loop (
-            (Page (master-Page env))
-            (Hp (master-Hp env))
-            (Ap (master-Ap env))
-            (Buki (master-Buki env))
-            (Bougu (master-Bougu env))
-            (Equip (master-Equip env))
-            (Enemies (master-Enemies env))
-            (Cdamage (master-Cdamage env))
-            (Event (master-Event env))
-            (Mes (master-Mes env))
-            (Cturn (master-Cturn env))
-            (Choice (master-Choice))
-            (BG (master-BG env))
-            (BR (master-BR env))
-            (CR (master-CR env)))
-            (case Flag
-              (("B") (cond ((string=? "1" delta)
-                       
-
-
-                    ((master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
-                                      (format (cdr (assq 'appear *battle-gui-messages*)) (car (car Enemies)))
-                                         Cturn Choice BG BR CR)))
-                     ((string=? "2" delta) "end")))))))
+              (if (and (string=? "B" Flag) Event) 
+                   (cond ((string=? "\r" delta)
+                    (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "start" Cturn 1 BG BR CR))
+                     (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
+                                      "end" Cturn 1 BG BR CR)))
+                   (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
+                                      "other" Cturn 1 BG BR CR)))))
                   
 
 
