@@ -517,3 +517,5 @@
 ;(define env (master 071 10 15 *equip* #f 0 #t 1 #f))
 
 ;(main-read env)
+
+;これをブラッシュアップする
