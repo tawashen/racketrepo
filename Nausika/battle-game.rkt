@@ -99,14 +99,14 @@
        ;                               "end" Cturn 1 BG BR CR)))))
        (battle-input (master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Mes Cturn Choice BG BR CR))))))
 
-
+ ;なんでBattle-goだけ特別なのか？
                         
  
 ;バトルINPUT関数
 (define (battle-input env delta) 
   (match-let (((master Page Hp Ap Buki Bougu Equip Enemies Cdamage Event Mes Cturn Choice BG BR CR) env))
                 (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list Page)))
-                (cond ((string=? "1" delta) (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                (cond ((string=? "3" delta) (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
                                "戦闘開始" Cturn 1 BG BR CR))
                      (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
                                   "戦闘終了" Cturn 1 BG BR CR))))))
@@ -186,16 +186,16 @@
    ((key=? a-key " ") (battle-go w " "))
    ((key=? a-key "1") (battle-go w "1"))
    ((key=? a-key "2") (battle-go w "2"))
-      ((key=? a-key "3") (battle-go w "3"))
-         ((key=? a-key "4") (battle-go w "4"))
+      ((key=? a-key "3") (battle-input w "3"))
+         ((key=? a-key "4") (battle-input w "4"))
             ((key=? a-key "5") (battle-go w "5"))
                ((key=? a-key "6") (battle-go w "6"))
                   ((key=? a-key "7") (battle-go w "7"))
                      ((key=? a-key "8") (battle-go w "8"))
                         ((key=? a-key "9") (battle-go w "9"))
-     ((key=? a-key "\r") (battle-read w "\r"))
-   ((key=? a-key " ") (battle-read w " "))
-   ((key=? a-key "1") (battle-read w "1"))
+ ;    ((key=? a-key "\r") (battle-input w "\r"))
+;   ((key=? a-key " ") (battle-input w " "))
+ ;  ((key=? a-key "1") (battle-input w "1"))
 #|
    ((key=? a-key "2") (battle-input w "2"))
       ((key=? a-key "3") (battle-input w "3"))
