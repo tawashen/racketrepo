@@ -68,13 +68,24 @@
             (match-let (((pages Cpage Flag Ppage C-list image arg) (list-ref page-list (master-Page env))))
     
               (if (and (string=? "B" Flag) Event) 
-                   (cond 
-                     ((string=? "\r" delta) (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
-                                      "start" Cturn 1 BG BR CR)) 
-                     (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #f
-                                      "end" Cturn 1 BG BR CR)))
-                   (battle-read (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
-                                      "other" Cturn 1 BG BR CR))))))
+                   (cond
+                     ((null? Enemies)  (text "V V V Victory!" 20 "red"))
+                     ((string=? "\r" delta) (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      (format (cdr (assq 'appear *battle-gui-messages*)) (enemy-name (car Enemies))) Cturn 1 BG BR CR)
+                                           (cond ((string=? "1" delta)
+                                                  (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "攻撃開始" Cturn 1 BG BR CR))
+                                                ((string=? "2" delta)
+                                                 (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "光弾を使うとか" Cturn 1 BG BR CR))
+                                                (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "他のキーを押したとき" Cturn 1 BG BR CR))))
+                     (else (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "その他" Cturn 1 BG BR CR)))
+                   (master Page Hp Ap Buki Bougu Equip (battle-ready-list enemy-list Page) Cdamage #t
+                                      "FlagB以外" Cturn 1 BG BR CR)))))
+                                           
+ 
                   
 
 
@@ -186,8 +197,8 @@
    ((key=? a-key " ") (battle-go w " "))
    ((key=? a-key "1") (battle-go w "1"))
    ((key=? a-key "2") (battle-go w "2"))
-      ((key=? a-key "3") (battle-input w "3"))
-         ((key=? a-key "4") (battle-input w "4"))
+      ((key=? a-key "3") (battle-go w "3"))
+         ((key=? a-key "4") (battle-go w "4"))
             ((key=? a-key "5") (battle-go w "5"))
                ((key=? a-key "6") (battle-go w "6"))
                   ((key=? a-key "7") (battle-go w "7"))
@@ -236,8 +247,8 @@
 
 (big-bang (master 044 15 15 '("" . 0) '("" . 0) *equip*
                  (battle-ready-list enemy-list 044) 0 #t
-                 (format (cdr (assq 'appear *battle-gui-messages*)) "enemy")
-                  0 1 "" "" "")
+                ; (format (cdr (assq 'appear *battle-gui-messages*)) "enemy")
+                ""  0 1 "" "" "")
   (on-key change)
   (to-draw place-world)
  (name "模擬戦闘"))
