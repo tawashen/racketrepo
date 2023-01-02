@@ -21,11 +21,5 @@
 ;master構造体(常に持ち歩く用)
 (struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn choice) #:transparent)
 
-;バトル関数に流し込むページごとの敵構造体のリストを返す
-(define (battle-ready-list lst page)
-  (if (null? lst)
-      '()
-      (if (= page (enemy-page (car lst)))
-          (cons (car lst) (battle-ready-list (cdr lst) page))
-          (battle-ready-list (cdr lst) page))))
+
 

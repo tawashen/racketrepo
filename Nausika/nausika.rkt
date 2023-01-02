@@ -49,8 +49,7 @@
            (main-read (master (cadr arg) ac hp equip enemies 0 #t 1 #f))
            (main-read (master (caddr arg) ac hp equip enemies 0 #t 1 #f)))
         (main-read (master page ac hp equip enemies Cdamage #f 1 choice)))
-              (match-let (((master page ac hp equip enemies Cdamage Event Cturn choice) env))
-                (HAK)
+               (begin (HAK)
     (display-G (format "~aが現れた！~%" (enemy-name (car enemies))))
                 (display (enemy-image (car enemies))) (newline) (wait)
   (battle-input (master page ac hp equip enemies 0 #t Cturn #f)))))))
@@ -514,8 +513,8 @@
     (main-read (master 001 rnd2 (+ rnd1 7) *equip* #f 0 #t 1 #f)))) 
   
   
-;(define env (master 071 10 15 *equip* #f 0 #t 1 #f))
+(define env (master 044 10 15 *equip* #f 0 #t 1 #f))
 
-;(main-read env)
+(main-read env)
 
 ;これをブラッシュアップする
