@@ -1,0 +1,6 @@
+#lang racket
+
+(provide (all-defined-out))
+(require 2htdp/image)
+
+(struct enemy (Mname Mac Mhp Mpage Mimage)  #:transparent) ;モンスター構造体

@@ -55,7 +55,7 @@
                      ((= 3 (string-length (number->string x))) (string-append "" str (number->string x)))))
                      (range 1 (+ end 1))))
 
-;(for-each display (make-dot-list "P" 220))
+(for-each display (make-dot-list "I" 30))
 
 
 #|
