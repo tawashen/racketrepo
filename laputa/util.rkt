@@ -1,6 +1,5 @@
 #lang racket
 
-#lang racket
 
 (require srfi/1)
 (require srfi/13)
