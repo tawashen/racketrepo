@@ -1,0 +1,6 @@
+#lang racket
+
+
+;ツール関係;;ページからリスト作成関数
+(define (page-lst page)
+  (filter (lambda (x) (= page (item-page x))) item-list))
