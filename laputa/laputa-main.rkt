@@ -8,7 +8,7 @@
 
 ;ツール関係;;ページからリスト作成関数
 (define (page-lst page)
-  (filter (lambda (x) (= page (item-page x))) item-list))
+  (filter (lambda (x) (= page (item-Ipage x))) *item-list*))
 
 ;indexからitem構造体を返す関数
 (define (return-struct itemlist index)
@@ -19,7 +19,7 @@
         (return-struct (cdr itemlist) index))))
 
 ;master構造体(常に持ち歩く用)
-(struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn choice) #:transparent)
+(struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) #:transparent)
 
 
 
