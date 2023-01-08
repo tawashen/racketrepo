@@ -6,6 +6,14 @@
 
 (provide (all-defined-out))
 
+
+;確率による判定述語
+(define (kakuritu? bunsi bunbo)
+  (if (<= (random bunbo) bunsi) #t #f))
+
+(kakuritu? 11 36)
+
+
 ;戦闘中の一瞬の間を作る
 (define (wait)
   (sleep 1))
@@ -83,13 +91,12 @@
  (string-for-each (lambda (x) (sleep 0.05) (flush-output) (display x)) str))
 
 
-;Hit any key関数
-(define (HAK)
+;Hit enter key関数
+(define (HEK)
   (newline)
   (display "Hit Enter-key!")
-  (newline)
   (let ((key (read-line)))
     (if (string=? "" key) (newline)
-        HAK)))
+        HEK)))
 
 

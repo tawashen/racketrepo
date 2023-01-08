@@ -10,8 +10,8 @@
 (define P003 (pages 003 "N" 0 '(160) (bitmap/file "picture/003.png") 0))
 ;(define P004 (pages 004 "STATUS?" 0 '(999) (bitmap/file "picture/004.png") '("Ap" . ((10 . 082) (4 . 090) (0 . 069)))))
 (define P005 (pages 005 "N" 0 '(035 008) (bitmap/file "picture/005.png") 0))
-;(define P006 (pages 006 "SAI" 0 '(999) (bitmap/file "picture/006.png") '(053 040))
-;(define P007 (pages 007 "SAI" 0 '(999) (bitmpa/file "picture/007.png") '(050 028))
+;(define P006 (pages 006 "KAKU" 0 '(999) (bitmap/file "picture/006.png") '(10 15 053 040))
+;(define P007 (pages 007 "SAI" 0 '(999) (bitmpa/file "picture/007.png") '("Ap" 050 028))
 (define P008 (pages 008 "N" 0 '(094 005) (bitmap/file "picture/008.png") 0))
 (define P009 (pages 009 "N" 0 '(036) (bitmap/file "picture/009.png") 0))
 (define P010 (pages 010 "N" 0 '(022 017) (bitmap/file "picture/010.png") 0))
@@ -25,9 +25,9 @@
 ;YESNOで戦うなら別ページで戦闘へ　YESNOの改造、メッセージを引数で与えるように
 ;(define P018 (pages 018 "YESNO" 0 '(999) (bitmap/file "picture/018.png") '("戦うか?" )))
 (define P019 (pages 019 "N" 0 '(070 023 021) (bitmap/file "picture/019.png") 0))
-;(define P020 (pages 020 "SAI" 0 '(999) (bitmap/file "picture/020.png") 0)) SAIの仕様を考える
+;(define P020 (pages 020 "KAKU" 0 '(999) (bitmap/file "picture/020.png") '(11 36 13 30)) SAIの仕様を考える
 (define P021 (pages 021 "N" 0 '(072 056 019) (bitmap/file "picture/021.png") 0))
-;(define P022 (pages 022 "SAI" 0 '(999) (bitmap/file "picture/022.png") '(29 34)))
+;(define P022 (pages 022 "KAKU" 0 '(999) (bitmap/file "picture/022.png") '(3 6 29 34)))
 (define P023 (pages 023 "N" 0 '(019 056) (bitmap/file "picture/023.png") 0))
 ;(define P024 (pages 024 "YESNO" 0 '(999) (bitmap/file "picture/024.png") '("戦うか？" )))
 (define P025 (pages 025 "N" 0 '(051) (bitmap/file "picture/025.png") 0))
@@ -39,10 +39,10 @@
 (define P030 (pages 030 "HPAC" 0 '(066) (bitmap/file "picture/030.png") '(-4 0)))
 (define P031 (pages 031 "HPAC" 0 '(002) (bitmap/file "picture/031.png") '(-2 0)))
 (define P032 (pages 032 "N" 0 '(005) (bitmap/file "picture/032.png") 0))
-;(define P033 (pages 033 "SAI" 0 '(999) (bitmap/file "picture/033.png") '(20 54)))
+;(define P033 (pages 033 "KAKU" 0 '(999) (bitmap/file "picture/033.png") '(4 6 20 54)))
 (define P034 (pages 034 "N" 0 '(043) (bitmap/file "picture/034.png") 0))
 (define P035 (pages 035 "N" 0 '(056 015 005) (bitmap/file "picture/035.png") 0))
-;(define P036 (pages 036 "SAI" 0 '(999) (bitmap/file "picture/036.png") '(13 30)))
+;(define P036 (pages 036 "KAKU" 0 '(999) (bitmap/file "picture/036.png") '(11 36 13 30)))
 (define P037 (pages 037 "HPAC" 0 '(043) (bitmap/file "picture/037.png") '(0 1)))
 (define P038 (pages 038 "N" 0 '(016) (bitmap/file "picture/038.png") 0))
 (define P039 (pages 039 "N" 0 '(002 100 075) (bitmap/file "picture/039.png") 0))
@@ -72,59 +72,66 @@
 (define P062 (pages 062 "N" 0 '(068 096) (bitmap/file "picture/062.png") 0))
 (define P063 (pages 063 "N" 0 '(060) (bitmap/file "picture/063.png") 0))
 (define P064 (pages 064 "N" 0 '(093) (bitmap/file "picture/064.png") 0))
-(define P065 (pages 065 "STATUS" 0 '(999) (bitmap/file "picture/014.png") '("Ap" . ((8 . 074) (0 . 107)))))
+(define P065 (pages 065 "STATUS" 0 '(999) (bitmap/file "picture/065.png") '("Ap" . ((8 . 074) (0 . 107)))))
+(define P066 (pages 066 "N" 0 '(059) (bitmap/file "picture/066.png") 0))
+(define P067 (pages 067 "HPAC" 0 '(047) (bitmap/file "picture/067.png")'(-3 0)))
+(define P068 (pages 068 "N" 0 '(100) (bitmap/file "picture/068.png") 0))
+(define P069 (pages 069 "HPAC" 0 '(114) (bitmap/file "picture/069.png") '(-4 0)))
+(define P070 (pages 070 "HPAC" 0 '(019) (bitmap/file "picture/070.png") '(-1 0)))
+(define P071 (pages 071 "N" 0 '(024) (bitmap/file "picture/071.png") 0))
+(define P072 (pages 072 "HPAC" 0 '(021) (bitmap/file "picture/072.png") '(-2 0)))
+(define P073 (pages 073 "HPAC" 0 '(105) (bitmap/file "picture/073.png") '(0 -1)))
+(define P074 (pages 074 "N" 0 '(086) (bitmap/file "picture/074.png") 0))
+(define P075 (pages 075 "N" 0 '(091 039 061 049) (bitmap/file "picture/075.png") 0))
+(define P076 (pages 076 "N" 0 '(097) (bitmap/file "picture/076.png") 0))
+(define P077 (pages 077 "N" 0 '(062 080) (bitmap/file "picture/077.png") 0))
+(define P078 (pages 078 "HPAC" 0 '(次のページへ) (bitmap/file "picture/078.png") '(0 -1)))
+;(define P??? (pages ??? "KAKU" 0 '(999) (bitmap/file "picture/078.png") '(3 6 106 087)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+;79へ行くページの数をチェックしてNOに入れる
+;(define P079 (pages 079 "NO" 0 '(もどるページ) (bitmap/file "picture/079.png") 0))
+(define P080 (pages 080 "N" 0 '(088) (bitmap/file "picture/080.png") 0))
+(define P081 (pages 081 "HPAC" 0 '(045) (bitmap/file "picture/081.png") '(-3 0)))
+(define P082 (pages 082 "N" 0 '(116) (bitmap/file "picture/082.png") 0))
+(define P083 (pages 083 "N" 0 '(002) (bitmap/file "picture/083.png") 0))
+(define P084 (pages 084 "N" 0 '(163 139) (bitmap/file "picture/084.png") 0))
+(define P085 (pages 085 "N" 0 '(144 111 102) (bitmap/file "picture/085.png") 0))
+(define P086 (pages 086 "N" 0 '(193) (bitmap/file "picture/086.png") 0))
+(define P087 (pages 087 "HPAC" 0 '(999) (bitmap/file "picture/087.png") '(0 -1)))
+;(define P??? (pages ??? "KAKU" 0 '(999) (bitmap/file "picture/087.png") '(3 6 120 065)))
+(define P088 (pages 088 "N" 0 '(115) (bitmap/file "picture/088.png") 0))
+(define P089 (pages 089 "STATUS" 0 '(999) (bitmap/file "picture/089.png") '("Ap" . ((4 . 128) (0 . 084)))))
+(define P090 (pages 090 "STATUS" 0 '(999) (bitmap/file "picture/090.png") '("Ap" . ((7 . 103) (0 . 114)))))
+(define P091 (pages 091 "HPAC" 0 '(038) (bitmap/file "picture/091.png") '(3 0)))
+(define P092 (pages 092 "N" 0 '(105) (bitmap/file "picture/092.png") 0))
+(define P093 (pages 093 "N" 0 '(077) (bitmap/file "picture/093.png") 0))
+(define P094 (pages 094 "N" 0 '(008) (bitmap/file "picture/094.png") 0))
+(define P095 (pages 095 "N" 0 '(115 127 142 134) (bitmap/file "picture/095.png") 0))
+(define P096 (pages 096 "N" 0 '(112) (bitmap/file "picture/096.png") 0))
+(define P097 (pages 097 "END" 0 '(999) (bitmap/file "picture/097.png") 0))
+(define P098 (pages 098 "N" 0 '(039 061 049) (bitmap/file "picture/098.png") 0))
+(define P099 (pages 099 "KAKU" 0 '(999) (bitmap/file "picture/099.png") '(3 6 078 120)))
+(define P100 (pages 100 "G" 0 '(081) (bitmap/file "picture/100.png") '("ゴーグル" . 1)))
+(define P101 (pages 101 "N" 0 '(108 150) (bitmap/file "picture/101.png") 0))
+(define P102 (pages 102 "NO" 0 '(鍵の数 085 142) (bitmap/file "picture/102.png") 0))
+(define P103 (pages 103 "HPAC" 0 '(114) (bitmap/file "picture/103.png") '(1 0)))
+(define P104 (pages 104 "N" 0 '(039) (bitmap/file "picture/104.png") 0))
+(define P105 (pages 105 "HPAC" 0 '(064 093) (bitmap/file "picture/105.png") '(-3 0)))
+(define P106 (pages 106 "N" 0 '(065) (bitmap/file "picture/106.png") 0))
+(define P107 (pages 107 "KAKU" 0 '(999) (bitmap/file "picture/107.png") '(3 6 116 004)))
+(define P108 (pages 108 "N" 0 '(121 115 129) (bitmap/file "picture/108.png") 0))
+(define P109 (pages 109 "END" 0 '(999) (bitmap/file "picture/109.png") '(115)))
+(define P110 (pages 110 "N" 0 '(145 134) (bitmap/file "picture/110.png") 0))
+(define P111 (pages 111 "N" 0 '(085) (bitmap/file "picture/111.png") 0))
+(define P112 (pages 112 "END" 0 '(999) (bitmap/file "picture/112.png") 0))
+(define P113 (pages 113 "N" 0 '(127) (bitmap/file "picture/113.png") 0))
+(define P114 (pages 114 "N" 0 '(086) (bitmap/file "picture/114.png") 0))
+(define P115 (pages 115 "N" 0 '(108 095) (bitmap/file "picture/115.png") 0))
+(define P116 (pages 116 "N" 0 '(086) (bitmap/file "picture/116.png") 0))
+(define P117 (pages 117 "N" 0 '(138) (bitmap/file "picture/117.png") 0))
+(define P118 (pages 118 "N" 0 '(109) (bitmap/file "picture/118.png") 0))
+(define P119 (pages 119 "N" 0 '(136 134) (bitmap/file "picture/119.png") 0))
+(define P120 (pages 120 "KAKU" 0 '(999) (bitmap/file "picture/120.png") '(3 6 087 106)))
 
 
 

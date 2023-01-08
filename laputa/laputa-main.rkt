@@ -6,6 +6,9 @@
 (require racket/match)
 (require 2htdp/image)
 
+;master構造体(常に持ち歩く用)
+(struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) #:transparent)
+
 ;ツール関係;;ページからリスト作成関数
 (define (page-lst page)
   (filter (lambda (x) (= page (item-Ipage x))) *item-list*))
@@ -18,8 +21,18 @@
         (car itemlist)
         (return-struct (cdr itemlist) index))))
 
-;master構造体(常に持ち歩く用)
-(struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) #:transparent)
+;確率関数
+(define (kakuritu env)
+  (match-let (((Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
+        (match-let (((Page-num Flag Ppage C-list Pimage Arg) (list-ref *page-list* Page)))
+          (display-G "確率計算の結果・・")
+          (if (kakuritu? (car Arg) (cadr Arg))
+              (begin (HEK) (format (cdr (assoc 'kakuritu *main-messages*)) (caddr Arg))
+                     (HEK) (main-read (master (caddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice)))
+              (begin (HEK) (format (cdr (assoc 'kakuritu *main-messages*)) (cadddr Arg))
+                     (HEK) (main-read (master (cadddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice)))))))
+              
+              
 
 
 
