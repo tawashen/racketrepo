@@ -89,7 +89,7 @@
 ;(define P??? (pages ??? "KAKU" 0 '(999) (bitmap/file "picture/078.png") '(3 6 106 087)))
 
 ;79へ行くページの数をチェックしてNOに入れる
-;(define P079 (pages 079 "NO" 0 '(もどるページ) (bitmap/file "picture/079.png") 0))
+;(define P079 (pages 079 "NO" 0 '(121 139) (bitmap/file "picture/079.png") 0))
 (define P080 (pages 080 "N" 0 '(088) (bitmap/file "picture/080.png") 0))
 (define P081 (pages 081 "HPAC" 0 '(045) (bitmap/file "picture/081.png") '(-3 0)))
 (define P082 (pages 082 "N" 0 '(116) (bitmap/file "picture/082.png") 0))
@@ -132,31 +132,35 @@
 (define P118 (pages 118 "N" 0 '(109) (bitmap/file "picture/118.png") 0))
 (define P119 (pages 119 "N" 0 '(136 134) (bitmap/file "picture/119.png") 0))
 (define P120 (pages 120 "KAKU" 0 '(999) (bitmap/file "picture/120.png") '(3 6 087 106)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(define P121 (pages 121 "G" 0 '(108) (bitmap/file "picture/121.png") '("鍵23" . 1)))
+(define P122 (pages 122 "N" 0 '(126 135 150) (bitmap/file "picture/122.png") 0))
+(define P123 (pages 123 "N" 0 '(142) (bitmap/file "picture/123.png") 0))
+(define P124 (pages 124 "N" 0 '(109) (bitmap/file "picture/124.png") 0))
+;↓装備をリセットするイベント
+(define P125 (pages 125 "ERESET" 0 '(102) (bitmap/file "picture/125.png") 0))
+(define P126 (pages 126 "NO" 0 '(023 122) (bitmap/file "picture/126.png") 0))
+(define P127 (pages 127 "N" 0 '(113 144 095) (bitmap/file "picture/127.png") 0))
+(define P128 (pages 128 "N" 0 '(134) (bitmap/file "picture/128.png") '(("鍵41" . 1) ("鍵35" . 1))))
+(define P129 (pages 129 "N" 0 '(101 150 108) (bitmap/file "picture/129.png") 0))
+(define P130 (pages 130 "N" 0 '(247) (bitmap/file "picture/130.png") 0))
+(define P131 (pages 131 "N" 0 '(134) (bitmap/file "picture/131.png") 0))
+(define P132 (pages 132 "HPAC" 0 '(166) (bitmap/file "picture/132.png") '(-2 0)))
+(define P133 (pages 133 "HPAC" 0 '(186) (bitmap/file "picture/133.png") '(15 3)))
+(define P134 (pages 134 "N" 0 '(119 095 110) (bitmap/file "picture/134.png") 0))
+(define P135 (pages 135 "N" 0 '(122) (bitmap/file "picture/135.png") 0))
+(define P136 (pages 136 "N" 0 '(089 134) (bitmap/file "picture/136.png") 0))
+(define P137 (pages 137 "N" 0 '(102) (bitmap/file "picture/137.png") 0))
+(define P138 (pages 138 "C" 0 '(999) (bitmap/file "picture/138.png") '("ポムじいさん" 171 147)))
+(define P139 (pages 139 "HPAC" 0 '(???) (bitmap/file "picture/139.png") '(0 1)))
+;(define P??? (pages ??? "G" 0 '(079 134) (bitmap/file "picture/139.png") '(("鍵41" . 1) ("鍵35" . 1))))
+(define P140 (pages 140 "C" 0 '(999) (bitmap/file "picture/140.png") '("巨人の胸の印" 187 132)))
+(define P141 (pages 141 "N" 0 '(162) (bitmap/file "picture/141.png") 0))
+(define P142 (pages 142 "N" 0 '(095 102 123) (bitmap/file "picture/142.png") 0))
+(define P143 (pages 143 "N" 0 '(102) (bitmap/file "picture/143.png") 0))
+(define P144 (pages 144 "N" 0 '(150 085 127) (bitmap/file "picture/144.png") 0))
+(define P145 (pages 145 "N" 0 '(158 134 153) (bitmap/file "picture/145.png") 0))
+(define P146 (pages 146 "N" 0 '(193) (bitmap/file "picture/146.png") 0))
+(define P147 (pages 147 "C" 0 '(999) (bitmap/file "picture/147.png") '("巨人" 177 173)))
 
 
 
