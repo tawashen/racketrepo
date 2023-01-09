@@ -89,7 +89,7 @@
 ;(define P??? (pages ??? "KAKU" 0 '(999) (bitmap/file "picture/078.png") '(3 6 106 087)))
 
 ;79へ行くページの数をチェックしてNOに入れる
-;(define P079 (pages 079 "NO" 0 '(121 139) (bitmap/file "picture/079.png") 0))
+;(define P079 (pages 079 "NO" 0 '(121 139 148b) (bitmap/file "picture/079.png") 0))
 (define P080 (pages 080 "N" 0 '(088) (bitmap/file "picture/080.png") 0))
 (define P081 (pages 081 "HPAC" 0 '(045) (bitmap/file "picture/081.png") '(-3 0)))
 (define P082 (pages 082 "N" 0 '(116) (bitmap/file "picture/082.png") 0))
@@ -161,9 +161,10 @@
 (define P145 (pages 145 "N" 0 '(158 134 153) (bitmap/file "picture/145.png") 0))
 (define P146 (pages 146 "N" 0 '(193) (bitmap/file "picture/146.png") 0))
 (define P147 (pages 147 "C" 0 '(999) (bitmap/file "picture/147.png") '("巨人" 177 173)))
-
-
-
+(define P148 (pages 148 "HPAC" 0 '(???) (bitmap/file "picture/148.png") '(0 2)))
+;(define P??? (pages ??? "G" 0 '(079 134) (bitmap/file "picture/148.png") '(("鍵41" . 1) ("鍵35" . 1)))
+(define P149 (pages 149 "N" 0 '(126) (bitmap/file "picture/149.png") 0))
+(define P150 (pages 150 "N" 0 '(129 142 122) (bitmap/file "picture/150.png") 0))
 
 
 
