@@ -11,7 +11,7 @@
 (define (kakuritu? bunsi bunbo)
   (if (<= (random bunbo) bunsi) #t #f))
 
-(kakuritu? 11 36)
+
 
 
 ;戦闘中の一瞬の間を作る
@@ -30,6 +30,7 @@
            (cons x y))
           (range start (+ (length seq) start))
           seq))))
+
 
 ;プロンプト付きINPUT関数
 (define input
@@ -58,12 +59,12 @@
 ;リスト作成用関数
 (define (make-dot-list str end)
   (map (lambda (x) (cond
-                     ((= 1 (string-length (number->string x))) (string-append "" str "00" (number->string x)))
-                     ((= 2 (string-length (number->string x))) (string-append "" str "0" (number->string x)))
-                     ((= 3 (string-length (number->string x))) (string-append "" str (number->string x)))))
+                     ((= 1 (string-length (number->string x))) (string-append "" str "00" (number->string x) " "))
+                     ((= 2 (string-length (number->string x))) (string-append "" str "0" (number->string x) " "))
+                     ((= 3 (string-length (number->string x))) (string-append "" str (number->string x) " "))))
                      (range 1 (+ end 1))))
 
-(for-each display (make-dot-list "I" 30))
+;(for-each display (make-dot-list "P" 260))
 
 
 #|
