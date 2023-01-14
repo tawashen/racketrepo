@@ -5,25 +5,17 @@
 
 
 
-;分離式戦闘用メッセージ
-(define *shop-messages* '((kaukane . "何を買うかね?")
-                           (arigatou . "毎度ありがとう~%")
-                           (getitem . "パズーは~aを手に入れた~%")))
-
 
 ;分離式戦闘用メッセージ
 (define *battle-messages* '((appear . "敵~aが現れた!~%")
                            (atack . "パズーの攻撃!~%")
-                           (damagep . "パズーは~aのダメージを与えた!~%")
+                           (damagep . "パズーは優勢だ!~%")
                            (atacked . "~aの攻撃!~%")
-                           (damagedp . "パズーは~a[-~a]のダメージを受けた!~%")
+                           (damagedp . "パズーは劣勢だ!~%")
                            (tie . "互角!~%")
                            (status . "攻撃力~a[+~a] 体力(~a)~%")
                            (turn . "第~aターン~%")
                            (select . "どの武器を使う？")
-                           (selectM . "どうする? [1:剣で戦う]")
-                           (koudan . "パズーは光弾を投げつけた!~%")
-                           (tamanasi . "しまった!光弾はもう無かったんだった!~%")
                            (win . "パズーは~aを打ち倒した!!~%")))
 
 (define *item-messages* '((select . "どのアイテムを使う?~%")
