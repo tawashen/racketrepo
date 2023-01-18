@@ -6,6 +6,13 @@
 (require racket/match)
 (require 2htdp/image)
 
+(require "util.rkt")
+(require "messages.rkt")
+(require "enemy.rkt")
+(require "item.rkt")
+(require "page.rkt")
+
+
 ;master構造体(常に持ち歩く用)
 (struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) #:transparent)
 
@@ -17,14 +24,14 @@
 (define (return-struct itemlist index)
   (if (null? itemlist)
      '()
-     (if (string=? index (item-name (car itemlist)))
+     (if (string=? index (item-Iname (car itemlist)))
         (car itemlist)
         (return-struct (cdr itemlist) index))))
 
 ;確率関数
 (define (kakuritu env)
-  (match-let (((Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
-        (match-let (((Page-num Flag Ppage C-list Pimage Arg) (list-ref *page-list* Page)))
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
+        (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) (list-ref *page-list* Page)))
           (display-G "確率計算の結果・・")
           (if (kakuritu? (car Arg) (cadr Arg))
               (begin (HEK) (format (cdr (assoc 'kakuritu *main-messages*)) (caddr Arg))

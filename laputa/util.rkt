@@ -95,7 +95,7 @@
 ;Hit enter key関数
 (define (HEK)
   (newline)
-  (display "Hit Enter-key!")
+  (display "Hit Enter-key!") (newline)
   (let ((key (read-line)))
     (if (string=? "" key) (newline)
         HEK)))
