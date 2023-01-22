@@ -8,9 +8,8 @@
 
 ;分離式戦闘用メッセージ
 (define *battle-messages* '((appear . "敵~aが現れた!~%")
-                           (atack . "パズーの攻撃!~%")
-                           (damagep . "パズーは優勢だ!~%")
-                           (atacked . "~aの攻撃!~%")
+                           (attack . "パズーは~aに打ちかかった!~%")
+                           (damagep . "パズーは優勢だ!")
                            (damagedp . "パズーは劣勢だ!~%")
                            (tie . "互角!~%")
                            (status . "攻撃力~a[+~a] 体力(~a)~%")

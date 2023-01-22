@@ -168,7 +168,7 @@
 (define P150 (pages 150 "N" 0 '(129 142 122) (bitmap/file "picture/150.png") 0))
 (define P151 (pages 151 "G?" 0 '(156) (bitmap/file "picture/151.png") '("ブラックジャック" . 1)))
 |#
-(define P152 (pages 152 "B" 0 '(157 124) (bitmap/file "picture/152.png") 2))
+(define P152 (pages 152 "B" 0 '(157 124) (bitmap/file "picture/152.png") 3))
 #|
 (define P153 (pages 153 "HPAC" 0 '(次のページ) (bitmap/file "picture/153.png") '(0 1 "ブラックジャック" 1)))
 ;(define P??? (pages 148 "SAI153" 0 '(158の分離先複数) (bitmap/file "picture/153.png") 0))
