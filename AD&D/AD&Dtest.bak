@@ -1,14 +1,23 @@
 #lang racket
 
-;構造体とインスタンス作成
-(struct ABILITY (STR INT WIS DEX CON CHR))
-(struct CHARACTER (Name Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) #:transparent)
 
-(define HUMAN (AD&D 0 0 0 0 0 0))
+
+
+
+
+
+
+
+
+
+
+
+(struct AD&D (STR INT DEX CON CHR))
+(struct Char (Name Str Int Dex Con Chr) #:transparent)
+
+(define HUMAN (AD&D 0 0 0 0 0))
 (define ELF (AD&D -2 2 0 -2 2))
 
-
-;種族を引数にして能力値
 (define (chara-make race)
   (match-let (((AD&D STR INT DEX CON CHR) race))
     (match-let (((list str int dex con chr)
