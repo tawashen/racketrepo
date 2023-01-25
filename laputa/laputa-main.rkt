@@ -14,7 +14,7 @@
 
 
 ;master構造体(常に持ち歩く用)
-(struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) #:transparent)
+(struct master (Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) #:transparent)
 
 ;ツール関係;;ページからリスト作成関数
 (define (page-lst page)
@@ -72,7 +72,7 @@
 
 ;バトルSET関数
 (define (battle-set env) 
-  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) ;(list-ref *page-list* Page)))
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
             (display-G (format (cdr (assoc 'select *battle-messages*)))) (newline)
@@ -84,11 +84,11 @@
                        (battle-read (master Page Hp Ac
                                              (car (filter (lambda (buki) (string=? (car (list-ref (buki-list Equip) (- Buki-num 1)))
                                                                               (item-Iname buki))) *item-list*))
-                                                            Bougu Equip Enemies Cdamage Event Cturn Choice))))))))
+                                                            Bougu Equip Enemies Cdamage Event Cturn Choice Track))))))))
 
 ;バトルREAD
 (define (battle-read env)
-  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
   (if (null? Enemies)
@@ -97,34 +97,34 @@
          (begin (HEK)
                 (display-G (format "~aが現れた!~%" (enemy-Ename (car Enemies))))
                 (display (enemy-Eimage (car Enemies))) (newline) (wait)
-               (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0)))))))
+               (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track)))))))
 
 ;バトルEVAL＆PRINT
 (define (battle-eval env)
-  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
           (let ((pazuP (+ Ac (item-Point Buki) (random 1 7))) (enemyP (+ (enemy-Eac (car Enemies)) (random 1 7))))
             (display-G (format (cdr (assoc 'attack *battle-messages*)) (enemy-Ename (car Enemies)))) (sleep 1)
             (cond ((= pazuP enemyP) (display-G (cdr (assoc 'tie *battle-messages*))) (HEK)
-                                    (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice)))
+                                    (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))
                   ((> pazuP enemyP) (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
-                                    (battle-loop (master Page Hp Ac Buki Bougu Equip Enemies (+ 1 Cdamage) Event (+ 1 Cturn) Choice)))
+                                    (battle-loop (master Page Hp Ac Buki Bougu Equip Enemies (+ 1 Cdamage) Event (+ 1 Cturn) Choice Track)))
                   (else((display-G (cdr (assoc 'damagedp *battle-messages*))) (HEK)
-                                    (battle-loop (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event (+ 1 Cturn) (+ 1 Choice))))))))))
+                                    (battle-loop (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event (+ 1 Cturn) (+ 1 Choice) Track)))))))))
 
 ;バトルLOOP
 (define (battle-loop env)
-  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice) env))
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
           (if (= Cturn Arg)
               (if (> Cdamage Choice)
                 (begin (display-G (format (cdr (assoc 'win *battle-messages*)) (enemy-Ename (car Enemies))))
-                                        (battle-read (master Page Hp Ac Buki Bougu Equip (cdr Enemies) 0 Event 0 0)))
+                                        (battle-read (master Page Hp Ac Buki Bougu Equip (cdr Enemies) 0 Event 0 0 Track)))
                 (display-G "LOSE"))
                 ;(main-read (master (cadr C-list) Hp Ac '() Bougu (equip-change Equip (item-Iname Buki) -1) '() 0 Event 1 0)))
-              (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice))))))
+              (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track))))))
  
               
                                     

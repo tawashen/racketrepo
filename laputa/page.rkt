@@ -192,8 +192,56 @@
 (define P169 (pages 169 "HPAC" 0 '(1691) (bitmap/file "picture/169.png") '(-1 0)))
 (define P1691 (pages 1691 "SAI007" 0 '(999) (bitmap/file "picture/169.png") '("Ap" 229 205)))
 (define P170 (pages 170 "HPAC" 0 '(199) (bitmap/file "picture/170.png") '(-2 0)))
+(define P171 (pages 171 "N" 0 '(147) (bitmap/file "picture/171.png") 0))
+(define P172 (pages 172 "N" 0 '(141 176) (bitmap/file "picture/172.png") 0))
+(define P173 (pages 173 "N" 0 '(140) (bitmap/file "picture/173.png") 0))
+(define P174 (pages 174 "SAI007" 0 '(999) (bitmap/file "picture/174.png") '("AP" 194 203)))
+(define P175 (pages 175 "HPAC" 0 '(212) (bitmap/file "picture/175.png") '(-1 0)))
+(define P176 (pages 176 "N" 0 '(162) (bitmap/file "picture/176.png") 0))
+(define P177 (pages 177 "N" 0 '(140) (bitmap/file "picture/177.png") 0))
+(define P178 (pages 178 "N" 0 '(146) (bitmap/file "picture/178.png") 0))
+(define P179 (pages 179 "N" 0 '(198) (bitmap/file "picture/179.png") 0))
+(define P180 (pages 180 "N" 0 '(192) (bitmap/file "picture/180.png") 0))
+(define P181 (pages 181 "N" 0 '(223 175) (bitmap/file "picture/181.png") 0))
+(define P182 (pages 182 "N" 0 '(178) (bitmap/file "picture/182.png") 0))
+;↓のページは二度目はEvent＃fなので通ったページはリストにして持つのを実装
+(define P183 (pages 183 "HPAC" 0 '(252) (bitmap/file "picture/183.png") 0))
+(define P184 (pages 184 "N" 0 '(206) (bitmap/file "picture/184.png") 0))
+(define P185 (pages 185 "HPAC" 0 '(191) (bitmap/file "picture/185.png") '(-2 0)))
+(define P186 (pages 186 "N" 0 '(172) (bitmap/file "picture/186.png") 0))
+(define P187 (pages 187 "HPAC" 0 '(178) (bitmap/file "picture/187.png") '(0 2)))
+(define P188 (pages 188 "C" 0 '(999) (bitmap/file "picture/188.png") '("火薬ビン" 1671 214)))
+(define P1881 (pages 1881 "YESNO" 0 '(999) (bitmap/file "picture/188.png") '("火薬ビンを使うか？" 168 214)))
+(define P189 (pages 189 "SAI007" 0 '(999) (bitmap/file "picture/189.png") '("AP" 185 196)))
+(define P190 (pages 190 "N" 0 '(209 221) (bitmap/file "picture/190.png") 0))
 
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ;(define *page-list* `(P000 P001 P002 P003 P004 P005 P006 P007 P008 P009 P010 P011 P012 P013 P014 P015 P016 P017 P018 P019 P020 P021 P022 P023 P024 P025 P026 P027 P028 P029 P030 P031 P032 P033 P034 P035 P036 P037 P038 P039 P040 P041 P042 P043 P044 P045 P046 P047 P048 P049 P050 P051 P052 P053 P054 P055 P056 P057 P058 P059 P060 P061 P062 P063 P064 P065 P066 P067 P068 P069 P070 P071 P072 P073 P074 P075 P076 P077 P078 P079 P080 P081 P082 P083 P084 P085 P086 P087 P088 P089 P090 P091 P092 P093 P094 P095 P096 P097 P098 P099 P100 P101 P102 P103 P104 P105 P106 P107 P108 P109 P110 P111 P112 P113 P114 P115 P116 P117 P118 P119 P120 P121 P122 P123 P124 P125 P126 P127 P128 P129 P130 P131 P132 P133 P134 P135 P136 P137 P138 P139 P140 P141 P142 P143 P144 P145 P146 P147 P148 P149 P150 P151 ,P152 P153 P154 P155 P156 P157 P158 P159 P160 P161 P162 P163 P164 P165 P166 P167 P168 P169 P170 P171 P172 P173 P174 P175 P176 P177 P178 P179 P180 P181 P182 P183 P184 P185 P186 P187 P188 P189 P190 P191 P192 P193 P194 P195 P196 P197 P198 P199 P200 P201 P202 P203 P204 P205 P206 P207 P208 P209 P210 P211 P212 P213 P214 P215 P216 P217 P218 P219 P220 P221 P222 P223 P224 P225 P226 P227 P228 P229 P230 P231 P232 P233 P234 P235 P236 P237 P238 P239 P240 P241 P242 P243 P244 P245 P246 P247 P248 P249 P250 P251 P252 P253 P254 P255 P256 P257 P258 P259 P260 ))
