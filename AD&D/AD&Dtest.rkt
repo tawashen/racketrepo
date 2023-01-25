@@ -1,5 +1,14 @@
 #lang racket
 
+;utility
+(define enumerate
+ (case-lambda
+  ((seq) (enumerate seq 0))
+  ((seq start) (map (lambda (x y)
+           (cons x y))
+          (range start (+ (length seq) start))
+          seq))))
+
 ;構造体とインスタンス作成
 (struct ABILITY (RACE STR INT WIS DEX CON CHR))
 (struct CHARACTER (Name Race Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) #:transparent)
@@ -24,39 +33,41 @@
         (if (symbol=? yes-no 'y)
             (begin (display "input your name") (newline)
                    (let ((name (symbol->string (read))))
-                     (class-check (CHARACTER name RACE "" "" 0 hp ac 0 money move str int wis dex con chr))))
+                     (class-check
+                     (CHARACTER name RACE "" "" 0 hp ac 0 money move str int wis dex con chr))))
             (chara-make race)))))))
 
 (struct CLASS (NAME REQUIRE))
 (define FIGHTER (CLASS "FIGHTER" 'Str))
-(define MAGIC-USER (CLASS "MAGI-USER" 'Int))
+(define MAGIC-USER (CLASS "MAGIC-USER" 'Int))
 (define CLERIC (CLASS "CLERIC" 'Wis))
 (define THIEF (CLASS "THIEF" 'Dex))
 (define *class-list* `(,FIGHTER ,MAGIC-USER ,CLERIC ,THIEF))
 
+#|
+(define (check-status lst)
+  (if (>= (cadr lst) 13)
+      (car lst) #f))
+|#
+
 (define (class-check chara)
   (match-let (((CHARACTER Name Race Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) chara))
-    (let ((class-list '()) (ability-list (filter (lambda (abi) (>= (cdr abi) 13)) `((Str . ,Str) (Int . ,Int) (Wis . ,Wis) (Dex . ,Dex)))))
-    (if (string=? Race "HUMAN")
-        ability-list
+    (let ((class-list '()) (ability-list (filter (lambda (abi) (>= (cdr abi) 13))
+                                                 `((Str . ,Str) (Int . ,Int) (Wis . ,Wis) (Dex . ,Dex)))))
+  ;  (if (string=? Race "HUMAN")
+      (case Race
+         (("HUMAN") (for-each display
+                              (map (match-lambda (`(,index . ,name)
+                                   (format "[~a:~a]" index name)))         
+                          (enumerate (map CLASS-NAME (flatten (map (lambda (x)
+                                         (filter (lambda (y) (symbol=? (car x) (CLASS-REQUIRE y)))
+                                                 *class-list*)) ability-list))) 1))))))))
+      ;  (display "NO")))))
         
-        
-      
-        
-        (display "NO")))))
-      
- (let ([f (case-lambda
-            [() 10]
-            [(x) x]
-            [(x y) (list y x)]
-            [r r])])
-    (list (f)
-          (f 1)
-          (f 1 2)
-          (f 1 2 3)))
-        
-
 (chara-make HUMAN)
+
+;(map CLASS-NAME (flatten (chara-make HUMAN)))
+
 
 
 
