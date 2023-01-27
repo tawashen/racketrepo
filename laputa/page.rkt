@@ -5,7 +5,7 @@
 (struct pages (Page-num Flag Ppage C-list Pimage Arg))
 
 
-
+#|
 (define P001 (pages 001 "N" 0 '(014 027) (bitmap/file "picture/001.png") 0))
 (define P002 (pages 002 "N" 0 '(031 057 039) (bitmap/file "picture/002.png") 0))
 (define P003 (pages 003 "N" 0 '(160) (bitmap/file "picture/003.png") 0))
@@ -167,9 +167,9 @@
 (define P149 (pages 149 "N" 0 '(126) (bitmap/file "picture/149.png") 0))
 (define P150 (pages 150 "N" 0 '(129 142 122) (bitmap/file "picture/150.png") 0))
 (define P151 (pages 151 "G?" 0 '(156) (bitmap/file "picture/151.png") '("ブラックジャック" . 1)))
-
+|#
 (define P152 (pages 152 "B" 0 '(157 124) (bitmap/file "picture/152.png") 3))
-
+#|
 (define P153 (pages 153 "HPAC" 0 '(1531) (bitmap/file "picture/153.png") '(0 1 "ブラックジャック" 1)))
 ;(define P1531 (pages 1531 "SAI153" 0 '(158の分離先複数) (bitmap/file "picture/153.png") 0))
 (define P154 (pages 154 "N" 0 '(180) (bitmap/file "picture/154.png") 0))
@@ -214,7 +214,7 @@
 (define P1881 (pages 1881 "YESNO" 0 '(999) (bitmap/file "picture/188.png") '("火薬ビンを使うか？" 168 214)))
 (define P189 (pages 189 "SAI007" 0 '(999) (bitmap/file "picture/189.png") '("AP" 185 196)))
 (define P190 (pages 190 "N" 0 '(209 221) (bitmap/file "picture/190.png") 0))
-
+|#
 
 
 
