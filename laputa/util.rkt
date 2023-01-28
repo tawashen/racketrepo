@@ -7,12 +7,6 @@
 (provide (all-defined-out))
 
 
-;確率による判定述語
-(define (kakuritu? bunsi bunbo)
-  (if (<= (random bunbo) bunsi) #t #f))
-
-
-
 
 ;戦闘中の一瞬の間を作る
 (define (wait)
