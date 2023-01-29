@@ -8,8 +8,9 @@
 (require racket/match)
 (require 2htdp/image)
 
-
-;(require "messages.rkt")
+(require "laputa-main.rkt")
+(require "util.rkt")
+(require "messages.rkt")
 (require "enemy.rkt")
 (require "item.rkt")
 (require "page.rkt")
@@ -33,11 +34,13 @@
   ;手持ち装備品で0でないものをリストアップしたい↓
   (filter (lambda (x) ((compose not zero?) (cdr x))) lst)))
 
+#|
 ;バトル時に使用可能なリストを表示する
 (define (buki-show lst)
  (for-each display  (map (match-lambda (`(,index . (,name . ,val))
                       (format "[~a:~a]" index name)))
                           (enumerate (buki-list lst) 1))))
+|#
 
 ;バトルREAD関数
 (define (battle-read env)
@@ -47,8 +50,10 @@
   (if (null? Enemies)
       (display "win")
           ; (main-read (master (car C-list) Hp Ac Buki Bougu Equip Enemies 0 #t 1 #f))
-         (begin (HAK)
+         (begin (HEK)
                 (display-G (format "~aが現れた!~%" (enemy-Ename (car Enemies))))
                 (display (enemy-Eimage (car Enemies))) (newline) (wait) (display "battle start"))))))
                ; (battle-input (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn #f)))))))
 
+(define env (master 152 15 15 '() '() '() '() 0 #t 1 #f))
+(battle-read env)

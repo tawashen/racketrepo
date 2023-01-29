@@ -48,4 +48,4 @@
                       (format "[~a:~a]" index name)))
                           (enumerate (buki-list lst) 1))))
 
-(buki-show *equip*)
+;(buki-show *equip*)

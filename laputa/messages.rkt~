@@ -8,14 +8,13 @@
 
 ;分離式戦闘用メッセージ
 (define *battle-messages* '((appear . "敵~aが現れた!~%")
-                           (atack . "パズーの攻撃!~%")
-                           (damagep . "パズーは優勢だ!~%")
-                           (atacked . "~aの攻撃!~%")
+                           (attack . "パズーは~aに打ちかかった!~%")
+                           (damagep . "パズーは優勢だ!")
                            (damagedp . "パズーは劣勢だ!~%")
                            (tie . "互角!~%")
                            (status . "攻撃力~a[+~a] 体力(~a)~%")
                            (turn . "第~aターン~%")
-                           (select . "どの武器を使う？")
+                           (select . "敵だ！どの武器を使う？~%")
                            (win . "パズーは~aを打ち倒した!!~%")))
 
 (define *item-messages* '((select . "どのアイテムを使う?~%")
@@ -39,6 +38,7 @@
                           (use? . "君は~aを使うか? 1:はい 2:いいえ~%")
                           (use-choice . "何を使おうか?~%")
                           (yes-no . "1:試みる 2:やめておく")
-                          (kakuritu . "~aへと進め！~%")
+                          (kakuritu . "出目は~a! ~aへと進め！~%")
+                          (status . "君の行動点は~a！よって~aへ進め！")
                           ))
                           
