@@ -9,10 +9,10 @@
 (define P001 (pages 001 "N" 0 '(014 027) (bitmap/file "picture/001.png") 0))
 (define P002 (pages 002 "N" 0 '(031 057 039) (bitmap/file "picture/002.png") 0))
 (define P003 (pages 003 "N" 0 '(160) (bitmap/file "picture/003.png") 0))
-(define P004 (pages 004 "STATUS?" 0 '(999) (bitmap/file "picture/004.png") '("Ap" . ((10 . 082) (4 . 090) (0 . 069)))))
+(define P004 (pages 004 "STATUS?" 0 '(999) (bitmap/file "picture/004.png") '("Ac" . ((10 . 082) (4 . 090) (0 . 069)))))
 (define P005 (pages 005 "N" 0 '(035 008) (bitmap/file "picture/005.png") 0))
 (define P006 (pages 006 "KAKU" 0 '(999) (bitmap/file "picture/006.png") '(10 15 053 040)))
-;(define P007 (pages 007 "SAI007" 0 '(999) (bitmpa/file "picture/007.png") '("Ap" 050 028))
+;(define P007 (pages 007 "SAI007" 0 '(999) (bitmpa/file "picture/007.png") '("Ac" 050 028))
 (define P008 (pages 008 "N" 0 '(094 005) (bitmap/file "picture/008.png") 0))
 (define P009 (pages 009 "N" 0 '(036) (bitmap/file "picture/009.png") 0))
 (define P010 (pages 010 "N" 0 '(022 017) (bitmap/file "picture/010.png") 0))
@@ -66,14 +66,14 @@
 (define P056 (pages 056 "N" 0 '(023 035 042 021) (bitmap/file "picture/056.png") 0))
 ;アイテムにポムじいさんを入れること
 (define P057 (pages 057 "C" 0 '(999) (bitmap/file "picture/057.png") '("ポムじいさん" 071 048)))
-;(define P058 (pages 058 "YESNO" 0 '(999) (bitmap/file "picture/058.png") '("再挑戦するか？" (RESTART 022) END)))
+;(define P058 (pages 058 "YESNO" 0 '(999) (bitmap/file "picture/058.png") '("再挑戦するか？" 022 END)))
 (define P059 (pages 059 "N" 0 '(023) (bitmap/file "picture/059.png") 0))
 (define P060 (pages 060 "N" 0 '(025) (bitmap/file "picture/060.png") 0))
 (define P061 (pages 061 "N" 0 '(075 041 052) (bitmap/file "picture/061.png") 0))
 (define P062 (pages 062 "N" 0 '(068 096) (bitmap/file "picture/062.png") 0))
 (define P063 (pages 063 "N" 0 '(060) (bitmap/file "picture/063.png") 0))
 (define P064 (pages 064 "N" 0 '(093) (bitmap/file "picture/064.png") 0))
-(define P065 (pages 065 "STATUS" 0 '(999) (bitmap/file "picture/065.png") '("Ap" . ((8 . 074) (0 . 107)))))
+(define P065 (pages 065 "STATUS" 0 '(999) (bitmap/file "picture/065.png") '("Ac" . ((8 . 074) (0 . 107)))))
 (define P066 (pages 066 "N" 0 '(059) (bitmap/file "picture/066.png") 0))
 (define P067 (pages 067 "HPAC" 0 '(047) (bitmap/file "picture/067.png")'(-3 0)))
 (define P068 (pages 068 "N" 0 '(100) (bitmap/file "picture/068.png") 0))
@@ -101,8 +101,8 @@
 (define P087 (pages 087 "HPAC" 0 '(999) (bitmap/file "picture/087.png") '(0 -1)))
 ;(define P??? (pages ??? "KAKU" 0 '(999) (bitmap/file "picture/087.png") '(3 6 120 065)))
 (define P088 (pages 088 "N" 0 '(115) (bitmap/file "picture/088.png") 0))
-(define P089 (pages 089 "STATUS" 0 '(999) (bitmap/file "picture/089.png") '("Ap" . ((4 . 128) (0 . 084)))))
-(define P090 (pages 090 "STATUS" 0 '(999) (bitmap/file "picture/090.png") '("Ap" . ((7 . 103) (0 . 114)))))
+(define P089 (pages 089 "STATUS" 0 '(999) (bitmap/file "picture/089.png") '("Ac" . ((4 . 128) (0 . 084)))))
+(define P090 (pages 090 "STATUS" 0 '(999) (bitmap/file "picture/090.png") '("Ac" . ((7 . 103) (0 . 114)))))
 (define P091 (pages 091 "HPAC" 0 '(038) (bitmap/file "picture/091.png") '(3 0)))
 (define P092 (pages 092 "N" 0 '(105) (bitmap/file "picture/092.png") 0))
 (define P093 (pages 093 "N" 0 '(077) (bitmap/file "picture/093.png") 0))
@@ -121,7 +121,7 @@
 (define P106 (pages 106 "N" 0 '(065) (bitmap/file "picture/106.png") 0))
 (define P107 (pages 107 "KAKU" 0 '(999) (bitmap/file "picture/107.png") '(3 6 116 004)))
 (define P108 (pages 108 "N" 0 '(121 115 129) (bitmap/file "picture/108.png") 0))
-(define P109 (pages 109 "END" 0 '(999) (bitmap/file "picture/109.png") '(115)))
+(define P109 (pages 109 "YESNO" 0 '(999) (bitmap/file "picture/109.png") '("再挑戦するか？" 115 END)))
 (define P110 (pages 110 "N" 0 '(145 134) (bitmap/file "picture/110.png") 0))
 (define P111 (pages 111 "N" 0 '(085) (bitmap/file "picture/111.png") 0))
 (define P112 (pages 112 "END" 0 '(999) (bitmap/file "picture/112.png") 0))
@@ -185,17 +185,17 @@
 (define P162 (pages 162 "N" 0 '(154) (bitmap/file "picture/162.png") 0))
 (define P163 (pages 163 "B" 0 '(148 155) (bitmap/file "picture/163.png") 1))
 (define P164 (pages 164 "N" 0 '(184) (bitmap/file "picture/164.png") 0))
-(define P165 (pages 165 "SAI007" 0 '(194 203) (bitmap/file "picture/165.png") '("Ap" 194 203)))
+(define P165 (pages 165 "SAI007" 0 '(194 203) (bitmap/file "picture/165.png") '("Ac" 194 203)))
 (define P166 (pages 166 "N" 0 '(182) (bitmap/file "picture/166.png") 0))
 (define P167 (pages 167 "N" 0 '(126) (bitmap/file "picture/167.png") 0))
 (define P168 (pages 168 "HPAC" 0 '(234) (bitmap/file "picture/168.png") '("火薬ビン" -1)))
 (define P169 (pages 169 "HPAC" 0 '(1691) (bitmap/file "picture/169.png") '(-1 0)))
-(define P1691 (pages 1691 "SAI007" 0 '(999) (bitmap/file "picture/169.png") '("Ap" 229 205)))
+(define P1691 (pages 1691 "SAI007" 0 '(999) (bitmap/file "picture/169.png") '("Ac" 229 205)))
 (define P170 (pages 170 "HPAC" 0 '(199) (bitmap/file "picture/170.png") '(-2 0)))
 (define P171 (pages 171 "N" 0 '(147) (bitmap/file "picture/171.png") 0))
 (define P172 (pages 172 "N" 0 '(141 176) (bitmap/file "picture/172.png") 0))
 (define P173 (pages 173 "N" 0 '(140) (bitmap/file "picture/173.png") 0))
-(define P174 (pages 174 "SAI007" 0 '(999) (bitmap/file "picture/174.png") '("AP" 194 203)))
+(define P174 (pages 174 "SAI007" 0 '(999) (bitmap/file "picture/174.png") '("Ac" 194 203)))
 (define P175 (pages 175 "HPAC" 0 '(212) (bitmap/file "picture/175.png") '(-1 0)))
 (define P176 (pages 176 "N" 0 '(162) (bitmap/file "picture/176.png") 0))
 (define P177 (pages 177 "N" 0 '(140) (bitmap/file "picture/177.png") 0))
@@ -212,35 +212,85 @@
 (define P187 (pages 187 "HPAC" 0 '(178) (bitmap/file "picture/187.png") '(0 2)))
 (define P188 (pages 188 "C" 0 '(999) (bitmap/file "picture/188.png") '("火薬ビン" 1671 214)))
 (define P1881 (pages 1881 "YESNO" 0 '(999) (bitmap/file "picture/188.png") '("火薬ビンを使うか？" 168 214)))
-(define P189 (pages 189 "SAI007" 0 '(999) (bitmap/file "picture/189.png") '("AP" 185 196)))
+(define P189 (pages 189 "SAI007" 0 '(999) (bitmap/file "picture/189.png") '("Ac" 185 196)))
 (define P190 (pages 190 "N" 0 '(209 221) (bitmap/file "picture/190.png") 0))
 |#
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(define P191 (pages 191 "N" 0 '(216 233) (bitmap/file "picture/191.png") 0))
+(define P192 (pages 192 "N" 0 '(170) (bitmap/file "picture/192.png") 0))
+(define P193 (pages 193 "N" 0 '(159 179) (bitmap/file "picture/193.png") 0))
+(define P194 (pages 194 "HPAC" 0 '(213) (bitmap/file "picture/194.png") '(0 2)))
+(define P195 (pages 195 "N" 0 '(181) (bitmap/file "picture/195.png") 0))
+(define P196 (pages 196 "YESNO" 0 '(999) (bitmap/file "picture/196.png") '("再挑戦するか？" 185 END)))
+(define P197 (pages 197 "N" 0 '(217 183 207 225) (bitmap/file "picture/197.png") 0))
+(define P198 (pages 198 "N" 0 '(133) (bitmap/file "picture/198.png") 0))
+(define P199 (pages 199 "N" 0 '(164) (bitmap/file "picture/199.png") 0))
+(define P200 (pages 200 "N" 0 '(240) (bitmap/file "picture/200.png") 0))
+(define P201 (pages 201 "HPAC" 0 '(232) (bitmap/file "picture/201.png") '(-2 0 "ランチャーの弾" -1)))
+(define P202 (pages 202 "N" 0 '(190) (bitmap/file "picture/202.png") 0))
+(define P203 (pages 203 "HPAC" 0 '(174) (bitmap/file "picture/203.png") '(-1 0)))
+(define P204 (pages 204 "N" 0 '(253 208) (bitmap/file "picture/204.png") 0))
+(define P205 (pages 205 "HPAC" 0 '(165) (bitmap/file "picture/205.png") '(0 -1)))
+(define P206 (pages 206 "N" 0 '(188) (bitmap/file "picture/206.png") 0))
+(define P207 (pages 207 "N" 0 '(219) (bitmap/file "picture/207.png") 0))
+;208だけはTrackに入れない
+(define P208 (pages 208 "YESNO" 0 '(999) (bitmap/file "picture/208.png") '("水を飲んでみるか？" 242 2081)))
+;NOの入力ミスは入れ直しにする
+(define P2081 (pages 2081 "NO" 0 '(248 鍵＋208 251 256) (bitmap/file "picture/208.png") 0))
+(define P209 (pages 209 "N" 0 '(169 221) (bitmap/file "picture/209.png") 0))
+(define P210 (pages 210 "N" 0 '(260) (bitmap/file "picture/210.png") 0))
+(define P211 (pages 211 "N" 0 '(252) (bitmap/file "picture/211.png") 0))
+(define P212 (pages 212 "N" 0 '(207) (bitmap/file "picture/212.png") 0))
+(define P213 (pages 213 "N" 0 '(195) (bitmap/file "picture/213.png") 0))
+(define P214 (pages 214 "N" 0 '(202 190) (bitmap/file "picture/214.png") 0))
+(define P215 (pages 215 "N" 0 '(204) (bitmap/file "picture/215.png") 0))
+(define P216 (pages 216 "N" 0 '(225) (bitmap/file "picture/216.png") 0))
+(define P217 (pages 217 "HPAC" 0 '(241) (bitmap/file "picture/217.png") '(-1 0 "ランチャーの弾" -1)))
+(define P218 (pages 218 "N" 0 '(211 248) (bitmap/file "picture/218.png") 0))
+(define P219 (pages 219 "N" 0 '(233) (bitmap/file "picture/219.png") 0))
+(define P220 (pages 220 "N" 0 '(259) (bitmap/file "picture/220.png") 0))
+(define P221 (pages 221 "HPAC" 0 '(165) (bitmap/file "picture/221.png") '(-1 0)))
+(define P222 (pages 222 "HPAC" 0 '(257) (bitmap/file "picture/222.png") '(0 0 "ランチャーの弾" -1)))
+(define P223 (pages 223 "N" 0 '(212) (bitmap/file "picture/223.png") 0))
+(define P224 (pages 224 "N" 0 '(245) (bitmap/file "picture/224.png") 0))
+(define P225 (pages 225 "N" 0 '(197) (bitmap/file "picture/225.png") 0))
+(define P226 (pages 226 "N" 0 '(197) (bitmap/file "picture/226.png") 0))
+(define P227 (pages 227 "N" 0 '(240) (bitmap/file "picture/227.png") 0))
+(define P228 (pages 228 "N" 0 '(190) (bitmap/file "picture/228.png") 0))
+(define P229 (pages 229 "HPAC" 0 '(165) (bitmap/file "picture/229.png") '(0 1)))
+(define P230 (pages 230 "N" 0 '(249) (bitmap/file "picture/230.png") 0))
+(define P231 (pages 231 "SAI007" 0 '(999) (bitmap/file "picture/231.png") '("Ac" 242 236)))
+(define P232 (pages 232 "N" 0 '(197) (bitmap/file "picture/232.png") 0))
+(define P233 (pages 233 "N" 0 '(224) (bitmap/file "picture/233.png") 0))
+(define P234 (pages 234 "N" 0 '(228) (bitmap/file "picture/234.png") 0))
+(define P235 (pages 235 "END" 0 '(999) (bitmap/file "picture/235.png") 0))
+(define P236 (pages 236 "B" 0 '(239 227) (bitmap/file "picture/236.png") 3))
+(define P237 (pages 237 "N" 0 '(243) (bitmap/file "picture/237.png") 0))
+(define P238 (pages 238 "N" 0 '(230) (bitmap/file "picture/238.png") 0))
+(define P239 (pages 239 "N" 0 '(247) (bitmap/file "picture/239.png") 0))
+(define P240 (pages 240 "N" 0 '(237) (bitmap/file "picture/240.png") 0))
+(define P241 (pages 241 "N" 0 '(254 226 222) (bitmap/file "picture/241.png") 0))
+(define P242 (pages 242 "HPAC" 0 '(208) (bitmap/file "picture/242.png") '(0 -1)))
+(define P243 (pages 243 "N" 0 '(260) (bitmap/file "picture/243.png") 0))
+(define P244 (pages 244 "N" 0 '(238) (bitmap/file "picture/244.png") 0))
+(define P245 (pages 245 "N" 0 '(225) (bitmap/file "picture/245.png") '(-1 0)))
+(define P246 (pages 246 "N" 0 '(204 258) (bitmap/file "picture/246.png") 0))
+(define P247 (pages 247 "N" 0 '(244) (bitmap/file "picture/247.png") 0))
+(define P248 (pages 248 "N" 0 '(208 218 222) (bitmap/file "picture/248.png") 0))
+(define P249 (pages 249 "N" 0 '(210) (bitmap/file "picture/249.png") 0))
+(define P250 (pages 250 "N" 0 '(236 200) (bitmap/file "picture/250.png") 0))
+(define P251 (pages 251 "HPAC" 0 '(204) (bitmap/file "picture/251.png") '(0 0 "ランチャーの弾" -1)))
+(define P252 (pages 252 "N" 0 '(218 226) (bitmap/file "picture/252.png") 0))
+;二度目は強制的に・・という場合にSAIDO。最初はArgを使って選択
+(define P253 (pages 253 "SAIDO" 0 '(246) (bitmap/file "picture/253.png") '(220 246)))
+(define P254 (pages 254 "N" 0 '(208) (bitmap/file "picture/254.png") 0))
+(define P255 (pages 255 "NO" 0 '(このページへ飛んでくるページ) (bitmap/file "picture/255.png") 0))
+(define P256 (pages 256 "N" 0 '(241) (bitmap/file "picture/256.png") 0))
+(define P257 (pages 257 "N" 0 '(248) (bitmap/file "picture/257.png") 0))
+(define P258 (pages 258 "C" 0 '(999) (bitmap/file "picture/258.png") '("ランチャーの弾" 220 2571)))
+(define P2581 (pages 2581 "C" 0 '(999) (bitmap/file "picture/258.png") '("火薬" 220 ENDのページ)))
+(define P259 (pages 259 "BL" 0 '(250 235) (bitmap/file "picture/259.png") 0))
+(define P260 (pages 260 "EP" 0 '(999) (bitmap/file "picture/260.png") 0))
 
 
 
