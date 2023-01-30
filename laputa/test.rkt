@@ -30,5 +30,19 @@
                                         (alist-cons (car Arg) (cdr Arg) Equip))) Arg))))
             (master Page Hp Ac Buki Bougu new-equip Enemies Cdamage #f Cturn Choice Track)))))
 
-(item-get (master 151 10 10 '() '() *equip* '() 0 #t 1 '() '()))
-*equip*
+;(item-get (master 151 10 10 '() '() *equip* '() 0 #t 1 '() '()))
+;*equip*
+
+;サイコロ関数 OK
+(define (saikoro times)
+  (if (zero? times)
+      0
+      (+ (random 1 7) (saikoro (- times 1)))))
+
+
+  (map (match-lambda (`(,index . ,page) (format "[~a:~a]" index page)))
+               (enumerate '(a b c d e) 1))
+
+  (map (lambda (x) (match-let ((`(,index . ,page) x)) (format "[~a:~a]" index page)))
+               (enumerate '(a b c d e) 1))
+

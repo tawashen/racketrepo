@@ -1,1 +1,1 @@
-("8.7" ta6le ("687ed22f91143c6e058090c48fd88df686dbe222" . "6b5fa3521b8eb3ed912be7d21a75fad6bd53b38b") (collects #"drracket" #"private" #"drracket-errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
+("8.6" ta6le ("687ed22f91143c6e058090c48fd88df686dbe222" . "5a7a1b51387a9cca36499491c0669558b39d30c7") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
