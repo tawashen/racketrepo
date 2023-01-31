@@ -263,6 +263,40 @@
                  ((<= num 0) saido env)
                  (else (main-read (master (list-ref Arg (- num 1))
                                           Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track)))))))))
+
+
+(define P241 (pages 241 "CS" 0 '(254 226 222) (bitmap/file "picture/241.png") '("ランチャーの弾")))
+;ランチャー選択肢特殊処理関数
+(define (special-check env)
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
+      (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+        (if (>= 0 (cdr (assoc (car Arg) Equip))) ;ランチャーの弾が切れてれば行った所のみ選択可能
+            (begin
+      (for-each display (map (match-lambda (`(,index . ,num) (format "[~a:~a]" index num))
+                                           (enumerate (filter (lambda (x) (member x Track)) C-list) 1))))
+        (newline)
+        (let ((num (read)))
+          (case num
+            ((compose not number) (special-check env))
+            ((or (<= num 0) (> num (length (filter (lambda (x) (member x Track)) C-list)))) (special-check env))
+            (else (master (list-ref (filter (lambda (x) (member x Track)) C-list) (- num 1))
+                          Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))))
+            
+            (begin
+              (for-each display (map (match-lambda (`(,index . ,num) (format "[~a:~a]" index num))
+                                           (enumerate C-list) 1)))
+               (let ((num (read)))
+          (case num
+            ((compose not number) (special-check env))
+            ((or (<= num 0) (> num (length (filter (lambda (x) (member x Track)) C-list)))) (special-check env))
+            (else (master (list-ref (filter (lambda (x) (member x Track)) C-list) (- num 1))
+                          Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))))))))
+            
+        
+
+
+
 ;BL関数
 (define (battle-L env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))

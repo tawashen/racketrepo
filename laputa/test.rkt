@@ -40,9 +40,15 @@
       (+ (random 1 7) (saikoro (- times 1)))))
 
 
-  (map (match-lambda (`(,index . ,page) (format "[~a:~a]" index page)))
-               (enumerate '(a b c d e) 1))
+ ; (map (match-lambda (`(,index . ,page) (format "[~a:~a]" index page)))
+     ;          (enumerate '(a b c d e) 1))
 
-  (map (lambda (x) (match-let ((`(,index . ,page) x)) (format "[~a:~a]" index page)))
-               (enumerate '(a b c d e) 1))
+ ; (map (lambda (x) (match-let ((`(,index . ,page) x)) (format "[~a:~a]" index page)))
+      ;         (enumerate '(a b c d e) 1))
 
+
+(define c-list '(100 101 102 103))
+(define track '(100 103))
+
+    (for-each display (map (match-lambda (`(,index . ,num) (format "[~a:~a]" index num)))
+                                           (enumerate (filter (lambda (x) (member x track)) c-list) 1)))
