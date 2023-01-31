@@ -4,7 +4,7 @@
 (require 2htdp/image)
 (struct pages (Page-num Flag Ppage C-list Pimage Arg))
 
-#|
+
 
 (define P001 (pages 001 "N" 0 '(014 027) (bitmap/file "picture/001.png") 0))
 (define P002 (pages 002 "N" 0 '(031 057 039) (bitmap/file "picture/002.png") 0))
@@ -66,7 +66,7 @@
 (define P055 (pages 055 "D" 0 '(011) (bitmap/file "picture/055.png") '("火薬ビン" . -1)))
 (define P056 (pages 056 "N" 0 '(023 035 042 021) (bitmap/file "picture/056.png") 0))
 (define P057 (pages 057 "C" 0 '(999) (bitmap/file "picture/057.png") '("ポムじいさん" 071 048)))
-;(define P058 (pages 058 "YESNO" 0 '(999) (bitmap/file "picture/058.png") '("再挑戦するか？[y]es or [n]o" 022 9999)))
+(define P058 (pages 058 "YESNO" 0 '(999) (bitmap/file "picture/058.png") '("再挑戦するか？[y]es or [n]o" 022 9999)))
 (define P059 (pages 059 "N" 0 '(023) (bitmap/file "picture/059.png") 0))
 (define P060 (pages 060 "N" 0 '(025) (bitmap/file "picture/060.png") 0))
 (define P061 (pages 061 "N" 0 '(075 041 052) (bitmap/file "picture/061.png") 0))
@@ -202,7 +202,6 @@
 (define P180 (pages 180 "N" 0 '(192) (bitmap/file "picture/180.png") 0))
 (define P181 (pages 181 "N" 0 '(223 175) (bitmap/file "picture/181.png") 0))
 (define P182 (pages 182 "N" 0 '(178) (bitmap/file "picture/182.png") 0))
-;↓のページは二度目はEvent＃fなので通ったページはリストにして持つのを実装
 (define P183 (pages 183 "HPAC" 0 '(252) (bitmap/file "picture/183.png") 0))
 (define P184 (pages 184 "N" 0 '(206) (bitmap/file "picture/184.png") 0))
 (define P185 (pages 185 "HPAC" 0 '(191) (bitmap/file "picture/185.png") '(-2 0)))
@@ -246,9 +245,15 @@
 (define P217 (pages 217 "HPAC" 0 '(241) (bitmap/file "picture/217.png") '(-1 0 "ランチャーの弾" -1)))
 (define P218 (pages 218 "N" 0 '(211 248) (bitmap/file "picture/218.png") 0))
 (define P219 (pages 219 "N" 0 '(233) (bitmap/file "picture/219.png") 0))
-(define P220 (pages 220 "N" 0 '(259) (bitmap/file "picture/220.png") 0))
+
+;このページに来るということは2581はもうイベント起こさなくて良いと
+(define P220 (pages 220 "N" 2581 '(259) (bitmap/file "picture/220.png") 0))
+
 (define P221 (pages 221 "HPAC" 0 '(165) (bitmap/file "picture/221.png") '(-1 0)))
-(define P222 (pages 222 "HPAC" 0 '(257) (bitmap/file "picture/222.png") '(0 0 "ランチャーの弾" -1)))
+
+;248のイベント無効化
+(define P222 (pages 222 "HPAC" 248 '(257) (bitmap/file "picture/222.png") '(0 0 "ランチャーの弾" -1)))
+
 (define P223 (pages 223 "N" 0 '(212) (bitmap/file "picture/223.png") 0))
 (define P224 (pages 224 "N" 0 '(245) (bitmap/file "picture/224.png") 0))
 (define P225 (pages 225 "N" 0 '(197) (bitmap/file "picture/225.png") 0))
@@ -267,14 +272,30 @@
 (define P238 (pages 238 "N" 0 '(230) (bitmap/file "picture/238.png") 0))
 (define P239 (pages 239 "N" 0 '(247) (bitmap/file "picture/239.png") 0))
 (define P240 (pages 240 "N" 0 '(237) (bitmap/file "picture/240.png") 0))
+
+;ランチャーの弾関係、ここから2023/01/31
+(define P241 (pages 241 "C" 0 '(254 226 222) (bitmap/file "picture/241.png") 0))
+(define P241 (pages 241 "N" 0 '(254 226 222) (bitmap/file "picture/241.png") 0))
 (define P241 (pages 241 "N" 0 '(254 226 222) (bitmap/file "picture/241.png") 0))
 (define P242 (pages 242 "HPAC" 0 '(208) (bitmap/file "picture/242.png") '(0 -1)))
 (define P243 (pages 243 "N" 0 '(260) (bitmap/file "picture/243.png") 0))
 (define P244 (pages 244 "N" 0 '(238) (bitmap/file "picture/244.png") 0))
-(define P245 (pages 245 "N" 0 '(225) (bitmap/file "picture/245.png") '(-1 0)))
-(define P246 (pages 246 "N" 0 '(204 258) (bitmap/file "picture/246.png") 0))
+
+;ここは強制的にランチャーを使うのでこの場で無効化する
+(define P245 (pages 245 "N" 245 '(225) (bitmap/file "picture/245.png") '(-1 0 "ランチャーの弾" -1)))
+
+;ランチャーの弾があるなしで分岐。二度目に来るときには自由に行けるようにしないと・・Ppageを使う
+(define P246 (pages 246 "C" 0 '(204 258) (bitmap/file "picture/246.png") ("ランチャーの弾" 2461 2462)))
+(define P2461 (pages 2461 "N" 0 '(204 258) (bitmap/file "picture/246.png") 0))
+(define P2462 (pages 2462 "N" 0 '(204) (bitmap/file "picture/246.png") 0))
+
 (define P247 (pages 247 "N" 0 '(244) (bitmap/file "picture/247.png") 0))
-(define P248 (pages 248 "N" 0 '(208 218 222) (bitmap/file "picture/248.png") 0))
+
+;222へ行けたらランチャーの弾を減らして248をPpageに追加
+(define P248 (pages 248 "C" 0 '(208 218 222) (bitmap/file "picture/248.png") '("ランチャーの弾" 2481 2482)))
+(define P2481 (pages 2481 "N" 0 '(208 218 222) (bitmap/file "picture/247.png") 0))
+(define P2482 (pages 2482 "N" 0 '(208 218) (bitmap/file "picture/247.png") 0))
+
 (define P249 (pages 249 "N" 0 '(210) (bitmap/file "picture/249.png") 0))
 (define P250 (pages 250 "N" 0 '(236 200) (bitmap/file "picture/250.png") 0))
 (define P251 (pages 251 "HPAC" 0 '(204) (bitmap/file "picture/251.png") '(0 0 "ランチャーの弾" -1)))
@@ -285,8 +306,12 @@
 (define P255 (pages 255 "NO" 0 '(このページへ飛んでくるページ) (bitmap/file "picture/255.png") 0))
 (define P256 (pages 256 "N" 0 '(241) (bitmap/file "picture/256.png") 0))
 (define P257 (pages 257 "N" 0 '(248) (bitmap/file "picture/257.png") 0))
-(define P258 (pages 258 "C" 0 '(999) (bitmap/file "picture/258.png") '("ランチャーの弾" 220 2571)))
-(define P2581 (pages 2581 "C" 0 '(999) (bitmap/file "picture/258.png") '("火薬" 220 9999)))
+
+;この条件をクリアしたら246はOKとして登録する
+(define P258 (pages 258 "HPAC" 246 '(2581) (bitmap/file "picture/258.png") '(0 0 "ランチャーの弾" -1)))
+(define P2581 (pages 2581 "C" 258 '(220) (bitmap/file "picture/258.png") '("ランチャーの弾" 220 2582)))
+(define P2582 (pages 2582 "C" 0 '(999) (bitmap/file "picture/258.png") '("火薬" 220 9999)))
+
 (define P259 (pages 259 "BL" 0 '(250 235) (bitmap/file "picture/259.png") 0))
 (define P260 (pages 260 "EP" 0 '(999) (bitmap/file "picture/260.png") 0))
 (define P9999 (pages 9999 "ED" 0 '(999) "" 0)) ;BadEnd用ページ
