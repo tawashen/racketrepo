@@ -176,7 +176,7 @@
 ;(define P151 (pages 151 "G" 0 '(156) (bitmap/file "picture/151.png") '(("ブラックジャック" . 1))))
 ;(define P1391 (pages 1391 "G" 1391 '(079 134) (bitmap/file "picture/139.png") '(("P139の鍵A" . 41) ("P139の鍵B" . 35))))
 ;アイテムゲット関数 test
-(define (item-get env)
+(define (item-getT env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
@@ -189,16 +189,18 @@
                       (alist-cons (car (car Equip)) (cdr (car Equip)) (loop (cdr Equip))))))))
        (display new-equip)))))
 
-        
-        #|      (let ((new-equip 
-                     (let loop ((args Arg) (equips Equip))
-                      (if (null? equips)   '()
-                          (if (assoc (car (car equips)) args)
-                              (alist-cons (car (car equips)) (+ (cdr (car equips)) (cdr (assoc (car (car equips)) args)))
-                                          (alist-delete `(,(car (car equips))) (loop args (cdr equips))))
-                              (alist-cons (car (car equips)) (cdr (car equips))
-                                          (alist-delete `(,(car (car equips))) (loop args (cdr equips)))))))))
-  |#
+
+(define (item-get env)
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
+      (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+     (let ((new-equip
+            (map (lambda (x) (if (assoc (car x) Arg)
+                                 (alist-cons (car x) (+ (cdr (assoc (car x) Arg)) (cdr x)) (alist-delete (car x) '()))
+                                 (alist-cons (car x) (cdr x) '()))) Arg)))
+       (display new-equip)))))
+
+
         ;   (display new-equip)))))
         ;    (master Page Hp Ac Buki Bougu new-equip Enemies Cdamage #f Cturn Choice Track)))))
 
