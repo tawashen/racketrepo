@@ -319,7 +319,7 @@
 (define P2581 (pages 2581 "C" 258 '(220) (bitmap/file "picture/258.png") '("ランチャーの弾" 220 2582)))
 (define P2582 (pages 2582 "C" 0 '(999) (bitmap/file "picture/258.png") '("火薬" 220 9999)))
 
-(define P259 (pages 259 "BL" 0 '(250 235) (bitmap/file "picture/259.png") 0))
+(define P259 (pages 259 "B" 0 '(250 235) (bitmap/file "picture/259.png") 0))
 (define P260 (pages 260 "EP" 0 '(999) (bitmap/file "picture/260.png") 0))
 (define P9999 (pages 9999 "ED" 0 '(999) "" 0)) ;BadEnd用ページ
 
