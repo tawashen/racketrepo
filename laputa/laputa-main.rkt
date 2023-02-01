@@ -41,7 +41,7 @@
 (define (sai007 env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro 2)))
           (if (<= deme Ac)
@@ -59,7 +59,7 @@
 (define (sai006 env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro (car Arg))))
           (if (<= deme (cadr Arg))
@@ -77,7 +77,7 @@
 (define (sai022 env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
                  (display-G "サイコロコロコロ・・")
         (let* ((deme1 (saikoro 1)) (deme2 (saikoro 1)) (deme3 (+ deme1 deme2)))
           (if (or (= deme1 deme2) (member deme3 (cdr Arg)))
@@ -95,7 +95,7 @@
 (define (sai033 env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro (car Arg))))
           (if (member deme (cadr Arg))
@@ -110,7 +110,7 @@
 (define (sai153 env) 
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro 1)))
           (case deme
@@ -120,11 +120,12 @@
 
 
  
-;ステータスチェック関数 test
+;ステータスチェック関数 OK
 (define (status-check env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+        (newline)
         (case (car Arg)
           (("Ac") (cond ((>= Ac (car (car (cdr Arg)))) (display-G (format (cdr (assoc 'status *main-messages*))
                                                                     Ac (cdr (car (cdr Arg))))) (HEK)
@@ -138,58 +139,75 @@
                                                                     Ac (cdr (caddr (cdr Arg))))) (HEK)
                              (main-read (master (cdr (caddr (cdr Arg)))
                                                 Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track))))))))))
-       
-;YESNO関数 test
+
+;(define P018 (pages 018 "YESNO" 0 '(999) (bitmap/file "picture/018.png") '("戦うか? [y]es or [n]o" 018001 073)))
+;YESNO関数 OK
 (define (yes-no env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
-        (newline)
-        (let ((yesno (read)))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+               (newline) (display-G (format (car Arg)))(newline) 
+       (let ((yesno (read)))
           (case yesno
-            (('y) (main-read
+            ((y) (main-read
                             (master (cadr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track))))
-            (('n) (main-read
+            ((n) (main-read
                             (master (caddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track))))
             (else (yes-no env)))))))
 
 
 
-;数字入力関数 test
+;数字入力関数 OK
 (define (input-num env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
            (newline)
-               (let ((num (string->number (input (format (cdr (assoc 'input *main-messages*)))))))
+        (display-G (format (cdr (assoc 'input *main-messages*))))
+               (let ((num (read))) 
                      (cond (((compose not member) num C-list)
                              (display (format (cdr (assoc 'miss *main-messages*)))) (newline) (HEK)
                              (input-num env))
                           (else (main-read
-                                 (master (cadr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track)))))))))
+                                 (master num Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track)))))))))
 
 
 
 ;(define P151 (pages 151 "G" 0 '(156) (bitmap/file "picture/151.png") '(("ブラックジャック" . 1))))
-
+;(define P1391 (pages 1391 "G" 1391 '(079 134) (bitmap/file "picture/139.png") '(("P139の鍵A" . 41) ("P139の鍵B" . 35))))
 ;アイテムゲット関数 test
 (define (item-get env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
-           (let ((new-equip 
-             (car (map (lambda (x) (if (assoc (car x) Equip)
-                                        (alist-cons `,(car (car Arg)) (+ (cdr x) (cdr (assoc (car x) Equip)))
-                                              (alist-delete (car x) Equip))
-                                        (alist-cons (car Arg) (cdr Arg) Equip))) Arg))))
-            (master Page Hp Ac Buki Bougu new-equip Enemies Cdamage #f Cturn Choice Track)))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+     (let ((new-equip
+            (let loop ((Equip Equip))
+              (if (null? Equip) '()
+                  (if (assoc (car (car Equip)) Arg)
+                      (alist-cons (car (car Equip)) (+ (cdr (assoc (car (car Equip)) Arg)) (cdr (car Equip)))
+                                  (alist-delete (car (car Equip)) (loop (cdr Equip))))
+                      (alist-cons (car (car Equip)) (cdr (car Equip)) (loop (cdr Equip))))))))
+       (display new-equip)))))
+
+        
+        #|      (let ((new-equip 
+                     (let loop ((args Arg) (equips Equip))
+                      (if (null? equips)   '()
+                          (if (assoc (car (car equips)) args)
+                              (alist-cons (car (car equips)) (+ (cdr (car equips)) (cdr (assoc (car (car equips)) args)))
+                                          (alist-delete `(,(car (car equips))) (loop args (cdr equips))))
+                              (alist-cons (car (car equips)) (cdr (car equips))
+                                          (alist-delete `(,(car (car equips))) (loop args (cdr equips)))))))))
+  |#
+        ;   (display new-equip)))))
+        ;    (master Page Hp Ac Buki Bougu new-equip Enemies Cdamage #f Cturn Choice Track)))))
 
 
 ;アイテムドロップ関数 test
 (define (drop-item env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
            (newline) (display (format (cdr (assoc 'droped *main-messages*)) (car Arg)))
            (HEK)
            (let ((new-equip 
@@ -200,7 +218,7 @@
 (define (drop-itemT env) ;test
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
            (newline) (display (format (cdr (assoc 'droped *main-messages*)) (car Arg)))
            (HEK)
            (let ((new-equip
@@ -214,7 +232,7 @@
 (define (item-check env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
         (if (>= 1 (cdr (assoc (car Arg) Equip)))
             (main-read (master (cadr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track)))
             (main-read (master (caddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track)))))))
@@ -223,7 +241,7 @@
 (define (hp-ac env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
         (match Arg
           ((list hp ac)
            (main-read (master Page (+ Hp hp) (+ Ac ac) Buki Bougu Equip Enemies Cdamage #f Cturn Choice Track)))
@@ -235,7 +253,7 @@
 (define (end env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
                    (display-G "おびただしいりゅうけつ！　あたなはしにました"))))
 
 
@@ -245,7 +263,7 @@
 (define (reset env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
         (map (lambda (x) (alist-cons x 1 (alist-delete x Equip))) Arg))))
 
 
@@ -255,7 +273,7 @@
 (define (saido env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
         (for-each display (map (match-lambda (`(,index . ,page) (format "[~a:~a]" index page))) Arg))
         (let ((num (read)))
           (cond (((compose not number?) num) saido env)
@@ -270,7 +288,7 @@
 (define (special-check env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
         (if (>= 0 (cdr (assoc (car Arg) Equip))) ;ランチャーの弾が切れてれば行った所のみ選択可能
       ;  (cond
        ;   ((>= 0 (cdr (assoc (car Arg) Equip)))
@@ -304,7 +322,7 @@
     (display (bitmap/file "picture/op6-7.png"))(HEK))
 ;  (main-read (master (001 15 10 '() '() *equip* '() 0 #t 1 '() '()))))
   
- (start)
+ ;(start)
 
 
 ;バトル関数に流し込むページごとの敵構造体のリストを返す OK
@@ -339,10 +357,10 @@
 (define (battle-set env) 
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) ;(list-ref *page-list* Page)))
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
             (display-G (format (cdr (assoc 'select *battle-messages*)))) (newline)
             (buki-show Equip) (newline)
-          (let ((Buki-num (string->number (read-line))))
+          (let ((Buki-num (read)))
             (cond ((<= Buki-num 0) (battle-set env))
                   ((> Buki-num (length (buki-list Equip))) (battle-set env))
                   (else (display-G (format "パズーは~aを構えた" (car (list-ref (buki-list Equip) (- Buki-num 1)))))
@@ -355,7 +373,7 @@
 (define (battle-read env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
   (if (null? Enemies)
               (main-read (master Page Hp Ac '() Bougu (equip-change Equip (item-Iname Buki) -1) '() 0 #f 1 0 Track))
          (begin (HEK)
@@ -369,7 +387,7 @@
 (define (battle-eval-M env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (let ((tama (cdr (assoc "ランチャーの弾" Equip))))
             (if (> tama 0)
                 (display (format "[1:武器で殴りかかる] [2:ランチャーをぶっ放す]") (newline)
@@ -404,7 +422,7 @@
 (define (battle-eval env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (let ((pazuP (+ Ac (item-Point Buki) (random 1 7))) (enemyP (+ (enemy-Eac (car Enemies)) (random 1 7))))
             (display-G (format (cdr (assoc 'attack *battle-messages*)) (enemy-Ename (car Enemies)))) (sleep 1)
             (cond ((= pazuP enemyP) (display-G (cdr (assoc 'tie *battle-messages*))) (HEK)
@@ -418,7 +436,7 @@
 (define (battle-loop env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (if (= Cturn Arg)
               (if (> Cdamage Choice)
                 (begin (display-G (format (cdr (assoc 'win *battle-messages*)) (enemy-Ename (car Enemies))))
@@ -431,7 +449,7 @@
 (define (main-read env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) page-list))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (if (member Page Track)
              (display "main-input"); (main-input env)
               (if (not Event)
@@ -441,11 +459,16 @@
               (case Flag
                 (("B") (battle-set (master Page Hp Ac Buki Bougu Equip
                                             (battle-ready-list *enemy-list* Page)
-                                            0 Event 1 Choice Track))))))))))
+                                            0 Event 1 Choice Track)))
+                (("STATUS") (status-check env))
+                (("YESNO") (yes-no env))
+                (("NO") (input-num env))
+                (("G") (item-get env)))))))))
+                
                                     
 
 
-;(define env (master 152 15 15 '() '() *equip* '() 0 #t 0 0 '(152)))
-;(main-read env)
+(define env (master 1391 15 15 '() '() *equip* '() 0 #t 0 0 '(152)))
+(main-read env)
 
 
