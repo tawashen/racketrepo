@@ -294,7 +294,17 @@
             ((or (<= num 0) (> num (length (filter (lambda (x) (member x Track)) C-list)))) (special-check env))
             (else (master (list-ref (filter (lambda (x) (member x Track)) C-list) (- num 1))
                           Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))))))))
-            
+
+;op
+(define (start)
+  (display (bitmap/file "picture/op01.png"))(HEK)
+    (display (bitmap/file "picture/op02.png"))(HEK)
+    (display (bitmap/file "picture/op3-4.png"))(HEK)
+    (display (bitmap/file "picture/op05.png"))(HEK)
+    (display (bitmap/file "picture/op6-7.png"))(HEK))
+;  (main-read (master (001 10 10 '() '() *equip* '() 0 #t 1 '() '()))))
+  
+ (start)
 
 
 ;バトル関数に流し込むページごとの敵構造体のリストを返す OK
@@ -435,7 +445,7 @@
                                     
 
 
-(define env (master 152 15 15 '() '() *equip* '() 0 #t 0 0 '(152)))
-(main-read env)
+;(define env (master 152 15 15 '() '() *equip* '() 0 #t 0 0 '(152)))
+;(main-read env)
 
 
