@@ -112,7 +112,7 @@
 (define P099 (pages 099 "SAI033" 0 '(999) (bitmap/file "picture/099.png") '(1 '(2 4 6) 078 120)))
 (define P100 (pages 100 "G" 100 '(081) (bitmap/file "picture/100.png") '("ゴーグル" . 1)))
 (define P101 (pages 101 "N" 0 '(108 150) (bitmap/file "picture/101.png") 0))
-(define P102 (pages 102 "NO" 0 '(鍵の数 085 142) (bitmap/file "picture/102.png") 0))
+(define P102 (pages 102 "NO" 0 '(125 137 143 085 142) (bitmap/file "picture/102.png") 0))
 (define P103 (pages 103 "HPAC" 103 '(114) (bitmap/file "picture/103.png") '(1 0)))
 (define P104 (pages 104 "N" 0 '(039) (bitmap/file "picture/104.png") 0))
 (define P105 (pages 105 "HPAC" 105 '(064 093) (bitmap/file "picture/105.png") '(-3 0)))
@@ -142,7 +142,7 @@
 (define P128 (pages 128 "N" 0 '(134) (bitmap/file "picture/128.png") '(("P128の鍵A" . 41) ("P128の鍵B" . 35))))
 (define P129 (pages 129 "N" 0 '(101 150 108) (bitmap/file "picture/129.png") 0))
 (define P130 (pages 130 "N" 0 '(247) (bitmap/file "picture/130.png") 0))
-(define P131 (pages 131 "N" 0 '(134) (bitmap/file "picture/131.png") 0))
+(define P131 (pages 131 "HPAC" 131 '(134) (bitmap/file "picture/131.png") '(0 0 "巨人の胸の印" 1)))
 (define P132 (pages 132 "HPAC" 132 '(166) (bitmap/file "picture/132.png") '(-2 0)))
 (define P133 (pages 133 "HPAC" 133 '(186) (bitmap/file "picture/133.png") '(15 3)))
 (define P134 (pages 134 "N" 0 '(119 095 110) (bitmap/file "picture/134.png") 0))
@@ -152,14 +152,14 @@
 (define P138 (pages 138 "C" 0 '(999) (bitmap/file "picture/138.png") '("ポムじいさん" 171 147)))
 (define P139 (pages 139 "HPAC" 139 '(???) (bitmap/file "picture/139.png") '(0 1)))
 (define P1391 (pages 1391 "G" 1391 '(079 134) (bitmap/file "picture/139.png") '(("P139の鍵A" . 41) ("P139の鍵B" . 35))))
-(define P140 (pages 140 "C" 0 '(999) (bitmap/file "picture/140.png") '("巨人の胸の印" 187 132)))
+(define P140 (pages 140 "C" 0 '(999) (bitmap/file "picture/140.png") '("巨人の胸の印" 187 132))) ;
 (define P141 (pages 141 "N" 0 '(162) (bitmap/file "picture/141.png") 0))
 (define P142 (pages 142 "N" 0 '(095 102 123) (bitmap/file "picture/142.png") 0))
 (define P143 (pages 143 "N" 0 '(102) (bitmap/file "picture/143.png") 0))
 (define P144 (pages 144 "N" 0 '(150 085 127) (bitmap/file "picture/144.png") 0))
 (define P145 (pages 145 "N" 0 '(158 134 153) (bitmap/file "picture/145.png") 0))
 (define P146 (pages 146 "N" 0 '(193) (bitmap/file "picture/146.png") 0))
-(define P147 (pages 147 "C" 0 '(999) (bitmap/file "picture/147.png") '("巨人" 177 173)))
+(define P147 (pages 147 "C" 0 '(999) (bitmap/file "picture/147.png") '("巨人の胸の印" 177 173))) ;
 (define P148 (pages 148 "HPAC" 148 '(1481) (bitmap/file "picture/148.png") '(0 2)))
 (define P1481 (pages 1481 "G" 1481 '(079 134) (bitmap/file "picture/148.png") '(("P148の鍵" . 41) ("P148の鍵" . 35))))
 (define P149 (pages 149 "N" 0 '(126) (bitmap/file "picture/149.png") 0))
@@ -168,7 +168,7 @@
 
 (define P152 (pages 152 "B" 152 '(157 124) (bitmap/file "picture/152.png") 3))
 
-(define P153 (pages 153 "HPAC" 0 '(1531) (bitmap/file "picture/153.png") '(0 1 "ブラックジャック" 1)))
+(define P153 (pages 153 "HPAC" 153 '(1531) (bitmap/file "picture/153.png") '(0 1 "ブラックジャック" 1)))
 (define P1531 (pages 1531 "SAI153" 0 '(1581 1582 1583) (bitmap/file "picture/153.png") 0))
 (define P154 (pages 154 "N" 0 '(180) (bitmap/file "picture/154.png") 0))
 (define P155 (pages 155 "N" 0 '(109) (bitmap/file "picture/155.png") 0))

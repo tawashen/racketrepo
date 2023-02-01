@@ -302,7 +302,7 @@
     (display (bitmap/file "picture/op3-4.png"))(HEK)
     (display (bitmap/file "picture/op05.png"))(HEK)
     (display (bitmap/file "picture/op6-7.png"))(HEK))
-;  (main-read (master (001 10 10 '() '() *equip* '() 0 #t 1 '() '()))))
+;  (main-read (master (001 15 10 '() '() *equip* '() 0 #t 1 '() '()))))
   
  (start)
 
