@@ -36,7 +36,7 @@
 ;Equip更新関数 Cametanさん提供版
 (define (equip-change lst index num)
  (match-let ((`(,index . ,val) (assoc index lst)))
-  (alist-cons index (+ num val) (alist-delete index lst))))
+  (alist-cons index (if (> 0 (+ num val)) 0 (+ num val)) (alist-delete index lst))))
 
 
 

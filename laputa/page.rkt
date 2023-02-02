@@ -63,7 +63,7 @@
 (define P052 (pages 052 "N" 0 '(049 061) (bitmap/file "picture/052.png") 0))
 (define P053 (pages 053 "N" 0 '(037) (bitmap/file "picture/053.png") 0))
 (define P054 (pages 054 "N" 0 '(066) (bitmap/file "picture/054.png") '(0 -3)))
-(define P055 (pages 055 "HPAC" 055 '(011) (bitmap/file "picture/055.png") '(0 0 "火薬ビン" . -1)))
+(define P055 (pages 055 "HPAC" 055 '(011) (bitmap/file "picture/055.png") '(0 0 "火薬ビン" -1)))
 (define P056 (pages 056 "N" 0 '(023 035 042 021) (bitmap/file "picture/056.png") 0))
 (define P057 (pages 057 "C" 0 '(999) (bitmap/file "picture/057.png") '("ポムじいさん" 071 048)))
 (define P058 (pages 058 "YESNO" 0 '(999) (bitmap/file "picture/058.png") '("再挑戦するか？[y]es or [n]o" 022 9999)))
@@ -137,8 +137,10 @@
 (define P122 (pages 122 "N" 0 '(126 135 150) (bitmap/file "picture/122.png") 0))
 (define P123 (pages 123 "N" 0 '(142) (bitmap/file "picture/123.png") 0))
 (define P124 (pages 124 "N" 0 '(109) (bitmap/file "picture/124.png") 0))
+
 ;↓装備をリセットするイベント
 (define P125 (pages 125 "RESET" 125 '(102) (bitmap/file "picture/125.png") '("スパナ" "モンキー" "レンチ")))
+
 (define P126 (pages 126 "NO" 0 '(023 122) (bitmap/file "picture/126.png") 0))
 (define P127 (pages 127 "N" 0 '(113 144 095) (bitmap/file "picture/127.png") 0))
 (define P128 (pages 128 "N" 0 '(134) (bitmap/file "picture/128.png") '(("P128の鍵A" . 41) ("P128の鍵B" . 35))))
@@ -237,9 +239,9 @@
 
 ;何度も来るところなので判定消失語は強制的にクローンページへ
 (define P208 (pages 208 "YESNO" 208 '(2081) (bitmap/file "picture/208.png") '("水を飲んでみるか？[y]es or [n]o" 242 2081)))
-(define P2081 (pages 2081 "C" 0 '(999) (bitmap/file "picture/208.png") '("208で必要な鍵" 2082 2083)))
+(define P2081 (pages 2081 "C" 0 '(999) (bitmap/file "picture/208.png") '("緑色の棒" 2082 2083)))
 ;SC関数で弾がない場合は行ったところのみ表示、弾があれば全部表示鍵があれば表示する
-(define P2082 (pages 2082 "SC" 0 '(248 鍵＋208 251 256) (bitmap/file "picture/208.png") '("ランチャーの弾")))
+(define P2082 (pages 2082 "SC" 0 '(248 緑色の棒＋208 251 256) (bitmap/file "picture/208.png") '("ランチャーの弾")))
 (define P2083 (pages 2083 "SC" 0 '(248 251 256) (bitmap/file "picture/208.png") '("ランチャーの弾")))
 
 (define P209 (pages 209 "N" 0 '(169 221) (bitmap/file "picture/209.png") 0))
@@ -283,8 +285,9 @@
 (define P240 (pages 240 "N" 0 '(237) (bitmap/file "picture/240.png") 0))
 
 ;ランチャーの弾関係 ここだけ特殊な処理が必要
-(define P241 (pages 241 "CS" 0 '(254 226 222) (bitmap/file "picture/241.png") '("ランチャーの弾")))
-
+;(define P241 (pages 241 "SC" 0 '(254 226 222) (bitmap/file "picture/241.png") '("ランチャーの弾")))
+(define P241 (pages 241 "SC" 0 '(222) (bitmap/file "picture/241.png") '("ランチャーの弾" . (254 226))))
+  
 (define P242 (pages 242 "HPAC" 242 '(208) (bitmap/file "picture/242.png") '(0 -1)))
 (define P243 (pages 243 "N" 0 '(260) (bitmap/file "picture/243.png") 0))
 (define P244 (pages 244 "N" 0 '(238) (bitmap/file "picture/244.png") 0))
@@ -325,7 +328,7 @@
 
 (define P259 (pages 259 "B" 0 '(250 235) (bitmap/file "picture/259.png") 0))
 (define P260 (pages 260 "EP" 0 '(999) (bitmap/file "picture/260.png") 0))
-(define P9999 (pages 9999 "ED" 0 '(999) "" 0)) ;BadEnd用ページ
+(define P9999 (pages 9999 "END" 0 '(999) "" 0)) ;BadEnd用ページ
 
 
 
