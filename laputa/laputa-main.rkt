@@ -176,7 +176,7 @@
 ;(define P151 (pages 151 "G" 0 '(156) (bitmap/file "picture/151.png") '(("ブラックジャック" . 1))))
 ;(define P1391 (pages 1391 "G" 1391 '(079 134) (bitmap/file "picture/139.png") '(("P139の鍵A" . 41) ("P139の鍵B" . 35))))
 ;アイテムゲット関数 test
-(define (item-getT env)
+(define (item-getR env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
@@ -190,7 +190,7 @@
        (display new-equip)))))
 
 
-(define (item-get env)
+(define (item-getM env) ;失敗
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
@@ -198,6 +198,16 @@
             (map (lambda (x) (if (assoc (car x) Arg)
                                  (alist-cons (car x) (+ (cdr (assoc (car x) Arg)) (cdr x)) (alist-delete (car x) '()))
                                  (alist-cons (car x) (cdr x) '()))) Arg)))
+       (display new-equip)))))
+
+(define (item-get env)
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
+      (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+     (let ((new-equip
+            (foldr (lambda (x y) (if (assoc (car x) Arg)
+                                 (alist-cons (car x) (+ (cdr (assoc (car x) Arg)) (cdr x)) (alist-delete (car x) y))
+                                 (alist-cons (car x) (cdr x) y))) '() Equip)))
        (display new-equip)))))
 
 
