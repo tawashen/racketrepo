@@ -24,7 +24,7 @@
 (define P016 (pages 016 "N" 0 '(060 063) (bitmap/file "picture/016.png") 0))
 (define P017 (pages 017 "N" 0 '(006) (bitmap/file "picture/017.png") 0))
 (define P018 (pages 018 "YESNO" 0 '(999) (bitmap/file "picture/018.png") '("戦うか? [y]es or [n]o" 018001 073)))
-(define P018001 (pages 018001 "B" 0 '(076 092) (bitmap/file "picture/018.png") 3))
+(define P018001 (pages 018001 "B" 0 '(076 092) (bitmap/file "picture/018.png") 2))
 (define P019 (pages 019 "N" 0 '(070 023 021) (bitmap/file "picture/019.png") 0))
 (define P020 (pages 020 "SAI020" 0 '(999) (bitmap/file "picture/020.png") '(11 36 13 30)))
 (define P021 (pages 021 "N" 0 '(072 056 019) (bitmap/file "picture/021.png") 0))
@@ -36,7 +36,7 @@
 (define P027 (pages 027 "N" 0 '(010) (bitmap/file "picture/027.png") 0))
 (define P028 (pages 028 "N" 0 '(026) (bitmap/file "picture/028.png") 0))
 (define P029 (pages 029 "HPAC" 029 '(0291) (bitmap/file "picture/029.png") '(0 -1)))
-(define P029001 (pages 029001 "B" 0 '(006 029002) (bitmap/file "picture/029.png") 3))
+(define P029001 (pages 029001 "B" 0 '(006 029002) (bitmap/file "picture/029.png") 2))
 (define P029002 (pages 029002 "HPAC" 29002 '(058) (bitmap/file "picture/029.png") '(-2 0)))
 (define P030 (pages 030 "HPAC" 030 '(066) (bitmap/file "picture/030.png") '(-4 0)))
 (define P031 (pages 031 "HPAC" 031 '(002) (bitmap/file "picture/031.png") '(-2 0)))
@@ -278,7 +278,7 @@
 (define P233 (pages 233 "N" 0 '(224) (bitmap/file "picture/233.png") 0))
 (define P234 (pages 234 "N" 0 '(228) (bitmap/file "picture/234.png") 0))
 (define P235 (pages 235 "END" 0 '(999) (bitmap/file "picture/235.png") 0))
-(define P236 (pages 236 "B" 236 '(239 227) (bitmap/file "picture/236.png") 3))
+(define P236 (pages 236 "B" 236 '(239 227) (bitmap/file "picture/236.png") 2))
 (define P237 (pages 237 "N" 0 '(243) (bitmap/file "picture/237.png") 0))
 (define P238 (pages 238 "N" 0 '(230) (bitmap/file "picture/238.png") 0))
 (define P239 (pages 239 "N" 0 '(247) (bitmap/file "picture/239.png") 0))
@@ -326,7 +326,7 @@
 (define P2581 (pages 2581 "C" 258 '(220) (bitmap/file "picture/258.png") '("ランチャーの弾" 220 2582)))
 (define P2582 (pages 2582 "C" 0 '(999) (bitmap/file "picture/258.png") '("火薬" 220 9999)))
 
-(define P259 (pages 259 "B" 0 '(250 235) (bitmap/file "picture/259.png") 0))
+(define P259 (pages 259 "B" 259 '(250 235) (bitmap/file "picture/259.png") 2))
 (define P260 (pages 260 "EP" 0 '(999) (bitmap/file "picture/260.png") 0))
 (define P9999 (pages 9999 "END" 0 '(999) "" 0)) ;BadEnd用ページ
 

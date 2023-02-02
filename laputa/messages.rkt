@@ -7,19 +7,19 @@
 
 
 ;分離式戦闘用メッセージ
-(define *battle-messages* '((appear . "敵~aが現れた!~%")
-                           (attack . "パズーは~aに打ちかかった!~%")
+(define *battle-messages* '((appear . "敵~aが現れた!")
+                           (attack . "パズーは~aに打ちかかった!")
                            (damagep . "パズーは優勢だ!")
-                           (damagedp . "パズーは劣勢だ!~%")
-                           (tie . "互角!~%")
-                           (status . "攻撃力~a[+~a] 体力(~a)~%")
-                           (turn . "第~aターン~%")
-                           (select . "敵だ！どの武器を使う？~%")
-                           (win . "パズーは~aを打ち倒した!!~%")))
+                           (damagedp . "パズーは劣勢だ!")
+                           (tie . "互角!")
+                           (status . "攻撃力~a[+~a] 体力(~a)")
+                           (turn . "第~aターン")
+                           (select . "敵だ！どの武器を使う？")
+                           (win . "パズーは~aを打ち倒した!!")))
 
-(define *item-messages* '((select . "どのアイテムを使う?~%")
-                          (use . "パズーは~aを使った~%")
-                          (heal . "パズーは基本点を~a回復した~%")
+(define *item-messages* '((select . "どのアイテムを使う?")
+                          (use . "パズーは~aを使った")
+                          (heal . "パズーは基本点を~a回復した")
                           ))
 
 
