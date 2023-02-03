@@ -37,14 +37,16 @@
       (+ (random 1 7) (saikoro (- times 1)))))
 
 
-;サイコロ007関数 test
+;(define P007 (pages 007 "SAI007" 0 '(999) (bitmap/file "picture/007.png") '("Ac" 050 028)))
+;サイコロ007関数 OK
 (define (sai007 env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+        (newline)
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro 2)))
-          (if (<= deme Ac)
+          (if (>= deme Ac)
               (begin (HEK) (display-G (format (cdr (assoc 'kakuritu *main-messages*)) deme (cadr Arg)))
                      (HEK) (main-read
                             (master (cadr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track))))
@@ -53,16 +55,14 @@
                             (master (caddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track)))))))))
 
 
-(define P006 (pages 006 "SAI006" 0 '(999) (bitmap/file "picture/006.png") '(3 10 053 040)))
-
-;test
-(define (sai006 env)
+;(define P006 (pages 006 "SAI006" 0 '(999) (bitmap/file "picture/006.png") '(3 10 053 040)))
+(define (sai006 env) ;OK
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*)))) (newline)
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro (car Arg))))
-          (if (<= deme (cadr Arg))
+          (if (>= deme (cadr Arg))
               (begin (HEK) (display-G (format (cdr (assoc 'kakuritu *main-messages*)) deme (caddr Arg)))
                      (HEK) (main-read
                             (master (caddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track))))
@@ -71,20 +71,19 @@
                             (master (cadddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track)))))))))
 
 
-;(define P022 (pages 022 "SAI22" 0 '(999) (bitmap/file "picture/022.png") '('ZORO '(3 11) 29 34)))
 
-;test
-(define (sai022 env)
+;(define P020 (pages 020 "SAI022" 0 '(999) (bitmap/file "picture/020.png") '('ZORO '(3 11) 29 34)))
+(define (sai022 env) ;OK
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*)))) (newline)
                  (display-G "サイコロコロコロ・・")
         (let* ((deme1 (saikoro 1)) (deme2 (saikoro 1)) (deme3 (+ deme1 deme2)))
           (if (or (= deme1 deme2) (member deme3 (cdr Arg)))
               (begin (HEK) (display-G (format (cdr (assoc 'kakuritu2 *main-messages*)) deme1 deme2 (caddr Arg)))
                 (HEK) (main-read
                             (master (caddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track))))
-              (begin (HEK) (display-G (format (cdr (assoc 'kakuritu2 *main-messages*)) deme1 deme2 (caddr Arg)))
+              (begin (HEK) (display-G (format (cdr (assoc 'kakuritu2 *main-messages*)) deme1 deme2 (cadddr Arg)))
                 (HEK) (main-read
                             (master (cadddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track)))))))))
 
@@ -95,7 +94,7 @@
 (define (sai033 env)
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*)))) (newline)
                  (display-G "サイコロコロコロ・・")
         (let ((deme (saikoro (car Arg))))
           (if (member deme (cadr Arg))
@@ -106,19 +105,28 @@
                      (HEK) (main-read
                             (master (cadddr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage #t Cturn Choice (cons Page Track)))))))))            
 
-;test
-(define (sai153 env) 
+
+(define (sai153 env) ;OK
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
-                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
-                 (display-G "サイコロコロコロ・・")
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*)))) (newline)
         (let ((deme (saikoro 1)))
+         (display-G (format (cdr (assoc 'saikoro *main-messages*)) deme)) (HEK)
           (case deme
             ((1 2 3) (main-read (master (car C-list) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track))))
             ((4 5) (main-read (master (cadr C-list) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track))))
             ((6) (main-read (master (caddr C-list) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track)))))))))
 
 
+(define (saioe env) ;OK
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
+      (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*)))) (newline)
+        (let ((deme (saikoro 1)))
+         (display-G (format (cdr (assoc 'saikoro *main-messages*)) deme)) (HEK)
+          (if (odd? deme)
+              (main-read (master (car Arg) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track)))
+              (main-read (master (cadr Arg) Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice (cons Page Track))))))))
  
 ;ステータスチェック関数 OK
 (define (check-status env)
@@ -473,12 +481,38 @@
                 (("END") (end env))
                 (("RESET") (reset env))
                 (("SAIDO") (saido env))
-                (("SC") (special-check env)))))))))
+                (("SC") (special-check env))
+                (("SAI007") (sai007 env))
+                (("SAI006") (sai006 env))
+                (("SAI022") (sai022 env))
+                (("SAI033") (sai033 env))
+                (("SAI153") (sai153 env))
+                (("SAIoe") (saioe env))
+                (("N") (main-read (master Page Hp Ac Buki Bougu Equip
+                                            '()
+                                            0 #f 1 Choice Track))))))))))
                 
-                                    
+(define (main-input env)
+  (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
+        (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
+                     (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
+          (display Pimage) (newline)
+          (for-each display (cons "[0:アイテムを見る]" (map (match-lambda (`(,index . ,num) (format "[~a:~a]" index num)))
+                                 (enumerate C-list 1)))) (newline)
+               (let ((num (read)))
+                (case num
+            ((compose not number) (main-input env))
+            ((or (< num 0) (> num (length C-list))) (main-input env))
+            ((= 0 num) (for-each display
+                                 (filter (lambda (x) ((compose not zero?) (cdr x))) Equip)) (newline)
+                       (display "[AnyKey:戻る]") (newline)
+                       (let ((end (read)))
+                         (cond (((compose not null?) end)  (main-input env)) (else (main-input env)))))
+            (else (main-read (master (list-ref C-list (- num 1))
+                                     Hp Ac Buki Bougu Equip '() 0 #t 1 0 (cons Ppage Track)))))))))
 
 
-(define env (master 259 12 10 '() '() *equip* '() 0 #t 0 0 '(254)))
-(main-read env)
+(define env (master 022 12 10 '() '() *equip* '() 0 #t 0 0 '(254)))
+(main-input env)
 
 
