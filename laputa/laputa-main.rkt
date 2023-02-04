@@ -398,8 +398,9 @@
   (if (null? Enemies)
               (main-read (master Page Hp Ac '() Bougu (equip-change Equip (item-Iname Buki) -1) '() 0 #f 1 0 Track))
          (begin (wait) (newline)
-                (display-G (format "~aが現れた!" (enemy-Ename (car Enemies))))
-                (display (enemy-Eimage (car Enemies))) (HEK)
+                (display (enemy-Eimage (car Enemies))) (newline)
+                (display-G (format "~aが現れた!" (enemy-Ename (car Enemies)))) (newline)
+                (sleep 3)
              (case Page-num
                     ((259) (battle-eval-M (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track))) ;ムスカ
                      (else (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track)))))))))
@@ -512,7 +513,7 @@
                                      Hp Ac Buki Bougu Equip '() 0 #t 1 0 (cons Ppage Track)))))))))
 
 
-(define env (master 022 12 10 '() '() *equip* '() 0 #t 0 0 '(254)))
-(main-input env)
+(define env (master 152 12 10 '() '() *equip* '() 0 #t 0 0 '(254)))
+(main-read env)
 
 
