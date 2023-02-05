@@ -376,7 +376,7 @@
 ;バトルSET関数 OK
 (define (battle-set env) 
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
-        (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) ;(list-ref *page-list* Page)))
+        (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (newline)
             (display-G (format (cdr (assoc 'select *battle-messages*)))) 
@@ -396,11 +396,12 @@
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
   (if (null? Enemies)
-              (main-read (master Page Hp Ac '() Bougu (equip-change Equip (item-Iname Buki) -1) '() 0 #f 1 0 Track))
+              (begin (newline) (display-G (format "パズーはすべての敵を打ち倒した！~aへ"　(car C-list))) (HEK)
+                     (main-read (master (car C-list) Hp Ac '() Bougu (equip-change Equip (item-Iname Buki) -1) '() 0 #t 1 0 Track)))
          (begin (wait) (newline)
                 (display (enemy-Eimage (car Enemies))) (newline)
                 (display-G (format "~aが現れた!" (enemy-Ename (car Enemies)))) (newline)
-                (sleep 3)
+                (sleep 1)
              (case Page-num
                     ((259) (battle-eval-M (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track))) ;ムスカ
                      (else (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track)))))))))
@@ -417,7 +418,8 @@
                 (case num
             ((compose not number) (battle-eval-M env))
             ((or (<= num 0) (> num (length (filter (lambda (x) (member x Track)) C-list)))) (battle-eval-M env))
-            ((= num 2) (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
+            ((= num 2) (display (bitmap/file "picture/pazul.png")) (newline)
+             (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
                                     (battle-loop (master Page Hp Ac Buki Bougu
                            (equip-change Equip "ランチャーの弾" -1) Enemies (+ 1 Cdamage) #f (+ 1 Cturn) Choice Track)))
             ((= num 1)
@@ -433,12 +435,14 @@
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (let ((pazuP (+ Ac (item-Point Buki) (random 1 7))) (enemyP (+ (enemy-Eac (car Enemies)) (random 1 7))))
-            (display-G (format (cdr (assoc 'attack *battle-messages*)) (enemy-Ename (car Enemies)))) (sleep 1)
+            (display-G (format (cdr (assoc 'attack *battle-messages*)) (enemy-Ename (car Enemies)))) (sleep 1) (newline)
             (cond ((= pazuP enemyP) (display-G (cdr (assoc 'tie *battle-messages*))) (HEK)
                                     (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))
-                  ((> pazuP enemyP) (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
+                  ((> pazuP enemyP) (display (bitmap/file "picture/pazu.png")) (newline)
+                   (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
                                     (battle-loop (master Page Hp Ac Buki Bougu Equip Enemies (+ 1 Cdamage) Event (+ 1 Cturn) Choice Track)))
-                  (else (display-G (cdr (assoc 'damagedp *battle-messages*))) (HEK)
+                  (else (display (bitmap/file "picture/pazu3.png")) (newline)
+                   (display-G (cdr (assoc 'damagedp *battle-messages*))) (HEK)
                                     (battle-loop (master Page Hp Ac Buki Bougu Equip
                                                          Enemies Cdamage Event (+ 1 Cturn) (+ 1 Choice) Track))))))))
 
@@ -450,9 +454,10 @@
           (if (or (= Arg Cdamage) (= Arg Choice))
               (if (> Cdamage Choice)
                 (begin (display-G (format (cdr (assoc 'win *battle-messages*)) (enemy-Ename (car Enemies))))
-                                        (battle-read (master Page Hp Ac Buki Bougu Equip (cdr Enemies) 0 #f 0 0 Track)))
+                                        (battle-read (master Page Hp Ac Buki Bougu Equip (cdr Enemies) 0 #t 0 0 Track)))
+                (begin (display-G (format "パズーは敵に打倒された・・~aへ" (cadr C-list))) (HEK)
                          (main-read (master (cadr C-list) Hp Ac '() Bougu
-                                                       (equip-change Equip (item-Iname Buki) -1) '() 0 #t 1 0 Track)))
+                                                       (equip-change Equip (item-Iname Buki) -1) '() 0 #t 1 0 Track))))
                    (if (= Page-num 259)
                        (battle-eval-M (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track))
                       (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))))))
@@ -464,9 +469,9 @@
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (if (member Page Track)
-             (display "main-inputA"); (main-input env)
+             (begin (newline) (main-input (master Page Hp Ac Buki Bougu Equip Enemies 0 #f 1 0 Track)))
               (if (not Event)
-                  (display "main-inputB") ;(main-input env)
+                  (begin (newline) (main-input (master Page Hp Ac Buki Bougu Equip Enemies 0 #f 1 0 Track)))
               (begin
                 (display Pimage)
               (case Flag
@@ -498,6 +503,7 @@
         (match-let (((pages Page-num Flag Ppage C-list Pimage Arg) 
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (display Pimage) (newline)
+          (display (format "[基本点:~a] [行動点:~a]~%" Hp Ac))
           (for-each display (cons "[0:アイテムを見る]" (map (match-lambda (`(,index . ,num) (format "[~a:~a]" index num)))
                                  (enumerate C-list 1)))) (newline)
                (let ((num (read)))
