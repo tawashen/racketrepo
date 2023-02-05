@@ -24,7 +24,6 @@
 
 (define *equip* '(
                   ("素手" . +inf.0)
-                  ("素肌" . +inf.0)
                   ("万能ナイフ" . 1)
                   ("ロウソク" . 1)
                   ("マッチ" . 1)
@@ -68,5 +67,11 @@
                           (enumerate (buki-list lst) 1))))
 
 ;(buki-show *equip*)
+
+(define *pic-list* '())
+
+(define *item-table*
+  (make-hash (map (lambda (x y) (cons (car x) y) *equip* *pic-list*))))
+
 
 
