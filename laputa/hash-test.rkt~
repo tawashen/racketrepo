@@ -1,5 +1,7 @@
 #lang racket
 
+#lang racket
+
 (require srfi/1)
 (require srfi/13)
 
@@ -70,3 +72,5 @@
 ;(buki-show *equip*)
 
 
+(define *item-table* (hash))
+(hash-set *item-table* (
