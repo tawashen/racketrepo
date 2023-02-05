@@ -90,7 +90,7 @@
 (define (HEK)
   (newline)
   (display "Hit Enter-key!") (newline)
-  (let ((key (read-line)))
+  (let ((key (read)))
     (if (string=? "" key) (newline)
         HEK)))
 

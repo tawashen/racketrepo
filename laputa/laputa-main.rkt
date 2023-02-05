@@ -276,7 +276,7 @@
   (match-let (((master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track) env))
       (match-let (((pages Page-num Flag Ppage C-list Pimage Arg)
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
-                   (display-G "おびただしいりゅうけつ！　あたなはしにました"))))
+                   (display-G "おびただしいりゅうけつ！　パズーの冒険はここまでだ・・"))))
 
 
 ;(define P125 (pages 125 "RESET" 0 '(102) (bitmap/file "picture/125.png") '("スパナ" "モンキー" "レンチ")))
@@ -401,7 +401,7 @@
          (begin (wait) (newline)
                 (display (enemy-Eimage (car Enemies))) (newline)
                 (display-G (format "~aが現れた!" (enemy-Ename (car Enemies)))) (newline)
-                (sleep 1)
+                (sleep 2)
              (case Page-num
                     ((259) (battle-eval-M (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track))) ;ムスカ
                      (else (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies 0 #t Cturn 0 Track)))))))))
@@ -419,7 +419,7 @@
             ((compose not number) (battle-eval-M env))
             ((or (<= num 0) (> num (length (filter (lambda (x) (member x Track)) C-list)))) (battle-eval-M env))
             ((= num 2) (display (bitmap/file "picture/pazul.png")) (newline)
-             (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
+             (display-G (cdr (assoc 'damagep *battle-messages*))) (sleep 1)
                                     (battle-loop (master Page Hp Ac Buki Bougu
                            (equip-change Equip "ランチャーの弾" -1) Enemies (+ 1 Cdamage) #f (+ 1 Cturn) Choice Track)))
             ((= num 1)
@@ -436,13 +436,15 @@
                      (car (filter (lambda (x) (= (pages-Page-num x) Page)) *page-list*))))
           (let ((pazuP (+ Ac (item-Point Buki) (random 1 7))) (enemyP (+ (enemy-Eac (car Enemies)) (random 1 7))))
             (display-G (format (cdr (assoc 'attack *battle-messages*)) (enemy-Ename (car Enemies)))) (sleep 1) (newline)
-            (cond ((= pazuP enemyP) (display-G (cdr (assoc 'tie *battle-messages*))) (HEK)
+            (display (format "パズー:~a VS ~a:~a~%" pazuP (enemy-Ename (car Enemies)) enemyP)) (sleep 2)
+            (cond ((= pazuP enemyP) 
+                   (display-G (cdr (assoc 'tie *battle-messages*))) (newline) (sleep 2)
                                     (battle-eval (master Page Hp Ac Buki Bougu Equip Enemies Cdamage Event Cturn Choice Track)))
                   ((> pazuP enemyP) (display (bitmap/file "picture/pazu.png")) (newline)
-                   (display-G (cdr (assoc 'damagep *battle-messages*))) (HEK)
+                   (display-G (cdr (assoc 'damagep *battle-messages*))) (newline) (sleep 2) 
                                     (battle-loop (master Page Hp Ac Buki Bougu Equip Enemies (+ 1 Cdamage) Event (+ 1 Cturn) Choice Track)))
-                  (else (display (bitmap/file "picture/pazu3.png")) (newline)
-                   (display-G (cdr (assoc 'damagedp *battle-messages*))) (HEK)
+                  (else (display (bitmap/file "picture/pazu3.png")) (newline) (sleep 2)
+                   (display-G (cdr (assoc 'damagedp *battle-messages*))) (newline) (sleep 2)
                                     (battle-loop (master Page Hp Ac Buki Bougu Equip
                                                          Enemies Cdamage Event (+ 1 Cturn) (+ 1 Choice) Track))))))))
 
