@@ -514,15 +514,18 @@
             ((compose not number) (main-input env))
             ((or (< num 0) (> num (length C-list))) (main-input env))
             ((= 0 num) (for-each display
-                                 (filter (lambda (x) ((compose not zero?) (cdr x))) Equip)) (newline)
-                       (display "[AnyKey:戻る]") (newline)
+                                 (map (match-lambda (`(,name . ,val) (format "[~a:~a]" name val)))
+                                 ;                    (flatten (cons (format "[~a:~a]" name val) (hash-ref *item-table* name)))))
+                                  ;    (filter (lambda (x) ((compose not zero?) (cdr x))) Equip)))
+                       (filter (lambda (x) ((compose not zero?) (cdr x))) Equip)))
+                      (newline) (display "[AnyKey:戻る]") (newline)
                        (let ((end (read)))
                          (cond (((compose not null?) end)  (main-input env)) (else (main-input env)))))
             (else (main-read (master (list-ref C-list (- num 1))
                                      Hp Ac Buki Bougu Equip '() 0 #t 1 0 (cons Ppage Track)))))))))
 
 
-(define env (master 152 12 10 '() '() *equip* '() 0 #t 0 0 '(254)))
+(define env (master 003 12 10 '() '() *equip* '() 0 #t 0 0 '(254)))
 (main-read env)
 
 

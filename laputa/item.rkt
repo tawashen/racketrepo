@@ -2,7 +2,7 @@
 
 (require srfi/1)
 (require srfi/13)
-
+(require 2htdp/image)
 (provide (all-defined-out))
 
 (require "util.rkt")
@@ -68,10 +68,34 @@
 
 ;(buki-show *equip*)
 
-(define *pic-list* '())
+(define *pic-list* `(
+                     ,(bitmap/file "picture/a.png")
+                     ,(bitmap/file "picture/b.png")
+                     ,(bitmap/file "picture/c.png")
+                     ,(bitmap/file "picture/d.png")
+                     ,(bitmap/file "picture/e.png")
+                     ,(bitmap/file "picture/f.png")
+                     ,(bitmap/file "picture/g.png")
+                     ,(bitmap/file "picture/h.png")
+                     ,(bitmap/file "picture/i.png")
+                     ,(bitmap/file "picture/j.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/k.png")
+                     ,(bitmap/file "picture/l1.png")
+                     ,(bitmap/file "picture/l2.png")
+                     ,(bitmap/file "picture/l3.png")
+                     ,(bitmap/file "picture/l4.png")
+                     ,(bitmap/file "picture/l5.png")
+                     ,(bitmap/file "picture/l6.png")
+                     ))
 
 (define *item-table*
-  (make-hash (map (lambda (x y) (cons (car x) y) *equip* *pic-list*))))
+  (make-hash (map (lambda (x y) (cons (car x) y)) *equip* *pic-list*)))
 
-
+;(hash-ref *item-table* "P148の鍵B")
 
