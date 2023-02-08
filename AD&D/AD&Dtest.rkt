@@ -12,7 +12,7 @@
 
 ;選択肢の毎回の省略
 (define (sentakusi-num? num lst) 
-  (cond ((or (< num 0) (> num (length lst))) #f)
+  (cond ((or (< num 1) (> num (length lst)) ((compose not number?) num)) #f)
         (else #t)))
 
 ;構造体とインスタンス作成
@@ -40,8 +40,7 @@
             (begin (display "input your name") (newline)
                    (let ((name (symbol->string (read))))
                      (class-check
-                     (CHARACTER name RACE "" "" 0 hp ac 0 money move str int wis dex con chr))))
-   
+                     (CHARACTER name RACE "" "" 1 hp ac 0 money move str int wis dex con chr))))
             (chara-make race)))))))
 
 (struct CLASS (NAME REQUIRE))
@@ -68,30 +67,32 @@
                                                  `((Str . ,Str) (Int . ,Int) (Wis . ,Wis) (Dex . ,Dex))))
           (list (map CLASS-NAME (flatten (map (lambda (x)
                                          (filter (lambda (y) (symbol=? (car x) (CLASS-REQUIRE y)))
-                                                 *class-list*)) ability-list)))))
-      (case Race
-         (("HUMAN") (for-each display
+                                                 (case Race
+                                                   (("HUMAN") *class-list-human*)
+                                                   (("ELF") *class-list-elf*)))) ability-list)))))
+                 (for-each display
                               (map (match-lambda (`(,index . ,name)
                                    (format "[~a:~a]" index name)))         
-                          (enumerate list 1))))
-        (("ELF") (for-each display
-                              (map (match-lambda (`(,index . ,name)
-                                   (format "[~a:~a]" index name)))         
-                          (enumerate list 1))))))))
-#|    
-      (display ("No?")) (newline)
-      (let ((choice-class (read)))
-        (cond ((sentakusi-num? choice-class (map CLASS-NAME (flatten (map (lambda (x)
-                                         (filter (lambda (y) (symbol=? (car x) (CLASS-REQUIRE y)))
-                                                 *class-list*)) ability-list))))
-        )))) |#
-      ;  (display "NO")))))
-        
-(chara-make HUMAN)
+                          (enumerate list 1))) (newline)
+      (display "No?") (newline)
+      (let ((choice-class (string->number (read-line))))
+        (cond (((compose not number?) choice-class) (class-check chara))
+              ((> choice-class (length list)) (class-check chara))
+              ((< choice-class 1) (class-check chara))
+              (else (to-chara-list (CHARACTER Name Race (list-ref list (- choice-class 1)) Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr))))))))
 
-;(map CLASS-NAME (flatten (chara-make HUMAN)))
+(define (to-chara-list chara)
+  (match-let (((CHARACTER Name Race Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) chara))
+    (display "confirm [y]es or [n]o?") (newline)
+      (let ((yes-no (read)))
+        (if (symbol=? yes-no 'y)
+            (cons chara *chara-list*)
+            (chara-make Race)))))
+    
+    
 
 
+(chara-make ELF)
 
 
 
