@@ -52,14 +52,6 @@
 (define *class-list-elf* `(,FIGHTER ,MAGIC-USER ,THIEF))
 
 
-
-
-#|
-(define (check-status lst)
-  (if (>= (cadr lst) 13)
-      (car lst) #f))
-|#
-
 (define (class-check chara)
   (match-let (((CHARACTER Name Race Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) chara))
     (let* ((class-list '())
@@ -79,7 +71,9 @@
         (cond (((compose not number?) choice-class) (class-check chara))
               ((> choice-class (length list)) (class-check chara))
               ((< choice-class 1) (class-check chara))
-              (else (to-chara-list (CHARACTER Name Race (list-ref list (- choice-class 1)) Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr))))))))
+              (else (to-chara-list
+                     (CHARACTER Name Race (list-ref list (- choice-class 1))
+                                Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr))))))))
 
 (define (to-chara-list chara)
   (match-let (((CHARACTER Name Race Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) chara))
