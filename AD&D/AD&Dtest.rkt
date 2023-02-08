@@ -1,6 +1,7 @@
 #lang racket
 
 ;utility
+;Enumerate
 (define enumerate
  (case-lambda
   ((seq) (enumerate seq 0))
@@ -8,6 +9,11 @@
            (cons x y))
           (range start (+ (length seq) start))
           seq))))
+
+;選択肢の毎回の省略
+(define (sentakusi-num? num lst) 
+  (cond ((or (< num 0) (> num (length lst))) #f)
+        (else #t)))
 
 ;構造体とインスタンス作成
 (struct ABILITY (RACE STR INT WIS DEX CON CHR))
@@ -35,6 +41,7 @@
                    (let ((name (symbol->string (read))))
                      (class-check
                      (CHARACTER name RACE "" "" 0 hp ac 0 money move str int wis dex con chr))))
+   
             (chara-make race)))))))
 
 (struct CLASS (NAME REQUIRE))
@@ -42,7 +49,11 @@
 (define MAGIC-USER (CLASS "MAGIC-USER" 'Int))
 (define CLERIC (CLASS "CLERIC" 'Wis))
 (define THIEF (CLASS "THIEF" 'Dex))
-(define *class-list* `(,FIGHTER ,MAGIC-USER ,CLERIC ,THIEF))
+(define *class-list-human* `(,FIGHTER ,MAGIC-USER ,CLERIC ,THIEF))
+(define *class-list-elf* `(,FIGHTER ,MAGIC-USER ,THIEF))
+
+
+
 
 #|
 (define (check-status lst)
@@ -52,16 +63,28 @@
 
 (define (class-check chara)
   (match-let (((CHARACTER Name Race Class Ali Lv Hp Ac Exp Money Move Str Int Wis Dex Con Chr) chara))
-    (let ((class-list '()) (ability-list (filter (lambda (abi) (>= (cdr abi) 13))
-                                                 `((Str . ,Str) (Int . ,Int) (Wis . ,Wis) (Dex . ,Dex)))))
-  ;  (if (string=? Race "HUMAN")
+    (let* ((class-list '())
+          (ability-list (filter (lambda (abi) (>= (cdr abi) 13))
+                                                 `((Str . ,Str) (Int . ,Int) (Wis . ,Wis) (Dex . ,Dex))))
+          (list (map CLASS-NAME (flatten (map (lambda (x)
+                                         (filter (lambda (y) (symbol=? (car x) (CLASS-REQUIRE y)))
+                                                 *class-list*)) ability-list)))))
       (case Race
          (("HUMAN") (for-each display
                               (map (match-lambda (`(,index . ,name)
                                    (format "[~a:~a]" index name)))         
-                          (enumerate (map CLASS-NAME (flatten (map (lambda (x)
+                          (enumerate list 1))))
+        (("ELF") (for-each display
+                              (map (match-lambda (`(,index . ,name)
+                                   (format "[~a:~a]" index name)))         
+                          (enumerate list 1))))))))
+#|    
+      (display ("No?")) (newline)
+      (let ((choice-class (read)))
+        (cond ((sentakusi-num? choice-class (map CLASS-NAME (flatten (map (lambda (x)
                                          (filter (lambda (y) (symbol=? (car x) (CLASS-REQUIRE y)))
-                                                 *class-list*)) ability-list))) 1))))))))
+                                                 *class-list*)) ability-list))))
+        )))) |#
       ;  (display "NO")))))
         
 (chara-make HUMAN)
