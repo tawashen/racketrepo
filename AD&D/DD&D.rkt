@@ -34,10 +34,9 @@
         (let ((ness-abi-list (case RACE
                       (("ELF") `(,str ,int ,dex))
                       (("HUMAN") `(,str ,int ,wis ,dex)))))
-        (cond ((string=? "ELF" RACE)
                (if (for/or ((i ness-abi-list)) (i . > . 12))
                    (disp-class-menu `(,str ,int ,wis ,dex ,con ,chr ,hp ,ac ,money ,move ,RACE))
-                   (chara-make race)))))))))
+                   (chara-make race)))))))
 
 (define (disp-class-menu env)
   (match-let (((list str int wis dex con chr hp ac money move RACE) env))
@@ -51,9 +50,9 @@
                    (let ((name (symbol->string (read))))
                      (class-check
                      (CHARACTER name RACE "" "" 1 hp ac 0 money move '() '() '() str int wis dex con chr))))
-            (chara-make (case RACE
-                                                (("ELF") (chara-make ELF))
-                                                (("HUMAN") (chara-make HUMAN))))))))
+            (case RACE
+                       (("ELF") (chara-make ELF))
+                       (("HUMAN") (chara-make HUMAN)))))))
 
 (struct CLASS (NAME REQUIRE))
 (define FIGHTER (CLASS "FIGHTER" 'Str))
