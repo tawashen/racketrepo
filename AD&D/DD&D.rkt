@@ -31,6 +31,16 @@
     (match-let (((list str int wis dex con chr)
                  (map (lambda (x) (+ x (+ (random 1 7) (random 1 7) (random 1 7)))) `(,STR ,INT ,WIS ,DEX ,CON ,CHR))))
       (let ((hp (+ (random 1 10) CON)) (ac (- 10 DEX)) (money (* 10 (random 5 15))) (move (+ (random 5 8) DEX)))
+        (let ((ness-abi-list (case RACE
+                      (("ELF") `(,str ,int ,dex))
+                      (("HUMAN") `(,str ,int ,wis ,dex)))))
+        (cond ((string=? "ELF" RACE)
+               (if (for/or ((i ness-abi-list)) (i . > . 12))
+                   (disp-class-menu `(,str ,int ,wis ,dex ,con ,chr ,hp ,ac ,money ,move ,RACE))
+                   (chara-make race)))))))))
+
+(define (disp-class-menu env)
+  (match-let (((list str int wis dex con chr hp ac money move RACE) env))
               (display (format "STR:~a INT:~a WIS:~a DEX:~a CON:~a CHR:~a" str int wis dex con chr))
         (newline)
               (display (format "HP:~a AC:~a MONEY:~a MOVE:~a" hp ac money move))
@@ -41,7 +51,9 @@
                    (let ((name (symbol->string (read))))
                      (class-check
                      (CHARACTER name RACE "" "" 1 hp ac 0 money move '() '() '() str int wis dex con chr))))
-            (chara-make race)))))))
+            (chara-make (case RACE
+                                                (("ELF") (chara-make ELF))
+                                                (("HUMAN") (chara-make HUMAN))))))))
 
 (struct CLASS (NAME REQUIRE))
 (define FIGHTER (CLASS "FIGHTER" 'Str))
