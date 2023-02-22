@@ -1,6 +1,6 @@
 #lang racket
 
-;#;
+#|
 (define-syntax varivariant
   (syntax-rules ()
     ((_ id) (if (number? id) 'number
@@ -10,10 +10,14 @@
                               (if struct? id)
                               (with-handlers ([exn:fail
                               ;ここでエラーを起こしてエラーメッセージを捉えたい              
-                'void))))))
-                
+                'void))))))))))
+ |#               
 
-(varivariant )
+(struct tawa (name adress))
+(define ore (tawa "tawa" "hosida"))
+ore
+
+
 
 
 
