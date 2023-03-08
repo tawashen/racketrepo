@@ -15,12 +15,12 @@
 
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
-         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 6 10 0 90 6 `(,B001) `(A001) `(S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
-         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 1 10 0 90 5 `(,B001) `(A001) `(S001) '() '() 17 10 12 8 15 14) . ,(make-posn '93 '93))
+         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 6 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
+         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 1 10 0 90 '(5 . 5) `(,B001) `(,A001) `(,S001) '() '() 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
-         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 100 10 0 90 3 '() '() '() '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
-         (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 1 100 0 90 3 '() '() '() '() '() 10 10 10 2 10 10) . ,(make-posn '217 '217)))
+         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 100 10 0 90 '(3 . 3) '() '() '() '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
+         (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 1 100 0 90 '(3 . 3) '() '() '() '() '() 10 10 10 2 10 10) . ,(make-posn '217 '217)))
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
@@ -62,7 +62,7 @@
             (begin (display "input your name") (newline)
                    (let ((name (read-line)))
                      (class-check
-                     (HERO name "" RACE "" "" 1 hp ac 0 money move '() '() '() '() str int wis dex con chr))))
+                     (HERO name "" RACE "" "" 1 hp ac 0 money (cons move move) '() '() '() '() str int wis dex con chr))))
             (case RACE
                        (("ELF") (chara-make ELF))
                        (("HUMAN") (chara-make HUMAN)))))))
@@ -153,36 +153,37 @@
                           (symbol=? 'ENEMY (variant (car x)))) (cdr (BATTLE-C-LIST w)))))
               (fight x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac
                      Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
-              (else (let ((new-move (- Move 1))) ;何もなければ移動
-                          (case new-move
+              (else (let ((new-move (cons (- (car Move) 1) (cdr Move)))) ;何もなければ移動
+                          (case (car new-move)
                               ((0) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
-                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money 5 Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr Move) (cdr Move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
                               (else (cons (cons
-                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money new-move Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money (cons (car new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons (+ x x-dir) (+ y y-dir)))) (cdr (BATTLE-C-LIST w)))))))))
 
 
 
 ;ENEMY移動先チェック関数
-(define (to-check x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-          (let ((new-move (- Move 1)))
-              (case new-move
+(define (to-check x x-dir y y-dir w Name Image Race Class Ali
+                  Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+          (let ((new-move (cons (- (car Move) 1) (cdr Move))))
+              (case (car new-move)
                        ((0) ;動いたら移動力ゼロの場合
                               (cond
                                  ((member (d-pair->posn (cons (+ x x-dir) (+ y y-dir))) ;移動先がENEMYなら移動しないで次のキャラへ
                     (map cdr (filter (lambda (x)
                           (symbol=? 'ENEMY (variant (car x)))) (cdr (BATTLE-C-LIST w)))))
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money 3 Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr Move) (cdr Move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                  ((member (cons (+ x x-dir) (+ y y-dir))  *map-posn*) ;移動先が石なら移動しないで次のキャラへ
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money 3 Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr Move) (cdr Move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                   (else ;移動できるが残り移動力が0なら移動後に移動力をリセットして次のキャラへ
                                  `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money 3 Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))))
                          (else ;動いても移動力が残っている場合
                                (cond
@@ -190,26 +191,29 @@
                     (map cdr (filter (lambda (x)
                           (symbol=? 'ENEMY (variant (car x)))) (cdr (BATTLE-C-LIST w)))))
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money 3 Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                  ((member (cons (+ x x-dir) (+ y y-dir))  *map-posn*) ;移動先が石なら移動しないで次のキャラへ
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money 3 Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                  (else ;移動できて移動力が残っているなら左右へ動く
                                  (cons (cons
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money new-move Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (car new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                  (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
                  (cdr (BATTLE-C-LIST w)))))))))
 
 ;ENEMY追跡行動
-(define (key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+(define (key-funcE x y w Name Image Race Class Ali
+                   Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
   (if (member (posn-y (d-pair->posn (cons x y))) (map posn-y (map cdr (filter (lambda (x) ;同じX軸にHEROがいるか？
                           (symbol=? 'HERO (variant (car x)))) (cdr (BATTLE-C-LIST w))))))
       (if (< (posn-x (d-pair->posn (cons x y))) (car (sort (map posn-x (map cdr (filter (lambda (x) ;X軸の右にHEROがいるか？
                           (symbol=? 'HERO (variant (car x)))) (cdr (BATTLE-C-LIST w))))) <)))
-          (to-check x 1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-　　　　　(to-check x -1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)) 
+          (to-check x 1 y 0 w Name Image Race Class Ali
+                    Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+　　　　　(to-check x -1 y 0 w Name Image Race Class Ali
+               Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)) 
             (if (< (posn-y (d-pair->posn (cons x y))) (car (sort (map posn-y (map cdr (filter (lambda (x) ;Y軸の下にHEROがいるなら
                           (symbol=? 'HERO (variant (car x)))) (cdr (BATTLE-C-LIST w))))) <)))
                 (to-check x 0 y 1 w Name Image Race Class Ali Lv Hp Ac
