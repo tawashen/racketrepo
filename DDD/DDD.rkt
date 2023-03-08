@@ -127,7 +127,7 @@
     (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) *background*
     (map (lambda (x) 
          `(,(if (< 0 (CHARACTER-Hp (car x))) (CHARACTER-Image (car x)) "")
-           ,(posn-x (cdr x)) ;H-POSI-LISTからx座標を取り出す
+           ,(posn-x (cdr x))
            ,(posn-y (cdr x))))
          C-LIST)))))
 
@@ -213,10 +213,11 @@
 
 ;近接戦闘処理
 (define (fight x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-  (let ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
+  (let* ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
+                                                               (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
                                                       ;↓移動先のキャラを特定して読み込む
           (Target (car (filter (lambda (z)
-                                 (equal?  (cdr z) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))) (BATTLE-C-LIST w)))))
+                                 (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((ENEMY EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
       (let ((damage (if C-flag
