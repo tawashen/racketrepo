@@ -237,7 +237,9 @@
                         (if hit? (+ (* (BUKI-BdamageM (car Arm)) (BUKI-Bcrit (car Arm))) (Mbonus Str))                           
                             (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)))
                         (if hit? (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)) 0)))) 
-        (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
+        (if (< 0 damage) #;(set-BATTLE-E-ZAHYO! w teki-zahyo) #;(set-BATTLE-E-ZAHYO! w #f)
+            (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w) (BATTLE-EXP w) teki-zahyo)
+            (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w) (BATTLE-EXP w) #f))
         (let ((new-EHp (- EHp damage))) 
           (cond  ((< 0 new-EHp)
               (let ((new-target (cons (ENEMY EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
