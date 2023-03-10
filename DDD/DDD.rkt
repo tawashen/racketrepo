@@ -15,12 +15,12 @@
 
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
-         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 6 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
-         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 1 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 17 10 12 8 15 14) . ,(make-posn '93 '93))
+         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(6 . 6) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
+         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(3 . 3) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
-         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 100 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
-         (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 1 100 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '217 '217)))
+         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
+         (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(3 . 3) 100 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '217 '217)))
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
@@ -129,17 +129,17 @@
 (define (place-character w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
     (if E-ZAHYO
-    (place-image (circle 32 "solid" "red") (posn-x (BATTLE-E-ZAHYO w)) (posn-y (BATTLE-E-ZAHYO w)) (place-image (square 64 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
+    (place-image (circle 31 "solid" "red") (posn-x (BATTLE-E-ZAHYO w)) (posn-y (BATTLE-E-ZAHYO w)) (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
     (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) *background*
     (map (lambda (x) 
-         `(,(if (< 0 (CHARACTER-Hp (car x))) (CHARACTER-Image (car x)) "")
+         `(,(if (< 0 (car (CHARACTER-Hp (car x)))) (CHARACTER-Image (car x)) "")
            ,(posn-x (cdr x))
            ,(posn-y (cdr x))))
          C-LIST))))
-    (place-image (square 64 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
+    (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
     (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) *background*
     (map (lambda (x) 
-         `(,(if (< 0 (CHARACTER-Hp (car x))) (CHARACTER-Image (car x)) "")
+         `(,(if (< 0 (car (CHARACTER-Hp (car x)))) (CHARACTER-Image (car x)) "")
            ,(posn-x (cdr x))
            ,(posn-y (cdr x))))
          C-LIST))))))
@@ -252,8 +252,8 @@
                             (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)))
                         (if hit? (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)) 0)))) 
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
-        (let ((new-EHp (- EHp damage))) 
-          (cond  ((< 0 new-EHp)
+        (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
+          (cond  ((< 0 (car new-EHp))
               (let ((new-target (cons (ENEMY EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
                     (let loop ((Clist (BATTLE-C-LIST w)) (new-list '()))
@@ -283,8 +283,8 @@
                             (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)))
                         (if hit? (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)) 0)))) 
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
-        (let ((new-EHp (- EHp damage))) 
-          (cond  ((< 0 new-EHp)
+        (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
+          (cond  ((< 0 (car new-EHp))
               (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
                     (let loop ((Clist (BATTLE-C-LIST w)) (new-list '()))
