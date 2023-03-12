@@ -122,14 +122,20 @@
 ;画面配置関数
 (define (place-gamen w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
-    (place-image (text (format "~a  ~%" (CHARACTER-Name (car (car C-LIST)))) 20 "white") 200 200  (place-character w))))
+    (place-image (text (format "~a  ~%" (CHARACTER-Name (car (car C-LIST)))) 20 "white") 660 30
+                     (place-image (text (format "~a  ~%" (CHARACTER-Name (car (cadr C-LIST)))) 20 "white") 660 50
+
+
+                 (place-character w)))))
     
 
 ;キャラクター配置関数
 (define (place-character w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
     (if E-ZAHYO
-    (place-image (circle 31 "solid" "red") (posn-x (BATTLE-E-ZAHYO w)) (posn-y (BATTLE-E-ZAHYO w)) (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
+    (place-image (circle 31 "solid" "red") (posn-x (BATTLE-E-ZAHYO w))
+                 (posn-y (BATTLE-E-ZAHYO w))
+                 (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
     (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) *background*
     (map (lambda (x) 
          `(,(if (< 0 (car (CHARACTER-Hp (car x)))) (CHARACTER-Image (car x)) "")
@@ -147,7 +153,8 @@
 
 
 ;キー判定関数
-(define (key-func x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+(define (key-func x x-dir y y-dir w Name Image Race Class Ali
+                  Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
         (cond
              ((member (d-pair->posn (cons (+ x x-dir) (+ y y-dir))) ;移動先がHEROなら移動しない
                     (map cdr (filter (lambda (x)
@@ -161,10 +168,12 @@
               (else (let ((new-move (cons (- (car Move) 1) (cdr Move)))) ;何もなければ移動
                           (case (car new-move)
                               ((0) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
-                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money
+                       (cons (cdr new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
                               (else (cons (cons
-                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money (cons (car new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money
+                       (cons (car new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons (+ x x-dir) (+ y y-dir)))) (cdr (BATTLE-C-LIST w)))))))))
 
 
@@ -180,11 +189,13 @@
                     (map cdr (filter (lambda (x)
                           (symbol=? 'ENEMY (variant (car x)))) (cdr (BATTLE-C-LIST w)))))
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                  ((member (cons (+ x x-dir) (+ y y-dir))  *map-posn*) ;移動先が石なら移動しないで次のキャラへ
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr Move) (cdr Move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (cdr Move) (cdr Move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                   ((member (d-pair->posn (cons (+ x x-dir) (+ y y-dir))) ;移動先がHEROなら攻撃
                     (map cdr (filter (lambda (x)
@@ -193,7 +204,8 @@
                      Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
                                   (else ;移動できるが残り移動力が0なら移動後に移動力をリセットして次のキャラへ
                                  `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))))
                          (else ;動いても移動力が残っている場合
                                (cond
@@ -201,11 +213,13 @@
                     (map cdr (filter (lambda (x)
                           (symbol=? 'ENEMY (variant (car x)))) (cdr (BATTLE-C-LIST w)))))
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                  ((member (cons (+ x x-dir) (+ y y-dir))  *map-posn*) ;移動先が石なら移動しないで次のキャラへ
                                   `(,@(cdr (BATTLE-C-LIST w)) ,(cons 
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (cdr new-move) (cdr new-move)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
                                  ((member (d-pair->posn (cons (+ x x-dir) (+ y y-dir))) ;移動先がHEROなら攻撃
                     (map cdr (filter (lambda (x)
@@ -214,7 +228,8 @@
                      Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
                                  (else ;移動できて移動力が残っているなら左右へ動く
                                  (cons (cons
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (car new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (car new-move) (cdr new-move)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                  (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
                  (cdr (BATTLE-C-LIST w)))))))))
 
@@ -240,9 +255,10 @@
 
 
 ;近接戦闘処理
-(define (fight x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+(define (fight x x-dir y y-dir w Name Image Race Class Ali Lv
+               Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
   (let* ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
-                                                               (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))                                                     
+                                           (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))                  
           (Target (car (filter (lambda (z)
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((ENEMY EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
@@ -266,14 +282,14 @@
                 (filter (lambda (z) ((compose not equal?)
                                      (cdr z) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))) (BATTLE-C-LIST w))))
            `(,@(cdr new-Clist) ,(cons
-                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr EMove) (cdr EMove)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
+                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money
+                       (cons (cdr EMove) (cdr EMove)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y))))))))))))
 
 ;近接戦闘処理ENEMY
 (define (fightE x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
   (let* ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
                                                                (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
-                                                      ;↓移動先のキャラを特定して読み込む
           (Target (car (filter (lambda (z)
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
@@ -296,7 +312,6 @@
          (let ((new-Clist
                 (filter (lambda (z) ((compose not equal?)
                                      (cdr z) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))) (BATTLE-C-LIST w))))
-
            `(,@(cdr new-Clist) ,(cons
                  (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr EMove) (cdr EMove)) Arm Armor Item Sield Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y))))))))))))
@@ -304,7 +319,6 @@
 
 
 (define (change w a-key)
- ; (set-BATTLE-E-ZAHYO! w #f)
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
    (BATTLE
@@ -328,16 +342,6 @@
              (else (BATTLE-C-LIST w)))
     (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)))))
-
-    #|
-                 ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'ENEMY)
-      (match-let (((ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (car (car (BATTLE-C-LIST w)))))
-           (key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))))
-    (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)))))
-
-|#
 
 
 (define (end w)
@@ -364,26 +368,24 @@
 
 (define (set-on-tick w)
    (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
-  (let ((x (car dir)) (y (cdr dir)))
+     (let ((x (car dir)) (y (cdr dir)))
     (cond ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'ENEMY)
       (match-let (((ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-           (BATTLE ;(BATTLE-C-LIST w)
+           (BATTLE 
            (key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w))))
           (else
-           (BATTLE ;(BATTLE-C-LIST w)
-           ;(key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-            (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w))
-          )))))
+           (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)))))))
+          
 
 ;#;
 (define (big-test x)
-(big-bang x ;test-battle-struct
+(big-bang x 
  (to-draw place-gamen)
-  (on-tick set-on-tick 1)
+  (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
  (name "DD&D") 
