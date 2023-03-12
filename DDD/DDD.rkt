@@ -304,7 +304,7 @@
 
 
 (define (change w a-key)
-  (set-BATTLE-E-ZAHYO! w #f)
+ ; (set-BATTLE-E-ZAHYO! w #f)
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
    (BATTLE (cond
@@ -354,15 +354,21 @@
          200
          (empty-scene *width* *height* "black"))))
 
+(define (set-on-tick w)
+  ;(case (BATTLE-E-ZAHYO w)
+  (cond ((BATTLE-E-ZAHYO w)
+           (set-BATTLE-E-ZAHYO! w #f))))
+
 ;#;
-(big-bang test-battle-struct
+(define (big-test x)
+(big-bang x ;test-battle-struct
  (to-draw place-gamen)
+  (on-tick set-on-tick)
   (on-key change)
   (stop-when end ending) 
  (name "DD&D") 
-)
+))
 
-;(define tawa
-;(begin (set-BATTLE-E-ZAHYO! test-battle-struct #t) (BATTLE-E-ZAHYO test-battle-struct)) 
 
+(big-test test-battle-struct)
 
