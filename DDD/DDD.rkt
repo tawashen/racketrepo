@@ -118,16 +118,56 @@
       (("A" "a") (display "add"))
       (("C" "c") (chara-make-zero)))))
 
+#|
+(for/list ([i C-LIST]
+        [j '(50 90 130 170 210 250 290 330 370)])
+  |#
 
+#|
+(for/lists (l1 l2 l3)
+             ([i '(1 2 3)]
+              [j "abc"]
+              #:when (odd? i)
+              [k #(#t #f)])
+    (values i j k))
+|#
+
+(define (place-gamen w)
+    (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+      (let-values (((l1 l2) (for/lists (l1 l2)
+                               ([i C-LIST] [j '(50 90 130 170 210 250 290 330 370)])
+                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 20 "white")
+                        (make-posn 630 j)))))
+                (place-images/align l1 l2 "left" "bottom" (place-character w)))))
+
+
+
+
+
+
+
+#|
+(define (place-gamen w)
+  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+    (place-images/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (car C-LIST)))
+                                     (car (CHARACTER-Hp (car (car C-LIST))))) 20 "white")  630 50 "left" "bottom"
+                     (place-image/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (cadr C-LIST)))
+                                                      (car (CHARACTER-Hp (car (cadr C-LIST))))) 20 "white") 630 90 "left" "bottom"
+                 (place-character w)))))
+|#
+
+
+
+#|
 ;画面配置関数
 (define (place-gamen w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
-    (place-image (text (format "~a  ~%" (CHARACTER-Name (car (car C-LIST)))) 20 "white") 660 30
-                     (place-image (text (format "~a  ~%" (CHARACTER-Name (car (cadr C-LIST)))) 20 "white") 660 50
-
-
+    (place-image/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (car C-LIST)))
+                                     (car (CHARACTER-Hp (car (car C-LIST))))) 20 "white")  630 50 "left" "bottom"
+                     (place-image/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (cadr C-LIST)))
+                                                      (car (CHARACTER-Hp (car (cadr C-LIST))))) 20 "white") 630 90 "left" "bottom"
                  (place-character w)))))
-    
+|#    
 
 ;キャラクター配置関数
 (define (place-character w)
@@ -393,4 +433,9 @@
 
 
 (big-test test-battle-struct)
-
+#|
+    (let-values (((test1 test2) (for/lists (l1 l2)
+                               ([i (BATTLE-C-LIST test-battle-struct)] [j '(50 90 130 170 210 250 290 330 370)])
+                        (values (text (format "~a% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 20 "white")
+                        (make-posn 630 j))))) (list test1 test2))
+|#
