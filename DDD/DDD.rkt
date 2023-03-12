@@ -15,11 +15,11 @@
 
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
-         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(6 . 6) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
+         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
          (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(3 . 3) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
-         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
+         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(10 . 10) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
          (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(3 . 3) 100 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '217 '217)))
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
@@ -307,7 +307,8 @@
  ; (set-BATTLE-E-ZAHYO! w #f)
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
-   (BATTLE (cond
+   (BATTLE
+    (cond
              ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'HERO)
      (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
@@ -324,13 +325,20 @@
      ((key=? a-key "down")
       (key-func x 0 y 1 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
      (else (BATTLE-C-LIST w)))))
-                 
+             (else (BATTLE-C-LIST w)))
+    (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)))))
+
+    #|
                  ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'ENEMY)
       (match-let (((ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
            (key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))))
     (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)))))
+
+|#
+
 
 (define (end w)
  (or
@@ -355,8 +363,21 @@
          (empty-scene *width* *height* "black"))))
 
 (define (set-on-tick w)
-           (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)))
+   (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
+  (let ((x (car dir)) (y (cdr dir)))
+    (cond ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'ENEMY)
+      (match-let (((ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+           (BATTLE ;(BATTLE-C-LIST w)
+           (key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+            (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w))))
+          (else
+           (BATTLE ;(BATTLE-C-LIST w)
+           ;(key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+            (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w))
+          )))))
 
 ;#;
 (define (big-test x)
