@@ -355,15 +355,14 @@
          (empty-scene *width* *height* "black"))))
 
 (define (set-on-tick w)
-  ;(case (BATTLE-E-ZAHYO w)
-  (cond ((BATTLE-E-ZAHYO w)
-           (set-BATTLE-E-ZAHYO! w #f))))
+           (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)))
 
 ;#;
 (define (big-test x)
 (big-bang x ;test-battle-struct
  (to-draw place-gamen)
-  (on-tick set-on-tick)
+  (on-tick set-on-tick 1)
   (on-key change)
   (stop-when end ending) 
  (name "DD&D") 
