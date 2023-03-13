@@ -130,9 +130,12 @@
       (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
         (if (BATTLE-TEXT w)
         (place-image/align (text  (case (car (BATTLE-TEXT w))
-                                                  (("CH") (format "クリティカルヒット！~% ~aのダメージ！" (cdr (BATTLE-TEXT w))))
-                                                  (("H") (format "ヒット！~% ~aのダメージ!" (cdr (BATTLE-TEXT w))))
-                                                  (("M") (format "ミス！~% ダメージを与えられない！")))
+                                                  (("CH") (format "~aの攻撃！~%クリティカルヒット！~%~aに~%~aのダメージ！"
+                                                                  (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
+                                                  (("H") (format "~aの攻撃！~%ヒット！~%~aに~%~aのダメージ!"
+                                                                  (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
+                                                  (("M") (format "ミス！~%~aは~%~aにダメージを与えられない！"
+                                                                 (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w)))))
                                                     20 "red") 630 410 "left" "bottom" (place-gamen w))
         (place-gamen w))))
         
@@ -295,7 +298,7 @@
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
                             (begin
                                    (set-BATTLE-TEXT! w "M") 0)))))
-        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage))
+        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
         (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
           (cond  ((< 0 (car new-EHp))
@@ -323,7 +326,7 @@
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-       (let ((damage (if C-flag
+      (let ((damage (if C-flag
                         (if hit? (begin
                                    (set-BATTLE-TEXT! w "CH")
                                    (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
@@ -336,7 +339,7 @@
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
                             (begin
                                    (set-BATTLE-TEXT! w "M") 0)))))
-        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage))
+        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
         (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
           (cond  ((< 0 (car new-EHp))
@@ -358,7 +361,7 @@
 
 
 (define (change w a-key)
-  (set-BATTLE-TEXT! w #f)
+  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
    (BATTLE
