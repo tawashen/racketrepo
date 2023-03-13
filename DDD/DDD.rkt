@@ -24,7 +24,7 @@
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
-                                                     0 1 '() 0 0 #f "" ""))
+                                                     0 1 '() 0 0 #f "" #f))
                                                    
 
 ;utility
@@ -118,19 +118,25 @@
       (("A" "a") (display "add"))
       (("C" "c") (chara-make-zero)))))
 
-#|
-(for/list ([i C-LIST]
-        [j '(50 90 130 170 210 250 290 330 370)])
-  |#
 
-#|
-(for/lists (l1 l2 l3)
-             ([i '(1 2 3)]
-              [j "abc"]
-              #:when (odd? i)
-              [k #(#t #f)])
-    (values i j k))
-|#
+(define (place-name w)
+        (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+   (place-images (map (lambda (x) (text (CHARACTER-Name (car x)) 13 "black")) C-LIST)
+                 (map (lambda (y) (make-posn (posn-x (cdr y)) (- (posn-y (cdr y)) 20))) C-LIST)
+                 (place-mes w))))
+
+
+(define (place-mes w)
+      (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+        (if (BATTLE-TEXT w)
+        (place-image/align (text  (case (car (BATTLE-TEXT w))
+                                                  (("CH") (format "クリティカルヒット！~% ~aのダメージ！" (cdr (BATTLE-TEXT w))))
+                                                  (("H") (format "ヒット！~% ~aのダメージ!" (cdr (BATTLE-TEXT w))))
+                                                  (("M") (format "ミス！~% ダメージを与えられない！")))
+                                                    20 "red") 630 410 "left" "bottom" (place-gamen w))
+        (place-gamen w))))
+        
+
 
 (define (place-gamen w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
@@ -141,33 +147,6 @@
                 (place-images/align l1 l2 "left" "bottom" (place-character w)))))
 
 
-
-
-
-
-
-#|
-(define (place-gamen w)
-  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
-    (place-images/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (car C-LIST)))
-                                     (car (CHARACTER-Hp (car (car C-LIST))))) 20 "white")  630 50 "left" "bottom"
-                     (place-image/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (cadr C-LIST)))
-                                                      (car (CHARACTER-Hp (car (cadr C-LIST))))) 20 "white") 630 90 "left" "bottom"
-                 (place-character w)))))
-|#
-
-
-
-#|
-;画面配置関数
-(define (place-gamen w)
-  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
-    (place-image/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (car C-LIST)))
-                                     (car (CHARACTER-Hp (car (car C-LIST))))) 20 "white")  630 50 "left" "bottom"
-                     (place-image/align (text (format "~a~%  HP:~a" (CHARACTER-Name (car (cadr C-LIST)))
-                                                      (car (CHARACTER-Hp (car (cadr C-LIST))))) 20 "white") 630 90 "left" "bottom"
-                 (place-character w)))))
-|#    
 
 ;キャラクター配置関数
 (define (place-character w)
@@ -304,9 +283,15 @@
     (match-let (((ENEMY EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
       (let ((damage (if C-flag
-                        (if hit? (+ (* (BUKI-BdamageM (car Arm)) (BUKI-Bcrit (car Arm))) (Mbonus Str))                           
-                            (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)))
-                        (if hit? (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)) 0)))) 
+                        (if hit? (begin
+                                   (set-BATTLE-TEXT! w "CH") (+ (* (BUKI-BdamageM (car Arm)) (BUKI-Bcrit (car Arm))) (Mbonus Str)))                           
+                            (begin
+                                   (set-BATTLE-TEXT! w "H")(+ (BUKI-BdamageM (car Arm)) (Mbonus Str))))
+                        (if hit? (begin
+                                   (set-BATTLE-TEXT! w "H") (+ (BUKI-BdamageM (car Arm)) (Mbonus Str)))
+                            (begin
+                                   (set-BATTLE-TEXT! w "M") 0)))))
+        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
         (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
           (cond  ((< 0 (car new-EHp))
@@ -424,7 +409,7 @@
 ;#;
 (define (big-test x)
 (big-bang x 
- (to-draw place-gamen)
+ (to-draw place-name)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
