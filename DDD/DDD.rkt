@@ -28,9 +28,13 @@
                                                    
 
 
-(define (plave-waku w)
+(define (place-waku w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
-    
+         (let-values (((l1 l2) (for/lists (l1 l2)
+                               ([i C-LIST] [j '(46 86 126 166 206 246 286 326 366)])
+                        (values (rectangle 192 40 "outline" "white")
+                        (make-posn 624 j)))))
+                (place-images/align l1 l2 "left" "bottom" (place-name w)))))
 
 (define (place-name w)
         (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
@@ -64,7 +68,7 @@
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
       (let-values (((l1 l2) (for/lists (l1 l2)
                                ([i C-LIST] [j '(50 90 130 170 210 250 290 330 370)])
-                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 20 "white")
+                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 18 "white")
                         (make-posn 630 j)))))
                 (place-images/align l1 l2 "left" "bottom" (place-character w)))))
 
@@ -346,7 +350,7 @@
 ;#;
 (define (big-test x)
 (big-bang x 
- (to-draw place-name)
+ (to-draw place-waku)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
@@ -355,9 +359,3 @@
 
 
 (big-test test-battle-struct)
-#|
-    (let-values (((test1 test2) (for/lists (l1 l2)
-                               ([i (BATTLE-C-LIST test-battle-struct)] [j '(50 90 130 170 210 250 290 330 370)])
-                        (values (text (format "~a% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 20 "white")
-                        (make-posn 630 j))))) (list test1 test2))
-|#
