@@ -68,7 +68,10 @@
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
       (let-values (((l1 l2) (for/lists (l1 l2)
                                ([i C-LIST] [j '(50 90 130 170 210 250 290 330 370)])
-                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 18 "white")
+                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (car (CHARACTER-Hp (car i)))) 18
+                                      (case (variant (car i))
+                                             ((HERO) "white")
+                                             ((ENEMY) "red")))        
                         (make-posn 630 j)))))
                 (place-images/align l1 l2 "left" "bottom" (place-character w)))))
 
