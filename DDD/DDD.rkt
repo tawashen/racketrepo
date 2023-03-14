@@ -28,7 +28,9 @@
                                                    
 
 
-
+(define (plave-waku w)
+  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+    
 
 (define (place-name w)
         (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
@@ -40,15 +42,21 @@
 (define (place-mes w)
       (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
         (if (BATTLE-TEXT w)
-        (place-image/align (text  (case (car (BATTLE-TEXT w))
+            (begin (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
                                                   (("CH") (format "~aの攻撃！~%クリティカルヒット！~%~aに~%~aのダメージ！"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
                                                   (("H") (format "~aの攻撃！~%ヒット！~%~aに~%~aのダメージ!"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
                                                   (("M") (format "ミス！~%~aは~%~aにダメージを与えられない！"
                                                                  (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w)))))
-                                                    20 "red") 630 410 "left" "bottom" (place-gamen w))
-        (place-gamen w))))
+                                                    20 (if (member (car (BATTLE-STATUS w))
+                                                          (map (lambda (y) (CHARACTER-Name (car y)))
+                                                               (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) C-LIST))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
+            (place-gamen w))))
+         
+                                                       
         
 
 

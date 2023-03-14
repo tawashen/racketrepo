@@ -53,7 +53,7 @@
            (list-ref *images* (if (= i 1) i 0)))
          (apply append *map-data*)) ;map-dataを平坦化 (11111111111000000001...)
         *image-posns*
-        (empty-scene *width* *height*)) 310 279 (rectangle 820 558 "solid" "goldenrod")))
+        (empty-scene *width* *height*)) 310 279 (rectangle 820 558 "solid" "black")))
 
 (define *d-pairs* ;(0 . 0) ~ (9 . 6)
  (append-map (lambda (y)
