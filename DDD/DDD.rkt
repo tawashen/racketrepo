@@ -28,6 +28,8 @@
                                                    
 
 
+
+
 (define (place-waku w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
          (let-values (((l1 l2) (for/lists (l1 l2)
