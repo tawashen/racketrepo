@@ -16,9 +16,9 @@
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) `(,I001 ,I002) `(,M001 ,M002) 10 18 6 11 9 10) . ,(make-posn '93 '155))
+                 `(,B001) `(,A001) `(,S001) '((I001 . 1) (I002 . 2)) `(,M001 ,M002) 10 18 6 11 9 10) . ,(make-posn '93 '155))
          (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(003 . 003) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) `(,I001) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
+                 `(,B001) `(,A001) `(,S001) '((I001 . 2) (I002 . 3)) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
          (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
@@ -26,14 +26,14 @@
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
-                                                     0 1 '() 0 0 #f "" #f))
+                                                     0 1 '() 0 0 #f "" #f #f #f #f))
                                                    
 
 
 
 
 (define (place-waku w)
-  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
          (let-values (((l1 l2) (for/lists (l1 l2)
                                ([i C-LIST] [j '(48 88 128 168 208 248 288 328 368)])
                         (values (rectangle 192 40 "outline" "white")
@@ -41,14 +41,14 @@
                 (place-images/align l1 l2 "left" "bottom" (place-name w)))))
 
 (define (place-name w)
-        (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+        (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
    (place-images (map (lambda (x) (text (CHARACTER-Name (car x)) 13 "black")) C-LIST)
                  (map (lambda (y) (make-posn (posn-x (cdr y)) (- (posn-y (cdr y)) 20))) C-LIST)
                  (place-mes w))))
 
 
 (define (place-mes w)
-      (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+      (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
         (if (BATTLE-TEXT w)
             (begin (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
                                                   (("CH") (format "~aの攻撃！~%クリティカルヒット！~%~aに~%~aのダメージ！"
@@ -69,7 +69,7 @@
 
 
 (define (place-gamen w)
-    (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+    (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (let-values (((l1 l2) (for/lists (l1 l2)
                                ([i C-LIST] [j '(50 90 130 170 210 250 290 330 370)])
                         (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (align-num (car (CHARACTER-Hp (car i))))) 18
@@ -83,7 +83,7 @@
 
 ;キャラクター配置関数
 (define (place-character w)
-  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT) w))
+  (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
     (if E-ZAHYO
     (place-image (circle 31 "solid" "red") (posn-x (BATTLE-E-ZAHYO w))
                  (posn-y (BATTLE-E-ZAHYO w))
@@ -291,7 +291,7 @@
 
 
 (define (change w a-key)
-  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
+  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f) (set-BATTLE-MENU! w #f)
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
    (BATTLE
@@ -314,7 +314,8 @@
      (else (BATTLE-C-LIST w)))))
              (else (BATTLE-C-LIST w)))
     (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)))))
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
+    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
 
 
 (define (end w)
@@ -348,10 +349,10 @@
            (BATTLE 
            (key-funcE x y w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w))))
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
           (else
            (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)))))))
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
           
 
 ;メインBig-bang
@@ -369,6 +370,8 @@
   (big-bang x
             (to-draw menu-draw)
     (on-key menu-key)
+    (stop-when menu-end)
+    (close-on-stop 0)
     (name "MENU")))
 
 
@@ -380,14 +383,20 @@
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
    (BATTLE
+    (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w) 
       (cond
-  ;   ((key=? a-key "i") ;item
-  ;   ((key=? a-key "m") ;magic
-     ((key=? a-key "y") 
+     ((key=? a-key "y") #t)) ;やっぱやめる
+      (cond
+     ((key=? a-key "i"))) ;アイテムを使う
+      (cond
+     ((key=? a-key "m")))))) ;魔法を使う
+        
    
-  
+(define (menu-end w)
+  (BATTLE-MENU w))
 
-(big-menu test-battle-struct)
+;(big-menu test-battle-struct)
 
 
-;(big-test test-battle-struct)
+(big-test test-battle-struct)

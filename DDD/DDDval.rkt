@@ -13,9 +13,6 @@
 (define *chara-list* '())
 (define *member-list* '())
 
-;STATUS内構造体インスタンス
-(define status (STATUS #f #f #f #f))
-
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define *images* `(,(bitmap/file "picture/01.png") ,(bitmap/file "picture/02.png") ,(bitmap/file "picture/03.png") ,(bitmap/file "picture/04.png")))
