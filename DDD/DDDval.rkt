@@ -13,7 +13,8 @@
 (define *chara-list* '())
 (define *member-list* '())
 
-
+;STATUS内構造体インスタンス
+(define status (STATUS #f #f #f #f))
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;
 

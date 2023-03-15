@@ -15,6 +15,7 @@
 (struct CHARACTER (Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr) #:transparent)
 (struct HERO CHARACTER ())
 (struct ENEMY CHARACTER ())
+(struct STATUS (B-mes Menu-off Use-item Cast-spell))
 
 ;キャラクター構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define HUMAN (ABILITY "HUMAN" 0 0 0 0 0 0))

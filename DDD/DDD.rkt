@@ -16,7 +16,7 @@
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) `(,I001) `(,M001) 10 18 6 11 9 10) . ,(make-posn '93 '155))
+                 `(,B001) `(,A001) `(,S001) `(,I001 ,I002) `(,M001 ,M002) 10 18 6 11 9 10) . ,(make-posn '93 '155))
          (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(003 . 003) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `(,I001) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
@@ -368,11 +368,24 @@
 (define (big-menu x)
   (big-bang x
             (to-draw menu-draw)
+    (on-key menu-key)
     (name "MENU")))
 
 
 (define (menu-draw w)
-  (place-image (rectangle 200 200 "solid" "white") 100 100 (empty-scene 200 200 "black")))
+  (place-image (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 80 80
+  (place-image (rectangle 160 160 "outline" "white") 80 80 (empty-scene 160 160 "black"))))
+
+(define (menu-key w a-key)
+       (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+   (BATTLE
+      (cond
+  ;   ((key=? a-key "i") ;item
+  ;   ((key=? a-key "m") ;magic
+     ((key=? a-key "y") 
+   
+  
 
 (big-menu test-battle-struct)
 
