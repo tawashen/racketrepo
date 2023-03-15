@@ -15,8 +15,10 @@
 
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
-         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 10 18 6 11 9 10) . ,(make-posn '93 '155))
-         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(003 . 003) 10 0 90 '(6 . 6) `(,B001) `(,A001) `(,S001) '() '() 17 10 12 8 15 14) . ,(make-posn '93 '93))
+         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6)
+                 `(,B001) `(,A001) `(,S001) `(,I001) `(,M001) 10 18 6 11 9 10) . ,(make-posn '93 '155))
+         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(003 . 003) 10 0 90 '(6 . 6)
+                 `(,B001) `(,A001) `(,S001) `(,I001) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
          (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
@@ -298,7 +300,7 @@
      (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
       (cond
-     ;((key=? a-key "/r") menu表示
+     ((key=? a-key "m") (big-menu w))
      ((key=? a-key " ") `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
      ((key=? a-key "left")
       (key-func x -1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
@@ -352,7 +354,7 @@
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)))))))
           
 
-;#;
+;メインBig-bang
 (define (big-test x)
 (big-bang x 
  (to-draw place-waku)
@@ -362,5 +364,17 @@
  (name "DD&D") 
 ))
 
+;メニューBig-bang
+(define (big-menu x)
+  (big-bang x
+            (to-draw menu-draw)
+    (name "MENU")))
 
-(big-test test-battle-struct)
+
+(define (menu-draw w)
+  (place-image (rectangle 200 200 "solid" "white") 100 100 (empty-scene 200 200 "black")))
+
+(big-menu test-battle-struct)
+
+
+;(big-test test-battle-struct)

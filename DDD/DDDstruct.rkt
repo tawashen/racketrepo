@@ -24,6 +24,8 @@
 (struct BUKI (Bname Bcost BdamageS BdamageM Bcrit Brange Bweight Btype Bspecial) #:transparent)
 (struct ARMOR (Aname Acost Abonus Alimit Apena Arate AmoveL AmoveS Aweight) #:transparent)
 (struct SIHELD (Sname Scost Sbonus Slimit Spena Srate Sweight) #:transparent)
+(struct ITEM (Iname Icost Ikind Ipower) #:transparent)
+(struct MAGIC (Mname Mkind Matt Mpower) #:transparent)
 
 
 (struct CLASS (NAME REQUIRE))
