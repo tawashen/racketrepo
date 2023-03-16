@@ -300,7 +300,6 @@
      (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
       (cond
-     ((key=? a-key "m") (big-menu w))
      ((key=? a-key " ") `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
      ((key=? a-key "left")
       (key-func x -1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
@@ -315,7 +314,9 @@
              (else (BATTLE-C-LIST w)))
     (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
-    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
+    (cond ((key=? a-key "m") (big-menu w))
+                                (else (BATTLE-MENU w)))
+           (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
 
 
 (define (end w)
@@ -384,13 +385,11 @@
                   (car (car (BATTLE-C-LIST w)))))
    (BATTLE
     (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w) 
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w) 
       (cond
-     ((key=? a-key "y") #t)) ;やっぱやめる
-      (cond
-     ((key=? a-key "i"))) ;アイテムを使う
-      (cond
-     ((key=? a-key "m")))))) ;魔法を使う
+     ((key=? a-key "y") #t)
+     (else (BATTLE-MENU w))) ;やっぱやめる
+   (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
         
    
 (define (menu-end w)
