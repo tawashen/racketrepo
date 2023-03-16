@@ -29,7 +29,12 @@
                                                      0 1 '() 0 0 #f "" #f #f #f #f))
                                                    
 
-
+(define (place-menu w)
+  (if (BATTLE-MENU w)
+  (place-image (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 80 80
+               (place-image (rectangle 160 160 "outline" "white") 80 80
+                            (place-image (rectangle 160 160 "solid" "black") 80 80 (place-waku w))))
+  (place-waku w)))
 
 
 (define (place-waku w)
@@ -291,16 +296,16 @@
 
 
 (define (change w a-key)
-  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f) (set-BATTLE-MENU! w #f)
+  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f) 
+       (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
+    (case (BATTLE-MENU w)
+      ((#f)
    (BATTLE
-    (cond
-             ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'HERO)
-     (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (car (car (BATTLE-C-LIST w)))))
       (cond
-     ((key=? a-key "m") (big-menu w))
+        ((key=? a-key "m") (set-BATTLE-MENU! w #t) (BATTLE-C-LIST w))
      ((key=? a-key " ") `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
      ((key=? a-key "left")
       (key-func x -1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
@@ -311,11 +316,17 @@
       (key-func x 0 y -1 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
      ((key=? a-key "down")
       (key-func x 0 y 1 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
-     (else (BATTLE-C-LIST w)))))
-             (else (BATTLE-C-LIST w)))
+     (else (BATTLE-C-LIST w)))
     (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
-    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
+    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
+
+      ((#t)
+       (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
+    (cond ((key=? a-key "y") #f)
+          (else (BATTLE-MENU w)))
+    (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))))))
 
 
 (define (end w)
@@ -358,45 +369,12 @@
 ;メインBig-bang
 (define (big-test x)
 (big-bang x 
- (to-draw place-waku)
+ (to-draw place-menu)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
  (name "DD&D") 
 ))
-
-;メニューBig-bang
-(define (big-menu x)
-  (big-bang x
-            (to-draw menu-draw)
-    (on-key menu-key)
-    (stop-when menu-end)
-    (close-on-stop 0)
-    (name "MENU")))
-
-
-(define (menu-draw w)
-  (place-image (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 80 80
-  (place-image (rectangle 160 160 "outline" "white") 80 80 (empty-scene 160 160 "black"))))
-
-(define (menu-key w a-key)
-       (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (car (car (BATTLE-C-LIST w)))))
-   (BATTLE
-    (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w) 
-      (cond
-     ((key=? a-key "y") #t)) ;やっぱやめる
-      (cond
-     ((key=? a-key "i"))) ;アイテムを使う
-      (cond
-     ((key=? a-key "m")))))) ;魔法を使う
-        
-   
-(define (menu-end w)
-  (BATTLE-MENU w))
-
-;(big-menu test-battle-struct)
 
 
 (big-test test-battle-struct)
