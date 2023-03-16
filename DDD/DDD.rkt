@@ -326,7 +326,13 @@
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (cond ((key=? a-key "y") #f)
           (else (BATTLE-MENU w)))
-    (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))))))
+    (cond ((key=? a-key "i"))
+          (else (BATTLE-U-ITEM w)))
+    (cond ((key=? a-key "m"))
+          (else (BATTLE-C-MAGIC w))))))))))
+
+(define (use-item w)
+  
 
 
 (define (end w)
