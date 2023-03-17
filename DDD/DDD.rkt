@@ -16,9 +16,9 @@
 ;テスト用バトル構造体
 (define test-battle-struct (BATTLE (sort `(
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) '((I001 . 1) (I002 . 2)) `(,M001 ,M002) 10 18 6 11 9 10) . ,(make-posn '93 '155))
+                 `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I002 . 2) (,I002 . 2)) `(,M001 ,M002) 10 18 6 11 9 10) . ,(make-posn '93 '155))
          (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(003 . 003) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) '((I001 . 2) (I002 . 3)) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
+                 `(,B001) `(,A001) `(,S001) `((,I001 . 2) (,I002 . 3)) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
          (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
@@ -28,12 +28,29 @@
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
                                                      0 1 '() 0 0 #f "" #f #f #f #f))
                                                    
+(define (place-item w)
+    (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+  (case (BATTLE-U-ITEM w)
+    ((i)
+     (let-values (((l1 l2) (for/lists (l1 l2)
+                                      ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a  ~a" (ITEM-Iname (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
+       (place-image/align (rectangle 160 30 "outline" "red") 170 90 "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
+                                                                            (place-menu w))))) )
+    ((#f)
+     (place-menu w))))))
+
 
 (define (place-menu w)
   (if (BATTLE-MENU w)
-  (place-image (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 80 80
-               (place-image (rectangle 160 160 "outline" "white") 80 80
-                            (place-image (rectangle 160 160 "solid" "black") 80 80 (place-waku w))))
+  (place-image/align (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 4 160 "left" "bottom"
+               (place-image/align (rectangle 160 160 "outline" "white") 0 160 "left" "bottom"
+                            (place-image/align (rectangle 160 160 "solid" "black") 0 160 "left" "bottom" (place-waku w))))
   (place-waku w)))
 
 
@@ -326,12 +343,12 @@
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (cond ((key=? a-key "y") #f)
           (else (BATTLE-MENU w)))
-    (cond ((key=? a-key "i"))
+    (cond ((key=? a-key "i") 'i)
           (else (BATTLE-U-ITEM w)))
-    (cond ((key=? a-key "m"))
+    (cond ((key=? a-key "m") #t)
           (else (BATTLE-C-MAGIC w))))))))))
 
-(define (use-item w)
+  
   
 
 
@@ -375,7 +392,7 @@
 ;メインBig-bang
 (define (big-test x)
 (big-bang x 
- (to-draw place-menu)
+ (to-draw place-item)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
