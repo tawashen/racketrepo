@@ -13,7 +13,7 @@
 (require "DDDutility.rkt")
 
 
-;テスト用バトル構造体
+;テスト用バトル構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define test-battle-struct (BATTLE (sort `(
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I002 . 2) (,I002 . 2)) `(,M001 ,M002) 10 18 6 11 9 10) . ,(make-posn '93 '155))
@@ -27,7 +27,11 @@
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
                                                      0 1 '() 0 0 #f "" #f #f #f #f))
-                                                   
+
+
+
+
+;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (place-item w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -101,8 +105,6 @@
                 (place-images/align l1 l2 "left" "bottom" (place-character w)))))
 
 
-
-;キャラクター配置関数
 (define (place-character w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
     (if E-ZAHYO
@@ -125,7 +127,7 @@
     
 
 
-;キー判定関数
+;キー判定関数;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (key-func x x-dir y y-dir w Name Image Race Class Ali
                   Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
         (cond
@@ -227,7 +229,7 @@
 
 
 
-;近接戦闘処理
+;近接戦闘処理;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (fight x x-dir y y-dir w Name Image Race Class Ali Lv
                Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
   (let* ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
@@ -338,23 +340,25 @@
     (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
       ((#t) ;MENUが表示されていて
-       (if (BATTLE-U-ITEM w)
-             (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+       (cond ((BATTLE-U-ITEM w)
+             (BATTLE
+              (BATTLE-C-LIST w) ;ここにENTERを押したらアイテムの効果を実行！ここから
+              (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
          (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
           ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
-          (else (BATTLE-U-ITEM w)))
-                (BATTLE-C-MAGIC w))
+          (else (BATTLE-U-ITEM w)
+                (BATTLE-C-MAGIC w)))))
              
-               (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+             (else  (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (cond ((key=? a-key "y") #f)
           (else (BATTLE-MENU w)))
     (cond ((key=? a-key "i") 0)
           (else (BATTLE-U-ITEM w)))
     (cond ((key=? a-key "m") #t)
-          (else (BATTLE-C-MAGIC w))))))
-      (else w))))))
+          (else (BATTLE-C-MAGIC w))))))))))))
+    ;  (else w)))))))
 
   
   
