@@ -32,18 +32,17 @@
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-  (case (BATTLE-U-ITEM w)
-    ((i)
+  (if (number? (BATTLE-U-ITEM w))
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (ITEM-Iname (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
-       (place-image/align (rectangle 160 30 "outline" "red") 170 90 "left" "bottom"
+       (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-U-ITEM w))) "left" "bottom"
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w))))) )
-    ((#f)
-     (place-menu w))))))
+                                                                            (place-menu w)))))
+     (place-menu w)))))
+ 
 
 
 (define (place-menu w)
@@ -338,15 +337,24 @@
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
-      ((#t)
-       (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+      ((#t) ;MENUが表示されていて
+       (if (BATTLE-U-ITEM w)
+             (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
+         (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
+          ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
+          (else (BATTLE-U-ITEM w)))
+                (BATTLE-C-MAGIC w))
+             
+               (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (cond ((key=? a-key "y") #f)
           (else (BATTLE-MENU w)))
-    (cond ((key=? a-key "i") 'i)
+    (cond ((key=? a-key "i") 0)
           (else (BATTLE-U-ITEM w)))
     (cond ((key=? a-key "m") #t)
-          (else (BATTLE-C-MAGIC w))))))))))
+          (else (BATTLE-C-MAGIC w))))))
+      (else w))))))
 
   
   
