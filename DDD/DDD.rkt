@@ -52,11 +52,8 @@
         (else (place-waku w)))))
  
 
-(define (menu-clear w)
-  (set-BATTLE-MENU! w #f) (set-BATTLE-U-ITEM! w #f))
-
 (define (place-menu w)
-  (if #;(and (BATTLE-MENU w) (not (BATTLE-U-ITEM w))) (BATTLE-MENU w)
+  (if (BATTLE-MENU w)  #;(and (BATTLE-MENU w) (not (BATTLE-U-ITEM w))) 
   (place-image/align (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 4 160 "left" "bottom"
                (place-image/align (rectangle 160 160 "outline" "white") 0 160 "left" "bottom"
                             (place-image/align (rectangle 160 160 "solid" "black") 0 160 "left" "bottom" (place-waku w))))
@@ -356,11 +353,11 @@
           (else (BATTLE-U-ITEM w)))
                 (BATTLE-C-MAGIC w)))
 
-          #;   ((cons? (BATTLE-U-ITEM w)) ;U-ITEMに使用アイテムがセットされてれば
+             ((cons? (BATTLE-U-ITEM w)) ;U-ITEMに使用アイテムがセットされてれば
               (BATTLE
                (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
                  (("HS")
-                  #;(set-BATTLE-MENU! w #f) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
+                  (set-BATTLE-MENU! w #f) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
                  (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
                        Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
@@ -419,7 +416,9 @@
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
           (else
            (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)
+    
+     (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
           
 
 ;メインBig-bang
