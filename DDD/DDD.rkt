@@ -33,13 +33,14 @@
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (place-herolist w)
-      (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+(define (place-herolist w) ;続きココから
+    (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (case (variant (car (car C-LIST)))
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-             (cond ((pair? (BATTLE-U-ITEM w))
+             (if (BATTLE-U-ITEM w)
+  (if (string=? "HO" (ITEM-Ikind (car (BATTLE-U-ITEM w))))
                        (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i (BATTLE-U-ITEM w)) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a" (CHARACTER-Name (cadr i)))
@@ -47,9 +48,10 @@
        (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-ITEM w))) "left" "bottom"
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
-                            (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w)))))
-     (place-menu w)))))
+                            (rectangle 160 (* 30 (length (BATTLE-U-ITEM w))) "solid" "black")  170 (+ 60 (* 30 (length (BATTLE-U-ITEM w)))) "left" "bottom"
+                                                                            (place-item w)))))
+     (place-item w))
+         (place-waku w))))
         (else (place-waku w)))))
 
 (define (place-item w)
@@ -58,7 +60,7 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-  (cond ((number? (BATTLE-U-ITEM w))
+  (if (number? (BATTLE-U-ITEM w))
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (ITEM-Iname
@@ -68,9 +70,12 @@
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
                                                                             (place-menu w)))))
-     (place-menu w)))))
+     (place-menu w))))
         (else (place-waku w)))))
  
+
+
+
 
 
 (define (place-menu w)
