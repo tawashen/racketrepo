@@ -52,8 +52,9 @@
         (else (place-waku w)))))
  
 
+
 (define (place-menu w)
-  (if (BATTLE-MENU w)  #;(and (BATTLE-MENU w) (not (BATTLE-U-ITEM w))) 
+  (if (BATTLE-MENU w)
   (place-image/align (text (format "MENU~% ~%I:アイテムを使う~%M:魔法を使う~%Y:やっぱやめる") 20 "white") 4 160 "left" "bottom"
                (place-image/align (rectangle 160 160 "outline" "white") 0 160 "left" "bottom"
                             (place-image/align (rectangle 160 160 "solid" "black") 0 160 "left" "bottom" (place-waku w))))
@@ -79,11 +80,11 @@
       (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
         (if (BATTLE-TEXT w)
             (begin (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
-                                                  (("CH") (format "~aの攻撃！~%クリティカルヒット！~%~aに~%~aのダメージ！"
+                                                  (("CH") (format "~aの攻撃!~%クリティカルヒット!~%~aに~%~aのダメージ!"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
-                                                  (("H") (format "~aの攻撃！~%ヒット！~%~aに~%~aのダメージ!"
+                                                  (("H") (format "~aの攻撃!~%ヒット!~%~aに~%~aのダメージ!"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
-                                                  (("M") (format "ミス！~%~aは~%~aにダメージを与えられない！"
+                                                  (("M") (format "ミス!~%~aは~%~aにダメージを与えられない!"
                                                                  (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w)))))
                                                     20 (if (member (car (BATTLE-STATUS w))
                                                           (map (lambda (y) (CHARACTER-Name (car y)))
@@ -214,13 +215,13 @@
 ;ENEMY追跡行動
 (define (key-funcE x y w Name Image Race Class Ali
                    Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-  (if (member (posn-y (d-pair->posn (cons x y))) (map posn-y (map cdr (filter (lambda (x) ;同じX軸にHEROがいるか？
+  (if (member (posn-y (d-pair->posn (cons x y))) (map posn-y (map cdr (filter (lambda (x) ;同じX軸にHEROがいるか?
                           (symbol=? 'HERO (variant (car x)))) (cdr (BATTLE-C-LIST w))))))
-      (if (< (posn-x (d-pair->posn (cons x y))) (car (sort (map posn-x (map cdr (filter (lambda (x) ;X軸の右にHEROがいるか？
+      (if (< (posn-x (d-pair->posn (cons x y))) (car (sort (map posn-x (map cdr (filter (lambda (x) ;X軸の右にHEROがいるか?
                           (symbol=? 'HERO (variant (car x)))) (cdr (BATTLE-C-LIST w))))) <)))
           (to-check x 1 y 0 w Name Image Race Class Ali
                     Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-　　　　　(to-check x -1 y 0 w Name Image Race Class Ali
+     (to-check x -1 y 0 w Name Image Race Class Ali
                Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)) 
             (if (< (posn-y (d-pair->posn (cons x y))) (car (sort (map posn-y (map cdr (filter (lambda (x) ;Y軸の下にHEROがいるなら
                           (symbol=? 'HERO (variant (car x)))) (cdr (BATTLE-C-LIST w))))) <)))
@@ -235,7 +236,7 @@
 ;近接戦闘処理;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (fight x x-dir y y-dir w Name Image Race Class Ali Lv
                Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-  (let* ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
+  (let* ((C-flag (if (<= (car (BUKI-Bcrit (car Arm))) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
                                            (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))                  
           (Target (car (filter (lambda (z)
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
@@ -245,7 +246,7 @@
                         (if hit? (begin
                                    (set-BATTLE-TEXT! w "CH")
                                    (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
-                                         (BUKI-Bcrit (car Arm))) (Mbonus Str)))                           
+                                         (cdr (BUKI-Bcrit (car Arm)))) (Mbonus Str)))                           
                             (begin
                                    (set-BATTLE-TEXT! w "H")
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str))))
@@ -276,7 +277,7 @@
 
 ;近接戦闘処理ENEMY
 (define (fightE x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-  (let* ((C-flag (if (<= (BUKI-Bcrit (car Arm)) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
+  (let* ((C-flag (if (<= (car (BUKI-Bcrit (car Arm))) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
                                                                (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
           (Target (car (filter (lambda (z)
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
@@ -286,7 +287,7 @@
                         (if hit? (begin
                                    (set-BATTLE-TEXT! w "CH")
                                    (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
-                                         (BUKI-Bcrit (car Arm))) (Mbonus Str)))                           
+                                         (cdr (BUKI-Bcrit (car Arm)))) (Mbonus Str)))                           
                             (begin
                                    (set-BATTLE-TEXT! w "H")
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str))))
@@ -343,7 +344,7 @@
     (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
       ((#t) ;MENUが表示されていて case BATTLE-MENU
-       (cond ((number? (BATTLE-U-ITEM w)) ;U-ITEMが　Number　なら
+       (cond ((number? (BATTLE-U-ITEM w)) ;U-ITEMが Number なら
              (BATTLE
               (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
@@ -361,11 +362,15 @@
                  (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
                        Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
+                       ; (else BATTLE-C-LIST w))
                  (("HO") #f)
                  (("AS") #f))
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
-    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
+    (BATTLE-MENU w) (BATTLE-U-ITEM w)
+   #;   (cond ((key=? a-key "\r") #f)
+      (else (BATTLE-U-ITEM w)))
+    (BATTLE-C-MAGIC w)))
                  
              (else ;U-ITEM False
               (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
@@ -389,9 +394,9 @@
 
 (define (ending w)
       (if (null? (map variant (map car (filter (lambda (x) (symbol=? 'ENEMY (variant (car x))))  (BATTLE-C-LIST w)))))
-     (place-image (text (format "敵を殲滅した！
+     (place-image (text (format "敵を殲滅した!
 
-   ~aゴールドと経験値~aを得た！" (BATTLE-MONEY w) (BATTLE-EXP w))
+   ~aゴールドと経験値~aを得た!" (BATTLE-MONEY w) (BATTLE-EXP w))
 
   15 "white")
          300
@@ -416,9 +421,7 @@
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
           (else
            (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)
-    
-     (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
           
 
 ;メインBig-bang
