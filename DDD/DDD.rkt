@@ -320,7 +320,7 @@
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
   (let ((x (car dir)) (y (cdr dir)))
     (case (BATTLE-MENU w)
-      ((#f)
+      ((#f) ;case BATTLE-MENU
    (BATTLE
       (cond
         ((key=? a-key "m") (set-BATTLE-MENU! w #t) (BATTLE-C-LIST w))
@@ -339,8 +339,8 @@
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
-      ((#t) ;MENUが表示されていて
-       (cond ((BATTLE-U-ITEM w) ;U-ITEMがTrueなら
+      ((#t) ;MENUが表示されていて case BATTLE-MENU
+       (cond ((number? (BATTLE-U-ITEM w)) ;U-ITEMが　Number　なら
              (BATTLE
               (BATTLE-C-LIST w) ;ここにENTERを押したらアイテムの効果を実行！ここから
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
@@ -350,7 +350,8 @@
           (else (BATTLE-U-ITEM w)))
                 (BATTLE-C-MAGIC w)))
              
-             (else  (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+             (else ;U-ITEM False
+              (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (cond ((key=? a-key "y") #f)
           (else (BATTLE-MENU w)))
@@ -358,7 +359,7 @@
           (else (BATTLE-U-ITEM w)))
     (cond ((key=? a-key "m") #t)
           (else (BATTLE-C-MAGIC w)))))))
-      (else w))))))
+      (else w)))))) ;case BATTLE-MENU
 
   
   
