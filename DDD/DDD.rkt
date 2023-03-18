@@ -340,15 +340,15 @@
     (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
       ((#t) ;MENUが表示されていて
-       (cond ((BATTLE-U-ITEM w)
+       (cond ((BATTLE-U-ITEM w) ;U-ITEMがTrueなら
              (BATTLE
               (BATTLE-C-LIST w) ;ここにENTERを押したらアイテムの効果を実行！ここから
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
          (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
           ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
-          (else (BATTLE-U-ITEM w)
-                (BATTLE-C-MAGIC w)))))
+          (else (BATTLE-U-ITEM w)))
+                (BATTLE-C-MAGIC w)))
              
              (else  (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
@@ -357,8 +357,8 @@
     (cond ((key=? a-key "i") 0)
           (else (BATTLE-U-ITEM w)))
     (cond ((key=? a-key "m") #t)
-          (else (BATTLE-C-MAGIC w))))))))))))
-    ;  (else w)))))))
+          (else (BATTLE-C-MAGIC w)))))))
+      (else w))))))
 
   
   
