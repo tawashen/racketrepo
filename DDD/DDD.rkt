@@ -32,13 +32,33 @@
 
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (place-herolist w)
+      (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+      (case (variant (car (car C-LIST)))
+        ((HERO)
+           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+             (cond ((pair? (BATTLE-U-ITEM w))
+                       (let-values (((l1 l2) (for/lists (l1 l2)
+                                      ((i (BATTLE-U-ITEM w)) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a" (CHARACTER-Name (cadr i)))
+                                                              20 "white") (make-posn 174 (+ j 70))))))
+       (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-ITEM w))) "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
+                                                                            (place-menu w)))))
+     (place-menu w)))))
+        (else (place-waku w)))))
+
 (define (place-item w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (case (variant (car (car C-LIST)))
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-  (if (number? (BATTLE-U-ITEM w))
+  (cond ((number? (BATTLE-U-ITEM w))
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (ITEM-Iname
@@ -48,7 +68,7 @@
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
                                                                             (place-menu w)))))
-     (place-menu w))))
+     (place-menu w)))))
         (else (place-waku w)))))
  
 
@@ -327,7 +347,7 @@
       ((#f) ;case BATTLE-MENU
    (BATTLE
       (cond
-        ((key=? a-key "m") (set-BATTLE-MENU! w #t) (set-BATTLE-U-ITEM! w #f) (BATTLE-C-LIST w))
+        ((key=? a-key "m") (set-BATTLE-MENU! w #t) (set-BATTLE-ITEM! w #f) (set-BATTLE-U-ITEM! w #f) (BATTLE-C-LIST w))
      ((key=? a-key " ") `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
      ((key=? a-key "left")
       (key-func x -1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
@@ -350,7 +370,7 @@
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
          (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
           ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
-          ((key=? a-key "\r") (list-ref Item (BATTLE-U-ITEM w))) ;Enterを押すとItemの該当部分をBATTLE-U-ITEMにセット
+          ((key=? a-key "\r") (list-ref Item (BATTLE-U-ITEM w))) ;Enterを押すとItemの該当部分をBATTLE-U-ITEMにセット (item . 個数）
           (else (BATTLE-U-ITEM w)))
                 (BATTLE-C-MAGIC w)))
 
@@ -362,14 +382,12 @@
                  (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
                        Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
-                       ; (else BATTLE-C-LIST w))
-                 (("HO") #f)
+                 (("HO") (set-BATTLE-ITEM! w 1) ;カーソル位置セット
+                         `(,(BATTLE-U-ITEM w) ,(filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w)))) ;アイテムとHEROのペア
                  (("AS") #f))
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (BATTLE-MENU w) (BATTLE-U-ITEM w)
-   #;   (cond ((key=? a-key "\r") #f)
-      (else (BATTLE-U-ITEM w)))
     (BATTLE-C-MAGIC w)))
                  
              (else ;U-ITEM False
@@ -427,7 +445,7 @@
 ;メインBig-bang
 (define (big-test x)
 (big-bang x 
- (to-draw place-item)
+ (to-draw place-herolist)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
