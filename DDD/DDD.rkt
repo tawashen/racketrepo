@@ -26,7 +26,7 @@
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
-                                                     0 1 '() 0 0 #f "" #f #f #f #f))
+                                                     0 1 #f 0 0 #f "" #f #f #f #f))
 
 
 
@@ -353,7 +353,7 @@
           (else (BATTLE-U-ITEM w)))
                 (BATTLE-C-MAGIC w)))
 
-             ((cons? (BATTLE-U-ITEM w)) ;U-ITEMに使用アイテムがセットされてれば
+      #;       ((cons? (BATTLE-U-ITEM w)) ;U-ITEMに使用アイテムがセットされてれば
               (BATTLE
                (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
                  (("HS")
@@ -415,10 +415,25 @@
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
           (else
-           (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+                 (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+     (cond
+     ((cons? (BATTLE-U-ITEM w)) ;U-ITEMに使用アイテムがセットされてれば
+              (BATTLE
+               (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
+                 (("HS")
+                  (set-BATTLE-MENU! w #f) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
+                 (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
+                       Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (d-pair->posn (cons x y)))))
+                 (("HO") #f)
+                 (("AS") #f)
+                 (else (BATTLE-C-LIST w)))
+              (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)
-    
-     (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
+    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
+     (else w))))))))
+                
           
 
 ;メインBig-bang
