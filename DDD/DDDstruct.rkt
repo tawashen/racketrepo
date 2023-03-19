@@ -12,9 +12,9 @@
 ;構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (struct BATTLE (C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) #:mutable) 
 (struct ABILITY (RACE STR INT WIS DEX CON CHR) #:transparent)
-(struct CHARACTER (Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr) #:transparent)
-(struct HERO CHARACTER ())
-(struct ENEMY CHARACTER ())
+(struct CHARACTER (Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr) #:mutable)
+(struct HERO CHARACTER () #:transparent)
+(struct ENEMY CHARACTER () #:transparent)
 
 ;キャラクター構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define HUMAN (ABILITY "HUMAN" 0 0 0 0 0 0))
