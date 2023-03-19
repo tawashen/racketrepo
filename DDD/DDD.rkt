@@ -40,7 +40,7 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-             (if (BATTLE-ITEM w)
+             (if (and (BATTLE-ITEM w) (cons? (BATTLE-U-ITEM w)))
                        (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i hero-list) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a" (CHARACTER-Name (car i)))
@@ -59,7 +59,7 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-  (if (number? (BATTLE-U-ITEM w))
+  (if (or (number? (BATTLE-U-ITEM w)) 
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (ITEM-Iname
