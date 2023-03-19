@@ -382,24 +382,30 @@
           ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
           ((key=? a-key "\r") (list-ref Item (BATTLE-U-ITEM w))) ;Enterを押すとItemの該当部分をBATTLE-U-ITEMにセット (item . 個数）
           (else (BATTLE-U-ITEM w)))
-                (BATTLE-C-MAGIC w)))
+                (BATTLE-C-MAGIC w))) ;ここまでU-ITEMが　Numberなら
 
-             ((cons? (BATTLE-U-ITEM w)) ;U-ITEMに使用アイテムがセットされてれば
+             ((cons? (BATTLE-U-ITEM w)) ;U-ITEMが　Consなら
               (BATTLE
-               (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
-                 (("HS")
+               (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))　
+                 (("HS")　;ConsでHSなら
                   (set-BATTLE-MENU! w #f) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
                  (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
                        Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y)))))
-                 (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-LIST w)) ;BATTLE-ITEMに0をセット
-           
-                 (("AS") #f)
-                 (else (BATTLE-C-LIST w)))
+                (else (BATTLE-C-LIST w)))
               (BATTLE-PHASE w) (BATTLE-TURN w)
               ;(BATTLE-ITEM w)
-              (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
-                (("HO")
+               (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
+                 (("HO") 0) ;BATTLE-ITEMに0をセット
+                 (else (BATTLE-ITEM w)))
+              (BATTLE-MONEY w) (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
+    (BATTLE-MENU w)
+    (BATTLE-U-ITEM w)
+    (BATTLE-C-MAGIC w)))
+             ((number? (BATTLE-ITEM w)) ;BATTLE-ITEMに0がセットされていれば
+              (BATTLE
+                       (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
+                              (("HO")
               (let ((hero-member (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
               (cond ((key=? a-key "up") (if (= (BATTLE-ITEM w) 0) 0 (- (BATTLE-ITEM w) 1)))
           ((key=? a-key "down") (if (< (+ 1 (BATTLE-ITEM w)) (length hero-member)) (+ (BATTLE-ITEM w) 1) (BATTLE-ITEM w)))
@@ -409,20 +415,16 @@
              (let ((new-HERO (cons
                  (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
                        Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr) (cdr (list-ref hero-member (BATTLE-ITEM w))))))
-
                   (let loop ((Clist (BATTLE-C-LIST w)) (new-list '()))
       (if (null? Clist)
           (let ((top (car (reverse new-list))) (tail (cdr (reverse new-list))))
-            (set-BATTLE-MENU! w #f) #;(set-BATTLE-U-ITEM! w #f) (set-BATTLE-C-LIST! w `(,@tail ,top)) #f)
+            (set-BATTLE-MENU! w #f) (set-BATTLE-ITEM! w #f)  `(,@tail ,top))
           (loop (cdr Clist) (if (string=? (CHARACTER-Name (car new-HERO)) (CHARACTER-Name (car (car Clist))))
                                 (cons new-HERO new-list) (cons (car Clist) new-list))))))))
-          (else (BATTLE-ITEM w)))))
-                (else (BATTLE-ITEM w)))
-              (BATTLE-MONEY w)
+          (else (BATTLE-C-LIST w))))))
+                         (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
-    (BATTLE-MENU w)
-    (BATTLE-U-ITEM w)
-    (BATTLE-C-MAGIC w)))
+                         (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
                  
              (else ;U-ITEM False
               (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
