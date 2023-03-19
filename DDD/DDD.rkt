@@ -40,15 +40,15 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-             (if (and (BATTLE-ITEM w) (cons? (BATTLE-U-ITEM w)))
+             (if (BATTLE-ITEM w)
                        (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i hero-list) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a" (CHARACTER-Name (car i)))
-                                                              20 "white") (make-posn 374 (+ j 70))))))
-       (place-image/align (rectangle 160 30 "outline" "red") 370 (+ 150 (* 30 (BATTLE-ITEM w))) "left" "bottom"
+                                                              20 "white") (make-posn 344 (+ j 70))))))
+       (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-ITEM w))) "left" "bottom"
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
-                            (rectangle 160 (* 30 (length hero-list)) "solid" "black")  370 (+ 120 (* 30 (length hero-list))) "left" "bottom"
+                            (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
                                                                             (place-item w)))))
      (place-item w))))
         (else (place-waku w))))))
@@ -59,16 +59,22 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-  (if (or (number? (BATTLE-U-ITEM w)) 
+  (if (or (number? (BATTLE-U-ITEM w)) (and (number? (BATTLE-ITEM w)) (cons? (BATTLE-U-ITEM w))))
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (ITEM-Iname
                                                              (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
+       (cond ((number? (BATTLE-U-ITEM w))
        (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-U-ITEM w))) "left" "bottom"
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
                                                                             (place-menu w)))))
+             ((cons? (BATTLE-U-ITEM w))
+                  (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
+                                                                            (place-menu w))))))
      (place-menu w))))
         (else (place-waku w)))))
  
@@ -407,11 +413,11 @@
                   (let loop ((Clist (BATTLE-C-LIST w)) (new-list '()))
       (if (null? Clist)
           (let ((top (car (reverse new-list))) (tail (cdr (reverse new-list))))
-            (set-BATTLE-MENU! w #f) (set-BATTLE-U-ITEM! w #f) (set-BATTLE-C-LIST! w `(,@tail ,top)) (BATTLE-ITEM w))
+            (set-BATTLE-MENU! w #f) #;(set-BATTLE-U-ITEM! w #f) (set-BATTLE-C-LIST! w `(,@tail ,top)) #f)
           (loop (cdr Clist) (if (string=? (CHARACTER-Name (car new-HERO)) (CHARACTER-Name (car (car Clist))))
-                                (cons new-HERO new-list) (cons (car Clist) new-list)))))))))))
-          
-          (else (BATTLE-ITEM w)))
+                                (cons new-HERO new-list) (cons (car Clist) new-list))))))))
+          (else (BATTLE-ITEM w)))))
+                (else (BATTLE-ITEM w)))
               (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
     (BATTLE-MENU w)
