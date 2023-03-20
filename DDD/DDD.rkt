@@ -286,14 +286,12 @@
         (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
         (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
-          (cond  ((< 0 (car new-EHp)) ;破壊的変更にしようか？
-              (let ((new-target (cons (ENEMY EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
+          (cond  ((< 0 (car new-EHp)) ;破壊的変更にした
+                                (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
-                    (let loop ((Clist (BATTLE-C-LIST w)) (new-list '()))
-      (if (null? Clist)
-          (let ((top (car (reverse new-list))) (tail (cdr (reverse new-list)))) `(,@tail ,top))
-          (loop (cdr Clist) (if (equal? (d-pair->posn (cons (+ x x-dir) (+ y y-dir))) (cdr (car Clist)))
-                                (cons new-target new-list) (cons (car Clist) new-list)))))))
+                (set-CHARACTER-Hp! (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp)
+                `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
+   
                  (else
          (let ((new-Clist
                 (filter (lambda (z) ((compose not equal?)
