@@ -33,7 +33,7 @@
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (place-herolist w) ;続きココから
+(define (place-herolist w) 
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (let ((hero-list (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
       (case (variant (car (car C-LIST)))
@@ -332,7 +332,7 @@
           (cond  ((< 0 (car new-EHp)) ;HPの更新を破壊的変更にしようかな？ 実験待ち
               (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
-　               (set-CHARACTER-Hp! (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w))) new-EHp)
+　               (set-CHARACTER-Hp! (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp)
                 `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
                  (else
          (let ((new-Clist
