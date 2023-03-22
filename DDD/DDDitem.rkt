@@ -19,6 +19,7 @@
 (define I002 (ITEM "高級薬草" 20 "HS" 20)) ;回復自分　HS
 (define I003 (ITEM "投げ薬草" 20 "HO" 10)) ;回復他人も　HO
 (define I004 (ITEM "うんこ" 5 "AS" 20)) ;攻撃敵単体 AS
-(define M001 (MAGIC "メラ" "AS" "FIRE" 10)) ;攻撃敵単体　AS
-(define M002 (MAGIC "イオ" "AC" "NON" 20)) ;攻撃敵全体　AC
+(define M001 (MAGIC "メラ" "AS" 1 "WIZ" 10)) ;攻撃敵単体　AS
+(define M002 (MAGIC "イオ" "AC" 3 "SOR" 20)) ;攻撃敵全体　AC
+(define M003 (MAGIC "ホイミ" "HO" 1 "CRE" 20)) ;見方単体回復 HO
 
