@@ -338,7 +338,9 @@
 
 
 (define (change w a-key)
-  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f) 
+  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
+  (case (variant (car (car (BATTLE-C-LIST w))))
+    ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
  (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
@@ -415,8 +417,17 @@
              (if (< new-car-hp old-cdr-hp)
                 (cons new-car-hp old-cdr-hp)
                (cons old-cdr-hp old-cdr-hp)))) ;HPの更新
-             (set-BATTLE-MENU! w #f) (set-BATTLE-U-ITEM! w #f) (set-BATTLE-ITEM! w #f) ;MENUなどを消す
-              `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))) ;新しいC-LIST
+             
+             (set-BATTLE-MENU! w #f) (set-BATTLE-ITEM! w #f) ;MENUなどを消す
+                (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) TItem)))
+                             (not-t-i-list (filter (lambda (x) ((compose not string=?)
+                                                         (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) TItem)))
+                  (set-CHARACTER-Item! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用アイテムを１減らす破壊的変更
+                      `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))
+                  
+              `(,@(cdr (BATTLE-C-LIST w))
+                ,(car (BATTLE-C-LIST w)))))　;変更したCHARACTERを後ろにつけて新たなC-LIST
+                                     
          　 (else (BATTLE-C-LIST w)))) (else (BATTLE-C-LIST w))) ;入力がない場合、"HO"ではない場合
                        (BATTLE-PHASE w) (BATTLE-TURN w)
                        ;以下(BATTLE-ITEM w)相当
@@ -447,7 +458,11 @@
                  (HERO Name Image Race Class Ali Lv (if (< new-car-hp (cdr Hp)) (cons new-car-hp (cdr Hp))
                                                       (cons (cdr Hp) (cdr Hp))) Ac Exp Money
                        Move Arm Armor Sield
-                       Item
+                       ;Item 使用したアイテムの個数を１減らす
+                       (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
+                             (not-t-i-list (filter (lambda (x) ((compose not string=?)
+                                                         (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
+                         `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))　;アイテム減らすここまで
                        Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y))))))
                  (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-LIST w))
@@ -466,7 +481,7 @@
                          (else (BATTLE-U-ITEM w)))
                   (cond ((key=? a-key "m") (if (null? (filter (lambda (x) (< 0 (cdr x))) Skill)) #f 0))
                          (else (BATTLE-C-MAGIC w)))))))
-            (else w)))))) ;case BATTLE-MENU
+            (else w)))))))) ;case BATTLE-MENU
 
 
 (define (end w) ;終了条件
