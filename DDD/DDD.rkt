@@ -15,9 +15,9 @@
 
 ;テスト用バトル構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define test-battle-struct (BATTLE (sort `(
-         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(100 . 100) 10 0 90 '(6 . 6)
+         (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(120 . 100) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) `((,M001 . 3) (,M002 . 2) (,M003 . 3)) 10 18 6 11 9 10) . ,(make-posn '93 '155))
-         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(003 . 003) 10 0 90 '(6 . 6)
+         (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(080 . 003) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `((,I001 . 2) (,I002 . 3)) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
@@ -280,7 +280,7 @@
                                    (set-BATTLE-TEXT! w "M") 0)))))
         (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
-        (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
+        (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp))))
           (cond  ((< 0 (car new-EHp)) ;破壊的変更にした
                 (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
@@ -321,11 +321,11 @@
                                    (set-BATTLE-TEXT! w "M") 0)))))
         (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
-        (let ((new-EHp (cons (- (car EHp) damage) EHp))) 
-          (cond  ((< 0 (car new-EHp)) ;HPの更新を破壊的変更にしようかな？ 実験待ち
+        (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp)))) 
+          (cond  ((< 0 (car new-EHp)) ;HPの更新を破壊的変更
               (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
-　               (set-CHARACTER-Hp! (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp)
+　               (set-CHARACTER-Hp!  (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp)
                 `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
                  (else
          (let ((new-Clist
@@ -410,8 +410,11 @@
                   (cond 
           　((key=? a-key "\r") ;enterで該当メンバーを特定してHPを回復してC-LIST更新
              (set-CHARACTER-Hp! (car (list-ref hero-member (BATTLE-ITEM w)))
-               (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w))))))
-                      (cdr (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w))))))) ;HPの更新
+           (let ((new-car-hp (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w)))))))
+                 (old-cdr-hp (cdr (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w)))))))
+             (if (< new-car-hp old-cdr-hp)
+                (cons new-car-hp old-cdr-hp)
+               (cons old-cdr-hp old-cdr-hp)))) ;HPの更新
              (set-BATTLE-MENU! w #f) (set-BATTLE-U-ITEM! w #f) (set-BATTLE-ITEM! w #f) ;MENUなどを消す
               `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))) ;新しいC-LIST
          　 (else (BATTLE-C-LIST w)))) (else (BATTLE-C-LIST w))) ;入力がない場合、"HO"ではない場合
@@ -426,7 +429,7 @@
 
          ((number? (BATTLE-U-ITEM w)) ;U-ITEMが Number なら
              (BATTLE
-              (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+              (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
          (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
           ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
@@ -438,10 +441,15 @@
               (BATTLE
                (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))　
                  (("HS")　;ConsでHSなら
-                  (set-BATTLE-MENU! w #f) `(,@(cdr (BATTLE-C-LIST w)) ,(cons
-                 (HERO Name Image Race Class Ali Lv (cons (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp)) (cdr Hp)) Ac Exp Money
-                       Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (d-pair->posn (cons x y)))))
+                  (let ((new-car-hp (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp))))
+                  (set-BATTLE-MENU! w #f) 
+                    `(,@(cdr (BATTLE-C-LIST w)) ,(cons
+                 (HERO Name Image Race Class Ali Lv (if (< new-car-hp (cdr Hp)) (cons new-car-hp (cdr Hp))
+                                                      (cons (cdr Hp) (cdr Hp))) Ac Exp Money
+                       Move Arm Armor Sield
+                       Item
+                       Skill Str Int Wis Dex Con Chr)
+                  (d-pair->posn (cons x y))))))
                  (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-LIST w))
                 (else (BATTLE-C-LIST w)))
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w)
@@ -494,7 +502,13 @@
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
           (else
-           (BATTLE (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MONEY w)
+                      #; (for-each (lambda (x) (set-CHARACTER-Hp! (car x)
+                                                     (if (> (car (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
+                                                         (cons (cdr (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
+                                                         (CHARACTER-Hp (car x)))))  (BATTLE-C-LIST w))
+           (BATTLE
+            (BATTLE-C-LIST w)                                                         
+            (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
           
 
@@ -509,11 +523,18 @@
 ))
 
 
-;(big-test test-battle-struct)
-(let ((w test-battle-struct))
-(for-each (lambda (y) (set-CHARACTER-Hp! (car y)
-                                         (cons (- (car (CHARACTER-Hp (car y))) (MAGIC-Mpower M002)) (cdr (CHARACTER-Hp (car y))))))
-(filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w)))
-  (CHARACTER-Hp (car (cadddr (BATTLE-C-LIST w)))))
+(big-test test-battle-struct)
+#;
 
-
+ (BATTLE-C-LIST (let ((w test-battle-struct))
+ (for-each (lambda (x) (set-CHARACTER-Hp! (car x)
+                                                     (if (> (car (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
+                                                         (cons (cdr (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
+                                                         (CHARACTER-Hp (car x))))) (BATTLE-C-LIST w)) w))
+;(require racket/trace)
+#;
+ (let ((x (BATTLE-C-LIST test-battle-struct)))
+ (set-CHARACTER-Hp! (car (car x))
+                    (if (> (car (CHARACTER-Hp (car (car x)))) (cdr (CHARACTER-Hp (car (car x)))))
+                                                         (cons (cdr (CHARACTER-Hp (car (car x)))) (cdr (CHARACTER-Hp (car (car x)))))
+                                                         (CHARACTER-Hp (car x)))) x)
