@@ -61,7 +61,7 @@
                   (car (car (BATTLE-C-LIST w)))))
   (if (or (number? (BATTLE-C-MAGIC w)) (and (number? (BATTLE-MAGIC w)) (cons? (BATTLE-C-MAGIC w))))
      (let-values (((l1 l2) (for/lists (l1 l2)
-                                      ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                                      ((i Skill) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (MAGIC-Mname
                                                              (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
        (cond ((number? (BATTLE-C-MAGIC w))
@@ -377,7 +377,8 @@
                 (filter (lambda (z) ((compose not equal?)
                                      (cdr z) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))) (BATTLE-C-LIST w))))
            `(,@(cdr new-Clist) ,(cons
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money (cons (cdr EMove) (cdr EMove)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
+                        (cons (cdr EMove) (cdr EMove)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y))))))))))))
 
 
@@ -477,20 +478,17 @@
            (else (BATTLE-MAGIC w)))
            (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
                  (BATTLE-TEXT w) (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
-            (else (BATTLE-C-LIST w))))
+            (else (BATTLE-C-LIST w)))) ;MAGICが0ここまで
        
                                      
-
-
-          
          ((cons? (BATTLE-C-MAGIC w)) ;C-MAGICがConsなら
           (BATTLE
                (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w))) ;C-LIST
-                 (("AC") ;ConsでACなら全体攻撃
-                  (set-BATTLE-MENU! w #f)
+                 (("AC") ;ConsでACなら全体攻撃 続きで殺した場合にリストから削除する部分を書く
+               ;   (set-BATTLE-MENU! w #f)
                   (for-each (lambda (y) (set-CHARACTER-Hp! (car y)
                                   (cons (- (car (CHARACTER-Hp (car y)))
-                                           (MAGIC-Mpower (list-ref Skill (BATTLE-C-MAGIC)))) (cdr (CHARACTER-Hp (car y))))))
+                                           (MAGIC-Mpower (car (BATTLE-C-MAGIC w)))) (cdr (CHARACTER-Hp (car y))))))
                             (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w)))
         (let ((t-i-list (car (filter (lambda (x) (string=? (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) Skill)))
                              (not-t-i-list (filter (lambda (x) ((compose not string=?)
@@ -508,7 +506,7 @@
 
          
        
-       ((number? (BATTLE-C-MAGIC w)) ;BATTLE-C-MAGICがNumberなら
+       ((number? (BATTLE-C-MAGIC w)) ;BATTLE-C-MAGICに0がセットされたら
           (BATTLE
             (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
     (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w) (BATTLE-U-ITEM w)
@@ -554,15 +552,6 @@
                  (BATTLE-MAGIC w) (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
                  (BATTLE-TEXT w) (BATTLE-MENU w)　(BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))) ;BATTLE-ITEM 0 ここまで
 
-         ((number? (BATTLE-U-ITEM w)) ;U-ITEMが Number なら
-             (BATTLE
-              (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
-         (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
-          ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
-          ((key=? a-key "\r") (list-ref Item (BATTLE-U-ITEM w))) ;Enterを押すとItemの該当部分をBATTLE-U-ITEMにセット (item . 個数）
-          (else (BATTLE-U-ITEM w)))
-                (BATTLE-C-MAGIC w))) ;ここまでU-ITEMが　Numberなら
 
              ((cons? (BATTLE-U-ITEM w)) ;U-ITEMが Consなら
               (BATTLE
@@ -586,6 +575,17 @@
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w)
               (BATTLE-MONEY w) (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
               (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
+
+          ((number? (BATTLE-U-ITEM w)) ;U-ITEMが Number なら
+             (BATTLE
+              (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w)
+         (cond ((key=? a-key "up") (if (= (BATTLE-U-ITEM w) 0) 0 (- (BATTLE-U-ITEM w) 1)))
+          ((key=? a-key "down") (if (< (+ 1 (BATTLE-U-ITEM w)) (length Item)) (+ (BATTLE-U-ITEM w) 1) (BATTLE-U-ITEM w)))
+          ((key=? a-key "\r") (list-ref Item (BATTLE-U-ITEM w))) ;Enterを押すとItemの該当部分をBATTLE-U-ITEMにセット (item . 個数)
+          (else (BATTLE-U-ITEM w)))
+                (BATTLE-C-MAGIC w))) ;ここまでU-ITEMが Numberなら
+
 
                
              (else ;U-ITEM False
