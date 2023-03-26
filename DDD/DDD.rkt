@@ -498,7 +498,7 @@
                   (set-CHARACTER-Skill! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用MAGICを1減らす破壊的変更
                       `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))
                   `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
-                 (("HC")  );全体回復                 
+                ; (("HC")  );全体回復                 
                  (("HO") (set-BATTLE-MAGIC! w 0) (BATTLE-C-LIST w)) ;個別回復
                  (("AS") (set-BATTLE-MAGIC! w 0) (BATTLE-C-LIST w)) ;個別攻撃
                  (else (BATTLE-C-LIST w)))
@@ -564,22 +564,21 @@
           (else (BATTLE-U-ITEM w)))
                 (BATTLE-C-MAGIC w))) ;ここまでU-ITEMが　Numberなら
 
-          ((cons? (BATTLE-U-ITEM w)) ;U-ITEMが　Consなら
+             ((cons? (BATTLE-U-ITEM w)) ;U-ITEMが Consなら
               (BATTLE
-               (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))　
-                 (("HS")　;ConsでHSなら
+               (case (ITEM-Ikind (car (BATTLE-U-ITEM w))) 
+                 (("HS") ;ConsでHSなら
                   (let ((new-car-hp (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car Hp))))
                   (set-BATTLE-MENU! w #f) 
                     `(,@(cdr (BATTLE-C-LIST w)) ,(cons
                  (HERO Name Image Race Class Ali Lv (if (< new-car-hp (cdr Hp)) (cons new-car-hp (cdr Hp))
                                                       (cons (cdr Hp) (cdr Hp))) Ac Exp Money
-                       Move Arm Armor Sield)
-                       ;Item 使用したアイテムの個数を１減らす
-                       (let ((t-i-list (car (filter (lambda (x)
-                                                      (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
+                       Move Arm Armor Sield
+                       ;Item 使用したアイテムの個数を1減らす
+                       (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
                              (not-t-i-list (filter (lambda (x) ((compose not string=?)
                                                          (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
-                         `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))　;アイテム減らすここまで
+                         `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list)) ;アイテム減らすここまで
                        Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y))))))
                  (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-LIST w))
