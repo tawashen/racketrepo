@@ -21,5 +21,7 @@
 (define I004 (ITEM "うんこ" 5 "AS" 20)) ;攻撃敵単体 AS
 (define M001 (MAGIC "メラ" "AS" 1 "WIZ" 10)) ;攻撃敵単体　AS
 (define M002 (MAGIC "イオ" "AC" 3 "SOR" 20)) ;攻撃敵全体　AC
-(define M003 (MAGIC "ホイミ" "HO" 1 "CRE" 20)) ;見方単体回復 HO
+(define M003 (MAGIC "ホイミ" "HO" 1 "CRE" 20)) ;味方単体回復 HO
+(define M004 (MAGIC "ベホマラー" "HC" 5 "CRE" 20)) ;味方全体回復 HC
+
 

@@ -16,7 +16,7 @@
 ;テスト用バトル構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define test-battle-struct (BATTLE (sort `(
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(120 . 100) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) `((,M001 . 3) (,M002 . 2) (,M003 . 3)) 10 18 6 11 9 10) . ,(make-posn '93 '155))
+                 `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) `((,M001 . 3) (,M002 . 2) (,M003 . 3) (,M004 . 3)) 10 18 6 11 9 10) . ,(make-posn '93 '155))
          (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(080 . 003) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `((,I001 . 2) (,I002 . 3)) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
@@ -32,6 +32,51 @@
 
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define (place-herolistM w) 
+    (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+      (let ((hero-list (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
+      (case (variant (car (car C-LIST)))
+        ((HERO)
+           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+             (if (BATTLE-MAGIC w)
+                       (let-values (((l1 l2) (for/lists (l1 l2)
+                                      ((i hero-list) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a" (CHARACTER-Name (car i)))
+                                                              20 "white") (make-posn 344 (+ j 70))))))
+       (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-MAGIC w))) "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
+                                                                            (place-magic w)))))
+     (place-magic w))))
+        (else (place-waku w))))))
+
+
+(define (place-magic w)
+    (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+      (case (variant (car (car C-LIST)))
+        ((HERO)
+           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+  (if (or (number? (BATTLE-C-MAGIC w)) (and (number? (BATTLE-MAGIC w)) (cons? (BATTLE-C-MAGIC w))))
+     (let-values (((l1 l2) (for/lists (l1 l2)
+                                      ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a  ~a" (MAGIC-Mname
+                                                             (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
+       (cond ((number? (BATTLE-C-MAGIC w))
+       (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-C-MAGIC w))) "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
+                                                                            (place-menu w)))))
+             ((cons? (BATTLE-C-MAGIC w))
+                  (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
+                                                                            (place-menu w))))))
+     (place-menu w))))
+        (else (place-waku w)))))
 
 (define (place-herolist w) 
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
@@ -349,7 +394,8 @@
       ((#f) ;case BATTLE-MENU
    (BATTLE
       (cond
-        ((key=? a-key "m") (set-BATTLE-MENU! w #t) (set-BATTLE-ITEM! w #f) (set-BATTLE-U-ITEM! w #f) (BATTLE-C-LIST w))
+        ((key=? a-key "m") (set-BATTLE-MENU! w #t) (set-BATTLE-ITEM! w #f) (set-BATTLE-U-ITEM! w #f)
+                           (set-BATTLE-C-MAGIC! w #f) (set-BATTLE-MAGIC! w #f) (BATTLE-C-LIST w))
      ((key=? a-key " ") `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
      ((key=? a-key "left")
       (key-func x -1 y 0 w Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr))
@@ -366,17 +412,77 @@
     (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
       ((#t) ;MENUが表示されていて case BATTLE-MENU
-       (cond        
-         ((number? (BATTLE-C-MAGIC w)) ;BATTLE-MAGICがNumberなら
-          (BATTLE
-            (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w) (BATTLE-U-ITEM w)
-         (cond ((key=? a-key "up") (if (= (BATTLE-C-MAGIC w) 0) 0 (- (BATTLE-C-MAGIC w) 1)))
-          ((key=? a-key "down") (if (< (+ 1 (BATTLE-C-MAGIC w)) (length Skill)) (+ (BATTLE-C-MAGIC w) 1) (BATTLE-C-MAGIC w)))
-          ((key=? a-key "\r") (list-ref Skill (BATTLE-C-MAGIC w))) ;Enterを押すとSkillの該当部分をBATTLE-C-MAGICにセット (magic . 回数)
-          (else (BATTLE-C-MAGIC w))))) ;ここまでC-MAGICが Numberなら
-         
-         ((cons? (BATTLE-C-MAGIC w)) ;BATTLE-MAGICがConsなら
+       (cond
+         ((number? (BATTLE-MAGIC w)) ;MAGICが0なら
+          (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
+            (("HO")
+             (let ((hero-member (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
+           (BATTLE
+            (cond 
+             ((key=? a-key "\r") ;enterで該当メンバーを特定してHPを回復してC-LIST更新
+              (set-CHARACTER-Hp! (car (list-ref hero-member (BATTLE-MAGIC w)))
+                 (let ((new-car-hp (+ (MAGIC-Mpower (car (BATTLE-C-MAGIC w)))
+                                (car (CHARACTER-Hp (car (list-ref hero-member (BATTLE-MAGIC w)))))))
+                 (old-cdr-hp (cdr (CHARACTER-Hp (car (list-ref hero-member (BATTLE-MAGIC w)))))))
+             (if (< new-car-hp old-cdr-hp)
+                (cons new-car-hp old-cdr-hp)
+               (cons old-cdr-hp old-cdr-hp)))) ;HPの更新       
+             (set-BATTLE-MENU! w #f) (set-BATTLE-MAGIC! w #f) ;MENUなどを消す
+                (let ((t-i-list (car (filter (lambda (x)
+                                               (string=? (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) Skill)))
+                             (not-t-i-list (filter (lambda (x) ((compose not string=?)
+                                                         (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) Skill)))
+                  (set-CHARACTER-Skill! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用アイテムを1減らす破壊的変更
+                      `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))              
+              `(,@(cdr (BATTLE-C-LIST w))
+                ,(car (BATTLE-C-LIST w))))) ;変更したCHARACTERを後ろにつけて新たなC-LIST
+               (else (BATTLE-C-LIST w)))
+          (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w)
+           (cond
+           ((key=? a-key "up") (if (= (BATTLE-MAGIC w) 0) 0 (- (BATTLE-MAGIC w) 1)))
+           ((key=? a-key "down") (if (< (+ 1 (BATTLE-MAGIC w)) (length hero-member)) (+ (BATTLE-MAGIC w) 1) (BATTLE-MAGIC w)))
+           (else (BATTLE-MAGIC w)))
+           (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
+                 (BATTLE-TEXT w) (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
+            
+            (("AS")
+                 (let ((enemy-member (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w))))
+                    (match-let (((ENEMY TName TImage TRace TClass TAli TLv THp TAc TExp TMoney TMove
+                                        TArm TArmor TSield TItem TSkill TStr TInt TWis TDex TCon TChr)
+                                 (car (list-ref enemy-member (BATTLE-MAGIC w)))))
+         (BATTLE
+          (cond 
+           ((key=? a-key "\r") ;enterで該当ENEMYを特定してHPを引いてC-LIST更新
+             (set-CHARACTER-Hp! (car (list-ref enemy-member (BATTLE-MAGIC w)))
+           (let ((new-car-hp (- (car (CHARACTER-Hp (car (list-ref enemy-member (BATTLE-MAGIC w)))))
+                                (MAGIC-Mpower (car (BATTLE-C-MAGIC w)))))
+                 (old-cdr-hp (cdr (CHARACTER-Hp (car (list-ref enemy-member (BATTLE-MAGIC w)))))))
+             (if (< new-car-hp old-cdr-hp)
+                (cons new-car-hp old-cdr-hp)
+               (cons old-cdr-hp old-cdr-hp)))) ;HPの更新       
+             (set-BATTLE-MENU! w #f) (set-BATTLE-MAGIC! w #f) ;MENUなどを消す
+                (let ((t-i-list (car (filter (lambda (x)
+                                               (string=? (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) TSkill)))
+                             (not-t-i-list (filter (lambda (x) ((compose not string=?)
+                                                         (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) TSkill)))
+                  (set-CHARACTER-Skill! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用アイテムを1減らす破壊的変更
+                      `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))              
+              `(,@(cdr (BATTLE-C-LIST w))
+                ,(car (BATTLE-C-LIST w))))) ;変更したCHARACTERを後ろにつけて新たなC-LIST
+           (else (BATTLE-C-LIST w)))))))
+          (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w)
+           (cond
+           ((key=? a-key "up") (if (= (BATTLE-MAGIC w) 0) 0 (- (BATTLE-MAGIC w) 1)))
+           ((key=? a-key "down") (if (< (+ 1 (BATTLE-MAGIC w)) (length enemy-member)) (+ (BATTLE-MAGIC w) 1) (BATTLE-MAGIC w)))
+           (else (BATTLE-MAGIC w)))
+           (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
+                 (BATTLE-TEXT w) (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
+       
+                                     
+
+
+          
+         ((cons? (BATTLE-C-MAGIC w)) ;C-MAGICがConsなら
           (BATTLE
                (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w))) ;C-LIST
                  (("AC") ;ConsでACなら全体攻撃
@@ -385,22 +491,32 @@
                                   (cons (- (car (CHARACTER-Hp (car y)))
                                            (MAGIC-Mpower (list-ref Skill (BATTLE-C-MAGIC)))) (cdr (CHARACTER-Hp (car y))))))
                             (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w)))
-                  (BATTLE-C-LIST w))
+        (let ((t-i-list (car (filter (lambda (x) (string=? (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) Skill)))
+                             (not-t-i-list (filter (lambda (x) ((compose not string=?)
+                                                         (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) Skill)))
+                  (set-CHARACTER-Skill! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用MAGICを1減らす破壊的変更
+                      `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))
+                  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
+                 (("HC")  );全体回復                 
+                 (("HO") (set-BATTLE-MAGIC! w 0) (BATTLE-C-LIST w)) ;個別回復
+                 (("AS") (set-BATTLE-MAGIC! w 0) (BATTLE-C-LIST w)) ;個別攻撃
                  (else (BATTLE-C-LIST w)))
-              (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w) (BATTLE-EXP w)
-              (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w) (BATTLE-U-ITEM w)
-              (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
-                 (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-MAGIC w)) ;C-MAGIC
-                (else (BATTLE-C-MAGIC w)))
-              (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w)
+               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w)
               (BATTLE-MONEY w) (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
               (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
 
-
-
-
          
-   
+       
+       ((number? (BATTLE-C-MAGIC w)) ;BATTLE-C-MAGICがNumberなら
+          (BATTLE
+            (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
+    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)  (BATTLE-MENU w) (BATTLE-U-ITEM w)
+         (cond ((key=? a-key "up") (if (= (BATTLE-C-MAGIC w) 0) 0 (- (BATTLE-C-MAGIC w) 1)))
+          ((key=? a-key "down") (if (< (+ 1 (BATTLE-C-MAGIC w)) (length Skill)) (+ (BATTLE-C-MAGIC w) 1) (BATTLE-C-MAGIC w)))
+          ((key=? a-key "\r") (list-ref Skill (BATTLE-C-MAGIC w))) ;Enterを押すとSkillの該当部分をBATTLE-C-MAGICにセット (magic . 回数)
+          (else (BATTLE-C-MAGIC w))))) ;ここまでC-MAGICが Numberなら
+         
+
           ((number? (BATTLE-ITEM w)) ;BATTLE-ITEMに0がセットされていれば
                (let ((hero-member (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
                   (match-let (((HERO TName TImage TRace TClass TAli TLv THp TAc TExp TMoney TMove
@@ -436,7 +552,7 @@
           　((key=? a-key "down") (if (< (+ 1 (BATTLE-ITEM w)) (length hero-member)) (+ (BATTLE-ITEM w) 1) (BATTLE-ITEM w)))
          　 (else (BATTLE-ITEM w)))
                  (BATTLE-MAGIC w) (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
-                 (BATTLE-TEXT w) (BATTLE-MENU w)　(BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
+                 (BATTLE-TEXT w) (BATTLE-MENU w)　(BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))) ;BATTLE-ITEM 0 ここまで
 
          ((number? (BATTLE-U-ITEM w)) ;U-ITEMが Number なら
              (BATTLE
@@ -457,7 +573,7 @@
                     `(,@(cdr (BATTLE-C-LIST w)) ,(cons
                  (HERO Name Image Race Class Ali Lv (if (< new-car-hp (cdr Hp)) (cons new-car-hp (cdr Hp))
                                                       (cons (cdr Hp) (cdr Hp))) Ac Exp Money
-                       Move Arm Armor Sield
+                       Move Arm Armor Sield)
                        ;Item 使用したアイテムの個数を１減らす
                        (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
                              (not-t-i-list (filter (lambda (x) ((compose not string=?)
@@ -517,10 +633,6 @@
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
     (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))
           (else
-                      #; (for-each (lambda (x) (set-CHARACTER-Hp! (car x)
-                                                     (if (> (car (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
-                                                         (cons (cdr (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
-                                                         (CHARACTER-Hp (car x)))))  (BATTLE-C-LIST w))
            (BATTLE
             (BATTLE-C-LIST w)                                                         
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
@@ -530,7 +642,7 @@
 ;メインBig-bang
 (define (big-test x)
 (big-bang x 
- (to-draw place-herolist)
+ (to-draw place-herolistM)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
@@ -546,10 +658,4 @@
                                                      (if (> (car (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
                                                          (cons (cdr (CHARACTER-Hp (car x))) (cdr (CHARACTER-Hp (car x))))
                                                          (CHARACTER-Hp (car x))))) (BATTLE-C-LIST w)) w))
-;(require racket/trace)
-#;
- (let ((x (BATTLE-C-LIST test-battle-struct)))
- (set-CHARACTER-Hp! (car (car x))
-                    (if (> (car (CHARACTER-Hp (car (car x)))) (cdr (CHARACTER-Hp (car (car x)))))
-                                                         (cons (cdr (CHARACTER-Hp (car (car x)))) (cdr (CHARACTER-Hp (car (car x)))))
-                                                         (CHARACTER-Hp (car x)))) x)
+
