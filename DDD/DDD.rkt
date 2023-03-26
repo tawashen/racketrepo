@@ -32,7 +32,8 @@
 
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define (place-herolistM w) 
+
+#|(define (place-herolistM w) 
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (let ((hero-list (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
       (case (variant (car (car C-LIST)))
@@ -50,9 +51,9 @@
                             (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
                                                                             (place-magic w)))))
      (place-magic w))))
-        (else (place-waku w))))))
+        (else (place-waku w)))))) |#
 
-
+#|
 (define (place-magic w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (case (variant (car (car C-LIST)))
@@ -76,7 +77,7 @@
                             (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
                                                                             (place-menu w))))))
      (place-menu w))))
-        (else (place-waku w)))))
+        (else (place-waku w))))) |#
 
 (define (place-herolist w) 
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
@@ -85,7 +86,7 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-             (if (BATTLE-ITEM w)
+             (cond ((BATTLE-ITEM w)
                        (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i hero-list) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a" (CHARACTER-Name (car i)))
@@ -94,7 +95,17 @@
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
-                                                                            (place-item w)))))
+                                                                            (place-item w))))))
+                     ((BATTLE-MAGIC w)
+                       (let-values (((l1 l2) (for/lists (l1 l2)
+                                      ((i hero-list) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a" (CHARACTER-Name (car i)))
+                                                              20 "white") (make-posn 344 (+ j 70))))))
+       (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-MAGIC w))) "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
+                                                                            (place-item w))))))
      (place-item w))))
         (else (place-waku w))))))
 
@@ -104,7 +115,8 @@
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
-  (if (or (number? (BATTLE-U-ITEM w)) (and (number? (BATTLE-ITEM w)) (cons? (BATTLE-U-ITEM w))))
+  (cond
+    ((or (number? (BATTLE-U-ITEM w)) (and (number? (BATTLE-ITEM w)) (cons? (BATTLE-U-ITEM w))))
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Item) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
                              (values (text (format "~a  ~a" (ITEM-Iname
@@ -119,8 +131,24 @@
                   (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w))))))
-     (place-menu w))))
+                                                                            (place-menu w)))))))
+      ((or (number? (BATTLE-C-MAGIC w)) (and (number? (BATTLE-MAGIC w)) (cons? (BATTLE-C-MAGIC w))))
+     (let-values (((l1 l2) (for/lists (l1 l2)
+                                      ((i Skill) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a  ~a" (MAGIC-Mname
+                                                             (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
+       (cond ((number? (BATTLE-C-MAGIC w))
+       (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-C-MAGIC w))) "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
+                                                                            (place-menu w)))))
+             ((cons? (BATTLE-C-MAGIC w))
+                  (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
+                                                                            (place-menu w)))))))
+     (else (place-menu w)))))
         (else (place-waku w)))))
  
 
@@ -542,7 +570,8 @@
                       `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))                
               `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))　;変更したCHARACTERを後ろにつけて新たなC-LIST
                                      
-         　 (else (BATTLE-C-LIST w)))) (else (BATTLE-C-LIST w))) ;入力がない場合、"HO"ではない場合
+         　 (else (BATTLE-C-LIST w))))  ;入力がない場合
+                  (else (BATTLE-C-LIST w))) ;"HO"ではない場合
                        (BATTLE-PHASE w) (BATTLE-TURN w)
                        ;以下(BATTLE-ITEM w)相当
                    (cond
@@ -564,14 +593,15 @@
                                                       (cons (cdr Hp) (cdr Hp))) Ac Exp Money
                        Move Arm Armor Sield
                        ;Item 使用したアイテムの個数を1減らす
-                       (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
+                       (let ((t-i-list (car (filter (lambda (x)
+                                                      (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
                              (not-t-i-list (filter (lambda (x) ((compose not string=?)
                                                          (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
                          `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list)) ;アイテム減らすここまで
-                       Skill Str Int Wis Dex Con Chr)
-                  (d-pair->posn (cons x y))))))
-                 (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-LIST w))
-                (else (BATTLE-C-LIST w)))
+                       Skill Str Int Wis Dex Con Chr) ;ここまでNew-hero
+                  (d-pair->posn (cons x y)))))) ;ここで座標をCons
+                 (("HO") (set-BATTLE-ITEM! w 0) (BATTLE-C-LIST w));HOの場合はBATTLE-ITEMに0（True)
+                (else (BATTLE-C-LIST w)));C-LISTおこまで
               (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w)
               (BATTLE-MONEY w) (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
               (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
@@ -642,7 +672,7 @@
 ;メインBig-bang
 (define (big-test x)
 (big-bang x 
- (to-draw place-herolistM)
+ (to-draw place-herolist)
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
