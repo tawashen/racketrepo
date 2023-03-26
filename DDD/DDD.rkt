@@ -469,14 +469,15 @@
                       `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))              
               `(,@(cdr (BATTLE-C-LIST w))
                 ,(car (BATTLE-C-LIST w))))) ;変更したCHARACTERを後ろにつけて新たなC-LIST
-           (else (BATTLE-C-LIST w)))))))
+           (else (BATTLE-C-LIST w)))
           (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w)
            (cond
            ((key=? a-key "up") (if (= (BATTLE-MAGIC w) 0) 0 (- (BATTLE-MAGIC w) 1)))
            ((key=? a-key "down") (if (< (+ 1 (BATTLE-MAGIC w)) (length enemy-member)) (+ (BATTLE-MAGIC w) 1) (BATTLE-MAGIC w)))
            (else (BATTLE-MAGIC w)))
            (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
-                 (BATTLE-TEXT w) (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
+                 (BATTLE-TEXT w) (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))
+            (else (BATTLE-C-LIST w))))
        
                                      
 
@@ -528,21 +529,20 @@
                   (cond 
           　((key=? a-key "\r") ;enterで該当メンバーを特定してHPを回復してC-LIST更新
              (set-CHARACTER-Hp! (car (list-ref hero-member (BATTLE-ITEM w)))
-           (let ((new-car-hp (+ (ITEM-Ipower (car (BATTLE-U-ITEM w))) (car (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w)))))))
+           (let ((new-car-hp (+ (ITEM-Ipower (car (BATTLE-U-ITEM w)))
+                                (car (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w)))))))
                  (old-cdr-hp (cdr (CHARACTER-Hp (car (list-ref hero-member (BATTLE-ITEM w)))))))
              (if (< new-car-hp old-cdr-hp)
                 (cons new-car-hp old-cdr-hp)
-               (cons old-cdr-hp old-cdr-hp)))) ;HPの更新
-             
+               (cons old-cdr-hp old-cdr-hp)))) ;HPの更新       
              (set-BATTLE-MENU! w #f) (set-BATTLE-ITEM! w #f) ;MENUなどを消す
-                (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) TItem)))
+                (let ((t-i-list (car (filter (lambda (x)
+                                               (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) TItem)))
                              (not-t-i-list (filter (lambda (x) ((compose not string=?)
                                                          (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) TItem)))
                   (set-CHARACTER-Item! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用アイテムを１減らす破壊的変更
-                      `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))
-                  
-              `(,@(cdr (BATTLE-C-LIST w))
-                ,(car (BATTLE-C-LIST w)))))　;変更したCHARACTERを後ろにつけて新たなC-LIST
+                      `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))                
+              `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))　;変更したCHARACTERを後ろにつけて新たなC-LIST
                                      
          　 (else (BATTLE-C-LIST w)))) (else (BATTLE-C-LIST w))) ;入力がない場合、"HO"ではない場合
                        (BATTLE-PHASE w) (BATTLE-TURN w)
@@ -575,7 +575,8 @@
                                                       (cons (cdr Hp) (cdr Hp))) Ac Exp Money
                        Move Arm Armor Sield)
                        ;Item 使用したアイテムの個数を１減らす
-                       (let ((t-i-list (car (filter (lambda (x) (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
+                       (let ((t-i-list (car (filter (lambda (x)
+                                                      (string=? (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
                              (not-t-i-list (filter (lambda (x) ((compose not string=?)
                                                          (ITEM-Iname (car (BATTLE-U-ITEM w))) (ITEM-Iname (car x)))) Item)))
                          `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))　;アイテム減らすここまで
