@@ -52,7 +52,13 @@
        (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-ITEM w))) "left" "bottom"
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
-                            (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
+                            (rectangle 160 (* 30 (length (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
+                                                  (("HO") hero-list)
+                                                  (("AS") enemy-list)))) "solid" "black")  340 (+ 120 (* 30
+                                                   (length (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
+                                                  (("HO") hero-list)
+                                                  (("AS") enemy-list))
+                                                   ))) "left" "bottom"
                                                                             (place-item w))))))
                      ((BATTLE-MAGIC w)
                        (let-values (((l1 l2) (for/lists (l1 l2)
@@ -65,7 +71,14 @@
        (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-MAGIC w))) "left" "bottom"
        (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
-                            (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
+                                   (rectangle 160 (* 30 (length (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
+                                                  (("HO") hero-list)
+                                                  (("AS") enemy-list)))) "solid" "black")  340 (+ 120 (* 30
+                                                   (length (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
+                                                  (("HO") hero-list)
+                                                  (("AS") enemy-list))
+                                                   ))) "left" "bottom"
+                           ; (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
                                                                             (place-item w))))))
                      (else (place-item w))))) 
      (else (place-item w))))))
