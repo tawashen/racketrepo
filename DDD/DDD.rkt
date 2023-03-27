@@ -424,7 +424,6 @@
              (let ((hero-member (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
            (BATTLE
             (cond
-            ;  ((key=? a-key " ") (set-BATTLE-MENU! w #f) (BATTLE-C-LIST w)) 
              ((key=? a-key "\r") ;enterで該当メンバーを特定してHPを回復してC-LIST更新
               (set-CHARACTER-Hp! (car (list-ref hero-member (BATTLE-MAGIC w)))
                  (let ((new-car-hp (+ (MAGIC-Mpower (car (BATTLE-C-MAGIC w)))
@@ -445,7 +444,6 @@
                (else (BATTLE-C-LIST w)))
           (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w)
            (cond
-          ;((key=? a-key " ") #f)
            ((key=? a-key "up") (if (= (BATTLE-MAGIC w) 0) 0 (- (BATTLE-MAGIC w) 1)))
            ((key=? a-key "down") (if (< (+ 1 (BATTLE-MAGIC w)) (length hero-member)) (+ (BATTLE-MAGIC w) 1) (BATTLE-MAGIC w)))
            (else (BATTLE-MAGIC w)))
