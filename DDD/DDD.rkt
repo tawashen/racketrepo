@@ -490,7 +490,7 @@
          ((cons? (BATTLE-C-MAGIC w)) ;C-MAGICがConsなら
           (BATTLE
                (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w))) ;C-LIST
-                 (("AC") ;ConsでACなら全体攻撃 続きで殺した場合にリストから削除する部分を書く
+                 (("AC") ;ConsでACなら全体攻撃 
                   (set-BATTLE-MENU! w #f)
                   (for-each (lambda (y) (set-CHARACTER-Hp! (car y)
                                   (cons (- (car (CHARACTER-Hp (car y)))
@@ -501,7 +501,7 @@
                                                          (MAGIC-Mname (car (BATTLE-C-MAGIC w))) (MAGIC-Mname (car x)))) Skill)))
                   (set-CHARACTER-Skill! (car (car (BATTLE-C-LIST w))) ;アクティブHEROの使用MAGICを1減らす破壊的変更
                       `(,(cons (car t-i-list) (- (cdr t-i-list) 1)) ,@not-t-i-list))
-                  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
+                  `(,@(cdr (filter (lambda (x) (< 0 (car (CHARACTER-Hp (car x))))) (BATTLE-C-LIST w))) ,(car (BATTLE-C-LIST w)))))
                 ; (("HC")  );全体回復                 
                  (("HO") (set-BATTLE-MAGIC! w 0) (BATTLE-C-LIST w)) ;個別回復
                  (("AS") (set-BATTLE-MAGIC! w 0) (BATTLE-C-LIST w)) ;個別攻撃
