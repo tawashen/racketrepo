@@ -106,8 +106,9 @@
                            (place-image/align
                             (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
                                                                             (place-item w))))))
-     (place-item w))))
-        (else (place-waku w))))))
+                     (else (place-item w))))) 
+     (else (place-item w))))))
+     ;   (else (place-waku w))))))
 
 (define (place-item w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
@@ -131,7 +132,8 @@
                   (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w)))))))
+                                                                            (place-menu w))))
+             (else (place-menu w)))))
       ((or (number? (BATTLE-C-MAGIC w)) (and (number? (BATTLE-MAGIC w)) (cons? (BATTLE-C-MAGIC w))))
      (let-values (((l1 l2) (for/lists (l1 l2)
                                       ((i Skill) (j '(20 50 80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
@@ -147,7 +149,8 @@
                   (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
-                                                                            (place-menu w)))))))
+                                                                            (place-menu w))))
+             (else (place-menu w)))))
      (else (place-menu w)))))
         (else (place-waku w)))))
  
