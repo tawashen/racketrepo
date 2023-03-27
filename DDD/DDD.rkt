@@ -78,17 +78,16 @@
                                                   (("HO") hero-list)
                                                   (("AS") enemy-list))
                                                    ))) "left" "bottom"
-                           ; (rectangle 160 (* 30 (length hero-list)) "solid" "black")  340 (+ 120 (* 30 (length hero-list))) "left" "bottom"
                                                                             (place-item w))))))
-                     (else (place-item w))))) 
-     (else (place-item w))))))
-     ;   (else (place-waku w))))))
+                              (else (place-item w))))) 
+                          (else (place-item w))))))
 
 (define (place-item w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (case (variant (car (car C-LIST)))
         ((HERO)
-           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move
+                              Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
   (cond
     ((or (number? (BATTLE-U-ITEM w)) (and (number? (BATTLE-ITEM w)) (cons? (BATTLE-U-ITEM w))))
@@ -124,8 +123,8 @@
                            (place-image/align
                             (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
                                                                             (place-menu w))))
-             (else (place-menu w)))))
-     (else (place-menu w)))))
+                (else (place-menu w)))))
+            (else (place-menu w)))))
         (else (place-waku w)))))
  
 
