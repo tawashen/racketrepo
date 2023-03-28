@@ -124,8 +124,7 @@
                           (else (place-item w))))))  |#
 
 (define (place-item w)
-    (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
-      (case (variant (car (car C-LIST)))
+      (case (hero-or-enemy w)
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move
                               Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -166,7 +165,7 @@
                                                                             (place-menu w))))
                 (else (place-menu w)))))
             (else (place-menu w)))))
-        (else (place-waku w)))))
+        (else (place-waku w))))
  
 
 (define (place-menu w)
@@ -430,7 +429,7 @@
 
 (define (change w a-key)
   (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
-  (case (variant (car (car (BATTLE-C-LIST w))))
+  (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
@@ -672,7 +671,7 @@
 (define (set-on-tick w) ;On-tickでの処理
    (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
      (let ((x (car dir)) (y (cdr dir)))
-    (cond ((symbol=? (variant (car (car (BATTLE-C-LIST w)))) 'ENEMY)
+    (cond ((symbol=? (hero-or-enemy w) 'ENEMY)
       (match-let (((ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (car (car (BATTLE-C-LIST w)))))
            (BATTLE 
