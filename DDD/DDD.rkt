@@ -32,12 +32,53 @@
 
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define (filter-hero w)
+  (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w)))
+(define (filter-enemy w)
+  (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w)))
+
+(define (magic-item w kind slotN slotL hero-list enemy-list)
+                       (let-values (((l1 l2) (for/lists (l1 l2) 
+                                      ((i (case kind
+                                            (("HO") hero-list)
+                                            (("AS") enemy-list))) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
+                             (values (text (format "~a" (CHARACTER-Name (car i)))
+                                                              20 "white") (make-posn 344 (+ j 70))))))
+       (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 slotN)) "left" "bottom"
+       (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length (case kind
+                                                  (("HO") hero-list)
+                                                  (("AS") enemy-list)))) "solid" "black")  340 (+ 120 (* 30
+                                                   (length (case kind
+                                                  (("HO") hero-list)
+                                                  (("AS") enemy-list))
+                                                   ))) "left" "bottom"
+                                                                            (place-item w)))))) 
+
+(define (hero-or-enemy w)
+  (variant (car (car (BATTLE-C-LIST w)))))
+
+(define (place-herolist w)
+  (let ((hero-list (filter-hero w))
+        (enemy-list (filter-enemy w)))
+         (case (hero-or-enemy w)
+        ((HERO)
+           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
+                  (car (car (BATTLE-C-LIST w)))))
+    (cond ((BATTLE-ITEM w)
+           (magic-item w (ITEM-Ikind (car (BATTLE-U-ITEM w))) (BATTLE-ITEM w) (BATTLE-U-ITEM w) hero-list enemy-list))
+          ((BATTLE-MAGIC w)
+           (magic-item w (MAGIC-Mkind (car (BATTLE-C-MAGIC w))) (BATTLE-MAGIC w) (BATTLE-C-MAGIC w) hero-list enemy-list))
+          (else (place-item w)))))
+           (else (place-item w)))))
 
 
+#|
 (define (place-herolist w) 
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
-      (let ((hero-list (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w)))
-        (enemy-list (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w))))
+      (let ((hero-list (filter-hero w))
+        (enemy-list (filter-enemy w)))
       (case (variant (car (car C-LIST)))
         ((HERO)
            (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -80,7 +121,7 @@
                                                    ))) "left" "bottom"
                                                                             (place-item w))))))
                               (else (place-item w))))) 
-                          (else (place-item w))))))
+                          (else (place-item w))))))  |#
 
 (define (place-item w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))

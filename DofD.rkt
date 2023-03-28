@@ -201,7 +201,24 @@
 (define (get-row pos)
   (quotient pos BOARD))
 
+(define (game-tree board player dice)
+  (define (attacks board)
+    (for*/list ((src board)
+                (dst (neighbors (territory-index src)))
+                #:when (attackable? board player src dat))
+      (define from (territory-index src))
+      (define dice (territory-dice src))
+      (define newb (execute board player from dat dice))
+      (define more (cons (passes newb) (attacks newb)))
+      (move (list from dat) (game newb player more))))
+  (define (passes board)
+    (define-values (new-dice newb) (distribute board player dice))
+    (move '() (game-tree newb (switch player) new-dice)))
+  (game board player (attacks board)))
 
+
+
+  
     
 
 
