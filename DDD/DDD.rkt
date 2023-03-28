@@ -59,6 +59,9 @@
 (define (hero-or-enemy w)
   (variant (car (car (BATTLE-C-LIST w)))))
 
+(define (wcar x)
+  (car (car x)))
+
 (define (place-herolist w)
   (let ((hero-list (filter-hero w))
         (enemy-list (filter-enemy w)))
@@ -123,6 +126,12 @@
                               (else (place-item w))))) 
                           (else (place-item w))))))  |#
 
+(define (place-list-skill-item w s-or-i l1 l2) 
+               (place-images/align l1 l2 "left" "bottom"
+                           (place-image/align
+                            (rectangle 160 (* 30 (length s-or-i)) "solid" "black")  170 (+ 60 (* 30 (length s-or-i))) "left" "bottom"
+                                                                            (place-menu w))))
+
 (define (place-item w)
       (case (hero-or-enemy w)
         ((HERO)
@@ -137,15 +146,18 @@
                                                              (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
        (cond ((number? (BATTLE-U-ITEM w))
        (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-U-ITEM w))) "left" "bottom"
-       (place-images/align l1 l2 "left" "bottom"
+                        (place-list-skill-item w Item l1 l2)))
+       #|                   
+       (place-images/align l1 l2 "left" "bottom" ;kokoA
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w)))))
+                                                                            (place-menu w))))) |#
              ((cons? (BATTLE-U-ITEM w))
-                  (place-images/align l1 l2 "left" "bottom"
+                  (place-list-skill-item w Item l1 l2))
+                #|  (place-images/align l1 l2 "left" "bottom" ;kokoA
                            (place-image/align
                             (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w))))
+                                                                            (place-menu w)))) |#
              (else (place-menu w)))))
       ((or (number? (BATTLE-C-MAGIC w)) (and (number? (BATTLE-MAGIC w)) (cons? (BATTLE-C-MAGIC w))))
      (let-values (((l1 l2) (for/lists (l1 l2)
@@ -154,15 +166,17 @@
                                                              (car i)) (cdr i)) 20 "white") (make-posn 174 (+ j 70))))))
        (cond ((number? (BATTLE-C-MAGIC w))
        (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-C-MAGIC w))) "left" "bottom"
-       (place-images/align l1 l2 "left" "bottom"
-                           (place-image/align
+                          (place-list-skill-item w Skill l1 l2)))
+      #| (place-images/align l1 l2 "left" "bottom" ;kokoB
+                           (place-image/align 
                             (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
-                                                                            (place-menu w)))))
+                                                                            (place-menu w)))))|#
              ((cons? (BATTLE-C-MAGIC w))
-                  (place-images/align l1 l2 "left" "bottom"
+              (place-list-skill-item w Skill l1 l2))
+              #|    (place-images/align l1 l2 "left" "bottom" ;kokoB
                            (place-image/align
                             (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
-                                                                            (place-menu w))))
+                                                                            (place-menu w)))) |#
                 (else (place-menu w)))))
             (else (place-menu w)))))
         (else (place-waku w))))
