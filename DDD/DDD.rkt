@@ -18,7 +18,7 @@
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" "" 1 '(120 . 100) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) `((,M001 . 3) (,M002 . 2) (,M003 . 3) (,M004 . 3)) 10 18 6 11 9 10) . ,(make-posn '93 '155))
          (,(HERO "hosida" (bitmap/file "picture/03.png") "HUMAN" "FIGHTER" "" 1 '(080 . 003) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) `((,I001 . 2) (,I002 . 3)) `(,M001) 17 10 12 8 15 14) . ,(make-posn '93 '93))
+                 `(,B001) `(,A001) `(,S001) `((,I001 . 2) (,I002 . 3)) `((,M001 . 1)) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
          (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" ""  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
@@ -32,11 +32,16 @@
 
 
 ;画面表示関連;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;汎用関数
 (define (filter-hero w)
   (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w)))
 (define (filter-enemy w)
   (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w)))
+(define (hero-or-enemy w)
+  (variant (car (car (BATTLE-C-LIST w)))))
+;汎用関数ここまで
 
+;Place-hero-item用補助関数
 (define (magic-item w kind slotN slotL hero-list enemy-list)
                        (let-values (((l1 l2) (for/lists (l1 l2) 
                                       ((i (case kind
@@ -54,13 +59,11 @@
                                                   (("HO") hero-list)
                                                   (("AS") enemy-list))
                                                    ))) "left" "bottom"
-                                                                            (place-item w)))))) 
+                                                                            (place-item w))))))
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (hero-or-enemy w)
-  (variant (car (car (BATTLE-C-LIST w)))))
 
-(define (wcar x)
-  (car (car x)))
+
 
 (define (place-herolist w)
   (let ((hero-list (filter-hero w))
@@ -76,61 +79,14 @@
           (else (place-item w)))))
            (else (place-item w)))))
 
-
-#|
-(define (place-herolist w) 
-    (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
-      (let ((hero-list (filter-hero w))
-        (enemy-list (filter-enemy w)))
-      (case (variant (car (car C-LIST)))
-        ((HERO)
-           (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (car (car (BATTLE-C-LIST w)))))
-             (cond ((BATTLE-ITEM w)
-                       (let-values (((l1 l2) (for/lists (l1 l2)
-                                      ((i (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
-                                            (("HO") hero-list)
-                                            (("AS") enemy-list))) (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
-                             (values (text (format "~a" (CHARACTER-Name (car i)))
-                                                              20 "white") (make-posn 344 (+ j 70))))))
-       (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-ITEM w))) "left" "bottom"
-       (place-images/align l1 l2 "left" "bottom"
-                           (place-image/align
-                            (rectangle 160 (* 30 (length (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
-                                                  (("HO") hero-list)
-                                                  (("AS") enemy-list)))) "solid" "black")  340 (+ 120 (* 30
-                                                   (length (case (ITEM-Ikind (car (BATTLE-U-ITEM w)))
-                                                  (("HO") hero-list)
-                                                  (("AS") enemy-list))
-                                                   ))) "left" "bottom"
-                                                                            (place-item w))))))
-                     ((BATTLE-MAGIC w)
-                       (let-values (((l1 l2) (for/lists (l1 l2)
-                                      ((i (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
-                                            (("HO") hero-list)
-                                            (("AS") enemy-list)))
-                                        (j '(80 110 140 150 180 210 240 270 300 330 360 390 420 450 480 510)))
-                             (values (text (format "~a" (CHARACTER-Name (car i)))
-                                                              20 "white") (make-posn 344 (+ j 70))))))
-       (place-image/align (rectangle 160 30 "outline" "red") 340 (+ 150 (* 30 (BATTLE-MAGIC w))) "left" "bottom"
-       (place-images/align l1 l2 "left" "bottom"
-                           (place-image/align
-                                   (rectangle 160 (* 30 (length (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
-                                                  (("HO") hero-list)
-                                                  (("AS") enemy-list)))) "solid" "black")  340 (+ 120 (* 30
-                                                   (length (case (MAGIC-Mkind (car (BATTLE-C-MAGIC w)))
-                                                  (("HO") hero-list)
-                                                  (("AS") enemy-list))
-                                                   ))) "left" "bottom"
-                                                                            (place-item w))))))
-                              (else (place-item w))))) 
-                          (else (place-item w))))))  |#
-
+;Place-item補助関数
 (define (place-list-skill-item w s-or-i l1 l2) 
                (place-images/align l1 l2 "left" "bottom"
                            (place-image/align
                             (rectangle 160 (* 30 (length s-or-i)) "solid" "black")  170 (+ 60 (* 30 (length s-or-i))) "left" "bottom"
                                                                             (place-menu w))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (define (place-item w)
       (case (hero-or-enemy w)
@@ -147,17 +103,10 @@
        (cond ((number? (BATTLE-U-ITEM w))
        (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-U-ITEM w))) "left" "bottom"
                         (place-list-skill-item w Item l1 l2)))
-       #|                   
-       (place-images/align l1 l2 "left" "bottom" ;kokoA
-                           (place-image/align
-                            (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w))))) |#
+
              ((cons? (BATTLE-U-ITEM w))
                   (place-list-skill-item w Item l1 l2))
-                #|  (place-images/align l1 l2 "left" "bottom" ;kokoA
-                           (place-image/align
-                            (rectangle 160 (* 30 (length Item)) "solid" "black")  170 (+ 60 (* 30 (length Item))) "left" "bottom"
-                                                                            (place-menu w)))) |#
+
              (else (place-menu w)))))
       ((or (number? (BATTLE-C-MAGIC w)) (and (number? (BATTLE-MAGIC w)) (cons? (BATTLE-C-MAGIC w))))
      (let-values (((l1 l2) (for/lists (l1 l2)
@@ -167,16 +116,10 @@
        (cond ((number? (BATTLE-C-MAGIC w))
        (place-image/align (rectangle 160 30 "outline" "red") 170 (+ 90 (* 30 (BATTLE-C-MAGIC w))) "left" "bottom"
                           (place-list-skill-item w Skill l1 l2)))
-      #| (place-images/align l1 l2 "left" "bottom" ;kokoB
-                           (place-image/align 
-                            (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
-                                                                            (place-menu w)))))|#
+
              ((cons? (BATTLE-C-MAGIC w))
               (place-list-skill-item w Skill l1 l2))
-              #|    (place-images/align l1 l2 "left" "bottom" ;kokoB
-                           (place-image/align
-                            (rectangle 160 (* 30 (length Skill)) "solid" "black")  170 (+ 60 (* 30 (length Skill))) "left" "bottom"
-                                                                            (place-menu w)))) |#
+ 
                 (else (place-menu w)))))
             (else (place-menu w)))))
         (else (place-waku w))))
