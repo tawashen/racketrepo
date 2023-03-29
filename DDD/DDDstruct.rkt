@@ -27,6 +27,8 @@
 (struct ITEM (Iname Icost Ikind Ipower) #:transparent)
 (struct MAGIC (Mname Mkind Mlv Matt Mpower) #:transparent)
 
+(struct STATUS (sleep poison paralysis confuse blind silence) #:transparent #:mutable)
+(define status (STATUS 0 0 0 0 0 0))
 
 (struct CLASS (NAME REQUIRE))
 (define FIGHTER (CLASS "FIGHTER" 'Str))
