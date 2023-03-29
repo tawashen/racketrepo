@@ -140,7 +140,7 @@
 (define (place-waku w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
          (let-values (((l1 l2) (for/lists (l1 l2)
-                               ([i C-LIST] [j '(48 88 128 168 208 248 288 328 368)])
+                               ([i C-LIST] [j '(88 128 168 208 248 288 328 368)])
                         (values (rectangle 192 40 "outline" "white")
                         (make-posn 624 j)))))
                 (place-images/align l1 l2 "left" "bottom" (place-name w)))))
@@ -173,13 +173,15 @@
 (define (place-gamen w)
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (let-values (((l1 l2) (for/lists (l1 l2)
-                               ([i C-LIST] [j '(50 90 130 170 210 250 290 330 370)])
-                        (values (text (format "~a ~a ~a~% HP:~a" (BATTLE-PHASE w) (BATTLE-TURN w) (CHARACTER-Name (car i)) (align-num (car (CHARACTER-Hp (car i))))) 18
+                               ([i C-LIST] [j '(90 130 170 210 250 290 330 370)])
+                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (align-num (car (CHARACTER-Hp (car i))))) 18
                                       (case (variant (car i))
                                              ((HERO) "white")
                                              ((ENEMY) "red")))        
                         (make-posn 630 j)))))
-                (place-images/align l1 l2 "left" "bottom" (place-character w)))))
+                (place-images/align l1 l2 "left" "bottom"
+                                    (place-image/align
+                                     (text (format "TURN ~a" (BATTLE-TURN w)) 18 "green") 630 30 "left" "bottom" (place-character w))))))
 
 
 (define (place-character w)
@@ -400,9 +402,6 @@
 
 (define (change w a-key)
   (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
- ; (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w)))
-  ;  (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
- ; (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w)))
   (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -671,7 +670,7 @@
   (on-tick set-on-tick 1/2)
   (on-key change)
   (stop-when end ending) 
- (name "DD&D") 
+ (name "DD&D" ) 
 ))
 
 
