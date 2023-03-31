@@ -356,49 +356,24 @@
                        (cons (cdr EMove) (cdr EMove)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
                   (d-pair->posn (cons x y))))))))))))
 
-;近接戦闘処理ENEMY
+;近接戦闘処理ENEMY C-LIST->C-LIST
 (define (fightE x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move
                 Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-  (let* ((C-flag (if (<= (car (BUKI-Bcrit (car Arm))) (D20)) #t #f))
+  (let* ((C-flag (if (<= (car (BUKI-Bcrit (car Arm))) (D20)) #t #f)) ;
          (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
-                  　(teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
+         (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))
           (Target (car (filter (lambda (z)
                           (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-      (let ((damage (if C-flag
-                        (if hit? (begin
-                                   (set-BATTLE-TEXT! w "CH")
-                                   (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
-                                         (cdr (BUKI-Bcrit (car Arm)))) (Mbonus Str)))                           
-                            (begin
-                                   (set-BATTLE-TEXT! w "H")
-                                   (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str))))
-                        (if hit? (begin
-                                   (set-BATTLE-TEXT! w "H")
-                                   (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
-                            (begin
-                                   (set-BATTLE-TEXT! w "M") 0)))))
-        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
-        (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
-        (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp)))) 
-          (cond  ((< 0 (car new-EHp)) ;HPの更新を破壊的変更
-              (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
-                        ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
-　               (set-CHARACTER-Hp!  (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp)
+
+      (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli
+                                   ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
+                                   ECon EChr x x-dir y y-dir) ;CHARACTERのHpが破壊的変更を経て帰ってくる
                (phase-turn w)
-                `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
-                 (else
-         (let ((new-Clist
-                (filter (lambda (z) ((compose not equal?)
-                                     (cdr z) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))) (BATTLE-C-LIST w))))
-           (phase-turn w)
-           `(,@(cdr new-Clist) ,(cons
-                 (ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money
-                        (cons (cdr EMove) (cdr EMove)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (d-pair->posn (cons x y))))))))))))
-
-
+                `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
+                  ,(car (BATTLE-C-LIST w)))))) ;filterでHp0以下を消す
+ 
 
 (define (change w a-key)
   (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)

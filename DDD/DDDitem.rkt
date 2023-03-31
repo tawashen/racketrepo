@@ -7,6 +7,7 @@
 (require racket/struct)
 (require racket/match)
 (require "DDDstruct.rkt")
+(require "DDDutility.rkt")
 (provide (all-defined-out))
 
 
@@ -24,4 +25,35 @@
 (define M003 (MAGIC "ホイミ" "HO" 1 "CRE" 20)) ;味方単体回復 HO
 (define M004 (MAGIC "ベホマラー" "HC" 5 "CRE" 20)) ;味方全体回復 HC
 
+;攻撃
+;(sleep poison paralsys silence stone curse)
+(define sleep-attack (lambda (x) (set-CHARACTER-Ali! x `(,(random 1 3) 0 0 0 0 0))))　;xはCHARACTER
+(define poison-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 ,(random 1 3) 0 0 0 0))))
+(define paralsys-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 (random 1 3) 0 0 0))))
+(define silence-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 (random 1 3) 0 0))))
+(define stone-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 0 (random 1 3) 0))))
+(define curse-attack (lambda (x)   (set-CHARACTER-Ali! x `(0 0 0 0 0 (random 1 3)))))
 
+  
+(define hit-attack (lambda (C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli
+                                   ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
+                                   ECon EChr x x-dir y y-dir)
+      (let ((damage (if C-flag
+                        (if hit? (begin
+                                   (set-BATTLE-TEXT! w "CH")
+                                   (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
+                                         (cdr (BUKI-Bcrit (car Arm)))) (Mbonus Str)))                           
+                            (begin
+                                   (set-BATTLE-TEXT! w "H")
+                                   (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str))))
+                        (if hit? (begin
+                                   (set-BATTLE-TEXT! w "H")
+                                   (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
+                            (begin
+                                   (set-BATTLE-TEXT! w "M") 0)))))
+        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
+        (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
+       (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp)))) 
+             (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
+                        ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
+                (set-CHARACTER-Hp!  (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp))))))
