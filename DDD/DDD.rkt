@@ -371,6 +371,9 @@
                                    ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
                                    ECon EChr x x-dir y y-dir) ;CHARACTERのHpが破壊的変更を経て帰ってくる
                (phase-turn w)
+               (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w))) ;Moveのリセット
+                                    (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))
+                                          (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))))
                 `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
                   ,(car (BATTLE-C-LIST w)))))) ;filterでHp0以下を消す
  
@@ -497,9 +500,7 @@
                (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w)
               (BATTLE-MONEY w) (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
               (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
-
          
-       
        ((number? (BATTLE-C-MAGIC w)) ;BATTLE-C-MAGICに0がセットされたら
           (BATTLE
             (BATTLE-C-LIST w)  (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
@@ -509,7 +510,6 @@
           ((key=? a-key "\r") (list-ref Skill (BATTLE-C-MAGIC w))) ;Enterを押すとSkillの該当部分をBATTLE-C-MAGICにセット (magic . 回数)
           (else (BATTLE-C-MAGIC w))))) ;ここまでC-MAGICが Numberなら
          
-
           ((number? (BATTLE-ITEM w)) ;BATTLE-ITEMに0がセットされていれば
                (let ((hero-member (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w))))
                   (match-let (((HERO TName TImage TRace TClass TAli TLv THp TAc TExp TMoney TMove
@@ -548,7 +548,6 @@
                  (BATTLE-MAGIC w) (BATTLE-MONEY w)(BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w)
                  (BATTLE-TEXT w) (BATTLE-MENU w)　(BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))) ;BATTLE-ITEM 0 ここまで
 
-
              ((cons? (BATTLE-U-ITEM w)) ;U-ITEMが Consなら
               (BATTLE
                (case (ITEM-Ikind (car (BATTLE-U-ITEM w))) 
@@ -582,8 +581,6 @@
           ((key=? a-key "\r") (list-ref Item (BATTLE-U-ITEM w))) ;Enterを押すとItemの該当部分をBATTLE-U-ITEMにセット (item . 個数)
           (else (BATTLE-U-ITEM w)))
                 (BATTLE-C-MAGIC w))) ;ここまでU-ITEMが Numberなら
-
-
                
              (else ;U-ITEM False
               (BATTLE  (BATTLE-C-LIST w) (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
