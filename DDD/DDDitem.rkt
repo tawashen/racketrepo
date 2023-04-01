@@ -29,10 +29,10 @@
 ;(sleep poison paralsys silence stone curse)
 (define sleep-attack (lambda (x) (set-CHARACTER-Ali! x `(,(random 1 3) 0 0 0 0 0))))　;xはCHARACTER
 (define poison-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 ,(random 1 3) 0 0 0 0))))
-(define paralsys-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 (random 1 3) 0 0 0))))
-(define silence-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 (random 1 3) 0 0))))
-(define stone-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 0 (random 1 3) 0))))
-(define curse-attack (lambda (x)   (set-CHARACTER-Ali! x `(0 0 0 0 0 (random 1 3)))))
+(define paralsys-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 ,(random 1 3) 0 0 0))))
+(define silence-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 ,(random 1 3) 0 0))))
+(define stone-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 0 ,(random 1 3) 0))))
+(define curse-attack (lambda (x)   (set-CHARACTER-Ali! x `(0 0 0 0 0 ,(random 1 3)))))
 
   
 (define hit-attack (lambda (C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli
@@ -57,3 +57,19 @@
              (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
                 (set-CHARACTER-Hp!  (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp))))))
+
+
+(define test-skill `(,sleep-attack ,poison-attack ,paralsys-attack)) ;,hit-attack ,hit-attack ,hit-attack ,hit-attack))
+(define test-enemy (ENEMY "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" '(0 0 0 0 0 0) 1 '(120 . 100) 10 0 90 '(6 . 6)
+                 `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) test-skill 10 18 6 11 9 10))
+(define test-hero (HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" '(0 0 0 0 0 0) 1 '(120 . 100) 10 0 90 '(6 . 6)
+                 `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) `((,M001 . 3) (,M002 . 2) (,M003 . 3) (,M004 . 3)) 10 18 6 11 9 10))
+
+
+(define (attack-select chara target) ;CHARACTER->CHARACTER
+  ((list-ref (CHARACTER-Skill chara) (random 0 (length (CHARACTER-Skill chara)))) target))
+(attack-select test-enemy test-hero)
+(CHARACTER-Ali test-hero)
+
+(random 1 5)
+  

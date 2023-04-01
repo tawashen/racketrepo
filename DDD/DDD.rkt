@@ -366,10 +366,10 @@
                           (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-
-      (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli
+　
+      (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli　;直接攻撃
                                    ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
-                                   ECon EChr x x-dir y y-dir) ;CHARACTERのHpが破壊的変更を経て帰ってくる
+                                   ECon EChr x x-dir y y-dir) ;CHARACTERのHpが破壊的変更を経て返って来る
                (phase-turn w)
                (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w))) ;Moveのリセット
                                     (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))
