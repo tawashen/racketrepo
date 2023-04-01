@@ -70,6 +70,3 @@
   ((list-ref (CHARACTER-Skill chara) (random 0 (length (CHARACTER-Skill chara)))) target))
 (attack-select test-enemy test-hero)
 (CHARACTER-Ali test-hero)
-
-(random 1 5)
-  

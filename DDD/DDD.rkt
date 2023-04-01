@@ -367,23 +367,17 @@
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
 　　　(cond ((and (even? (random 1 21)) (CHARACTER-Skill (car (car (BATTLE-C-LIST w))))) ;20麺ダイスで偶数かつSkillがあれば
-          (attack-select (car (car (BATTLE-C-LIST w))) (car Target))　;特殊攻撃
-                         (phase-turn w)
-               (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w))) ;Moveのリセット
-                                    (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))
-                                          (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))))
-                `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
-                  ,(car (BATTLE-C-LIST w))))
-         (else 　;でなければ通常攻撃
+                (attack-select (car (car (BATTLE-C-LIST w))) (car Target)))　;特殊攻撃
+              (else 　;でなければ通常攻撃
       (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli　;直接攻撃
                                    ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
-                                   ECon EChr x x-dir y y-dir) ;CHARACTERのHpが破壊的変更を経て返って来る
+                                   ECon EChr x x-dir y y-dir))) ;CHARACTERのHpが破壊的変更を経て返って来る
                (phase-turn w)
                (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w))) ;Moveのリセット
                                     (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))
                                           (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))))
                 `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
-                  ,(car (BATTLE-C-LIST w)))))))) ;filterでHp0以下を消す
+                  ,(car (BATTLE-C-LIST w)))))) ;filterでHp0以下を消す
  
 
 (define (change w a-key)
