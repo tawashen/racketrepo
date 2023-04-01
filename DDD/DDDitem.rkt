@@ -59,7 +59,7 @@
                 (set-CHARACTER-Hp!  (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp))))))
 
 
-(define test-skill `(,sleep-attack ,poison-attack ,paralsys-attack)) ;,hit-attack ,hit-attack ,hit-attack ,hit-attack))
+(define test-skill `(,sleep-attack ,poison-attack ,paralsys-attack)); ,hit-attack ,hit-attack ,hit-attack ,hit-attack))
 (define test-enemy (ENEMY "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" '(0 0 0 0 0 0) 1 '(120 . 100) 10 0 90 '(6 . 6)
                  `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) test-skill 10 18 6 11 9 10))
 (define test-hero (HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" '(0 0 0 0 0 0) 1 '(120 . 100) 10 0 90 '(6 . 6)

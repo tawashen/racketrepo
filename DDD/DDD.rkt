@@ -21,8 +21,8 @@
                  `(,B001) `(,A001) `(,S001) `((,I001 . 2) (,I002 . 3)) `((,M001 . 1)) 17 10 12 8 15 14) . ,(make-posn '93 '93))
                                        
     
-         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" '(0 0 0 0 0 0)  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '155 '155))
-         (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" '(0 0 0 0 0 0)  1 '(003 . 003) 100 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() '() 10 10 10 2 10 10) . ,(make-posn '217 '217)))
+         (,(ENEMY "DEMON1" (bitmap/file "picture/04.png") "ENEMY" "" '(0 0 0 0 0 0)  1 '(100 . 100) 10 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() test-skill 10 10 10 2 10 10) . ,(make-posn '155 '155))
+         (,(ENEMY "DEMON2" (bitmap/file "picture/04.png") "ENEMY" "" '(0 0 0 0 0 0)  1 '(003 . 003) 100 0 90 '(3 . 3) `(,B001) `(,A001) `(,S001) '() test-skill 10 10 10 2 10 10) . ,(make-posn '217 '217)))
                                    > #:key (lambda (x) (case (variant (car x))
                                                            ((HERO) (CHARACTER-Dex (car x)))
                                                            ((ENEMY) (CHARACTER-Dex (car x))))))
@@ -174,7 +174,7 @@
     (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
       (let-values (((l1 l2) (for/lists (l1 l2)
                                ([i C-LIST] [j '(90 130 170 210 250 290 330 370)])
-                        (values (text (format "~a~% HP:~a" (CHARACTER-Name (car i)) (align-num (car (CHARACTER-Hp (car i))))) 18
+                        (values (text (format "~a~% HP:~a ~a" (CHARACTER-Name (car i)) (align-num (car (CHARACTER-Hp (car i)))) (CHARACTER-Ali (car i))) 18
                                       (case (variant (car i))
                                              ((HERO) "white")
                                              ((ENEMY) "red")))        
@@ -366,7 +366,15 @@
                           (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-　
+　　　(cond ((and (even? (random 1 21)) (CHARACTER-Skill (car (car (BATTLE-C-LIST w))))) ;20麺ダイスで偶数かつSkillがあれば
+          (attack-select (car (car (BATTLE-C-LIST w))) (car Target))　;特殊攻撃
+                         (phase-turn w)
+               (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w))) ;Moveのリセット
+                                    (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))
+                                          (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))))
+                `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
+                  ,(car (BATTLE-C-LIST w))))
+         (else 　;でなければ通常攻撃
       (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli　;直接攻撃
                                    ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
                                    ECon EChr x x-dir y y-dir) ;CHARACTERのHpが破壊的変更を経て返って来る
@@ -375,7 +383,7 @@
                                     (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))
                                           (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))))
                 `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
-                  ,(car (BATTLE-C-LIST w)))))) ;filterでHp0以下を消す
+                  ,(car (BATTLE-C-LIST w)))))))) ;filterでHp0以下を消す
  
 
 (define (change w a-key)
