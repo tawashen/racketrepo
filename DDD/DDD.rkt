@@ -40,9 +40,7 @@
 (define (hero-or-enemy w)
   (variant (car (car (BATTLE-C-LIST w)))))
 (define (phase-turn w)
-  ; (if (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w)))
-   ;                                    (begin (set-BATTLE-PHASE! w 0) (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))))
-                                       (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w))))
+           (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w))))
 ;汎用関数ここまで
 
 ;Place-hero-item用補助関数
@@ -152,7 +150,7 @@
                  (place-mes w))))
 
 
-(define (place-mes w)
+(define (place-mes w) ;ここを特殊攻撃対応にする
       (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
         (if (BATTLE-TEXT w)
             (begin (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
@@ -381,7 +379,7 @@
  
 
 (define (change w a-key)
-  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
+  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f) 
   (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -619,9 +617,9 @@
          (empty-scene *width* *height* "black"))))
 
 (define (set-on-tick w) ;On-tickでの処理
-    (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w)))
+    (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
     (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
-   (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w))))))
+   (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w)))))) ;攻撃エフェクトの消去
      (let ((x (car dir)) (y (cdr dir)))
     (cond ((symbol=? (hero-or-enemy w) 'ENEMY)
       (match-let (((ENEMY Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -634,7 +632,13 @@
            (BATTLE
             (BATTLE-C-LIST w)                                                         
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))))
+  (when ((compose not null?) (filter (lambda (x) (< 0 (CHARACTER-Ali (car x)))) (BATTLE-C-LIST w)))
+    (abnormal (CHARACTER-Ali (car (car (BATTLE-C-LIST w))))))
+
+(define (abnormal chara) ;'(0 0 0 0 0 0) -> Ali更新・画像も
+  (when (< 0 (list-ref chara 0)) 
+    
           
 
 ;メインBig-bang
