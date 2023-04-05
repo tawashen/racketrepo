@@ -154,10 +154,8 @@
       (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
         (cond (TEXT
         (case (car (BATTLE-TEXT w))
-          ((SLEEP) (sleep 0.5) (place-image/align (text (format "~aは眠っている・・" (CHARACTER-Name (car (car C-LIST))))
-                                            20 (if (member (car (BATTLE-STATUS w))
-                                                          (map (lambda (y) (CHARACTER-Name (car y)))
-                                                               (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) C-LIST))) 
+          ((SLEEP) (sleep 0.5) (place-image/align (text (format "~aは眠っている" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
                                                        "white"
                                                        "red")) 630 510 "left" "bottom" (place-gamen w)))
           (else (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
@@ -387,8 +385,6 @@
 
 (define (change w a-key)
   (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
- #;   (when (pair? (BATTLE-TEXT w))  
-    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0))))
   (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -633,7 +629,7 @@
     (abnormal (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) w))
  ; (when (< 0 (list-ref chara 4)) (set-BATTLE-TEXT! w 'stone))
 ;  (when (< 0 (list-ref chara 2)) (set-BATTLE-TEXT! w 'paralisys))
-  (when (pair? (BATTLE-TEXT w))  
+  (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  
     (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0))))
  ; (when (< 0 (list-ref chara 5)) (set-BATTLE-TEXT! w 'curse))
  ; (when (< 0 (list-ref chara 3)) (set-BATTLE-TEXT! w 'silence))
