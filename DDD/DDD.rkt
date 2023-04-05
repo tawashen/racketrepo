@@ -387,6 +387,9 @@
 
 (define (change w a-key)
   (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
+  (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) 
+      `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
   (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
