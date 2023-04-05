@@ -40,7 +40,9 @@
 (define (hero-or-enemy w)
   (variant (car (car (BATTLE-C-LIST w)))))
 (define (phase-turn w)
-           (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w))))
+           (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w)))
+  (set-CHARACTER-Ali! (car (car (BATTLE-C-LIST w)))
+                    (map (lambda (x) (if (< 0 x) (- x 1) x)) (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))))
 ;汎用関数ここまで
 
 ;Place-hero-item用補助関数
