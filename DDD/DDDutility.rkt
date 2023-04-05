@@ -55,3 +55,10 @@
                      ((= 1 (string-length (number->string num))) (string-append "00" (number->string num)))
                      ((= 2 (string-length (number->string num))) (string-append "0" (number->string num)))
                      ((= 3 (string-length (number->string num))) (number->string num))))
+
+;リスト内の要素を
+(define (list-satisfies? lst pred)
+  (cond
+    [(empty? lst) #t] ; リストが空の場合は常に真を返す
+    [(pred (first lst)) (list-satisfies? (rest lst) pred)] ; 要素が述語を満たす場合は、残りのリストに再帰する
+    [else #f])) ; それ以外の場合は偽を返す

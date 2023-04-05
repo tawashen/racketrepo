@@ -152,8 +152,15 @@
 
 (define (place-mes w) ;ここを特殊攻撃対応にする
       (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
-        (if (BATTLE-TEXT w)
-            (begin (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
+        (cond (TEXT
+        (case (car (BATTLE-TEXT w))
+          ((SLEEP) (sleep 0.5) (place-image/align (text (format "~aは眠っている・・" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (member (car (BATTLE-STATUS w))
+                                                          (map (lambda (y) (CHARACTER-Name (car y)))
+                                                               (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) C-LIST))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
+          (else (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
                                                   (("CH") (format "~aの攻撃!~%クリティカルヒット!~%~aに~%~aのダメージ!"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
                                                   (("H") (format "~aの攻撃!~%ヒット!~%~aに~%~aのダメージ!"
@@ -164,8 +171,8 @@
                                                           (map (lambda (y) (CHARACTER-Name (car y)))
                                                                (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) C-LIST))) 
                                                        "white"
-                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
-            (place-gamen w))))
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))))
+        (else (place-gamen w)))))
          
                                                        
 (define (place-gamen w)
@@ -619,6 +626,10 @@
 (define (set-on-tick w) ;On-tickでの処理
     (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
     (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
+
+   (when (list-satisfies? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) (compose not zero? ));先頭がバッドステ持ちなら
+    (abnormal (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) w))
+  
    (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w)))))) ;攻撃エフェクトの消去
      (let ((x (car dir)) (y (cdr dir)))
     (cond ((symbol=? (hero-or-enemy w) 'ENEMY)
@@ -632,12 +643,31 @@
            (BATTLE
             (BATTLE-C-LIST w)                                                         
             (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w))))))
-  (when ((compose not null?) (filter (lambda (x) (< 0 (CHARACTER-Ali (car x)))) (BATTLE-C-LIST w)))
-    (abnormal (CHARACTER-Ali (car (car (BATTLE-C-LIST w))))))
+    (BATTLE-EXP w) #f (BATTLE-STATUS w) (BATTLE-TEXT w)(BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))))))
+ 
+  ;
 
-(define (abnormal chara) ;'(0 0 0 0 0 0) -> Ali更新・画像も
-  (when (< 0 (list-ref chara 0)) 
+(define (abnormal chara w) ;メッセ更新
+  (when (< 0 (list-ref chara 4)) (set-BATTLE-TEXT! w 'stone))
+  (when (< 0 (list-ref chara 2)) (set-BATTLE-TEXT! w 'paralisys))
+  (when (< 0 (list-ref chara 0)) (set-BATTLE-TEXT! w '(SLEEP . 0)))
+  (when (< 0 (list-ref chara 5)) (set-BATTLE-TEXT! w 'curse))
+  (when (< 0 (list-ref chara 3)) (set-BATTLE-TEXT! w 'silence))
+  (when (< 0 (list-ref chara 1)) (set-BATTLE-TEXT! w 'poison))
+  w)
+
+#|
+バッドステは一種類のみ
+バッドステは累積する
+stoneのヤツは狙われない
+生き残りが全員stoneなら全滅（stop-whenに追加）
+paralisysは行動不能時間が長い
+sleep中に攻撃を受けるとダメージが倍で眼が覚める
+curseは攻撃力・防御力半分
+silenceは呪文使用不能
+|#
+
+  
     
           
 
