@@ -386,7 +386,9 @@
  
 
 (define (change w a-key)
-  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f) 
+  (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
+ #;   (when (pair? (BATTLE-TEXT w))  
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0))))
   (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -627,8 +629,15 @@
     (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
     (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
 
-   (when (list-satisfies? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) (compose not zero? ));先頭がバッドステ持ちなら
+   #;(when (list-satisfies? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) (compose not zero? ));先頭がバッドステ持ちなら
     (abnormal (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) w))
+ ; (when (< 0 (list-ref chara 4)) (set-BATTLE-TEXT! w 'stone))
+;  (when (< 0 (list-ref chara 2)) (set-BATTLE-TEXT! w 'paralisys))
+  (when (pair? (BATTLE-TEXT w))  
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0))))
+ ; (when (< 0 (list-ref chara 5)) (set-BATTLE-TEXT! w 'curse))
+ ; (when (< 0 (list-ref chara 3)) (set-BATTLE-TEXT! w 'silence))
+  ;(when (< 0 (list-ref chara 1)) (set-BATTLE-TEXT! w 'poison))
   
    (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w)))))) ;攻撃エフェクトの消去
      (let ((x (car dir)) (y (cdr dir)))
