@@ -35,16 +35,26 @@
 ;汎用関数
 (define (filter-hero w)
   (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) (BATTLE-C-LIST w)))
+
 (define (filter-enemy w)
   (filter (lambda (x) (symbol=? 'ENEMY (variant (car x)))) (BATTLE-C-LIST w)))
+
 (define (hero-or-enemy w)
   (variant (car (car (BATTLE-C-LIST w)))))
+
 (define (phase-turn w)
            (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w)))
   (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w)))
                        (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w))))) (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w)))))))
   (set-CHARACTER-Ali! (car (car (BATTLE-C-LIST w)))
                     (map (lambda (x) (if (< 0 x) (- x 1) x)) (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))))
+
+(define (only-phase-turn w)
+           (set-BATTLE-PHASE! w (+ 1 (BATTLE-PHASE w)))
+  (set-CHARACTER-Move! (car (car (BATTLE-C-LIST w)))
+                       (cons (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w))))) (cdr (CHARACTER-Move (car (car (BATTLE-C-LIST w))))))))
+
+
 ;汎用関数ここまで
 
 ;Place-hero-item用補助関数
@@ -323,13 +333,14 @@
 ;近接戦闘処理;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (fight x x-dir y y-dir w Name Image Race Class Ali Lv
                Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-  (let* ((C-flag (if (<= (car (BUKI-Bcrit (car Arm))) (D20)) #t #f)) (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con))
-                                           (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))                  
-          (Target (car (filter (lambda (z)
+  (let* ((C-flag (if (<= (car (BUKI-Bcrit (car Arm))) (D20)) #t #f)) ;クリティカルかのフラグ
+         (Attack (Bbonus w Name Race Class Lv Hp Arm Str Dex Con)) ;攻撃力
+         (teki-zahyo (d-pair->posn (cons (+ x x-dir) (+ y y-dir)))) ;ターゲットの座標         
+         (Target (car (filter (lambda (z) ;ターゲットのCHARACTER
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((ENEMY EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-      (let ((damage (if C-flag
+      (let* ((damage-pre (if C-flag
                         (if hit? (begin
                                    (set-BATTLE-TEXT! w "CH")
                                    (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
@@ -341,7 +352,8 @@
                                    (set-BATTLE-TEXT! w "H")
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
                             (begin
-                                   (set-BATTLE-TEXT! w "M") 0)))))
+                                   (set-BATTLE-TEXT! w "M") 0))))
+             (damage (cond ()
         (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
         (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
         (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp))))
@@ -359,11 +371,7 @@
               (phase-turn w)
                 `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
                   ,(car (BATTLE-C-LIST w))))))))))) ;filterでHp0以下を消す
-           #|       (phase-turn w)
-          `(,@(cdr new-Clist) ,(cons
-                 (HERO Name Image Race Class Ali Lv Hp Ac Exp Money
-                       (cons (cdr EMove) (cdr EMove)) Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
-                  (d-pair->posn (cons x y))))))))))))|#
+
            
 ;近接戦闘処理ENEMY C-LIST->C-LIST
 (define (fightE x x-dir y y-dir w Name Image Race Class Ali Lv Hp Ac Exp Money Move
@@ -388,13 +396,6 @@
 
 (define (change w a-key)
   (set-BATTLE-TEXT! w #f) (set-BATTLE-STATUS! w #f)
- ; (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  
-  #;  (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0))
-  (set-BATTLE-C-LIST! w  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
-     (BATTLE (BATTLE-C-LIST w)
-         (BATTLE-PHASE w) (BATTLE-TURN w) (BATTLE-ITEM w) (BATTLE-MAGIC w) (BATTLE-MONEY w)
-    (BATTLE-EXP w) (BATTLE-E-ZAHYO w) (BATTLE-STATUS w) (BATTLE-TEXT w)
-    (BATTLE-MENU w) (BATTLE-U-ITEM w) (BATTLE-C-MAGIC w)))
   (case (hero-or-enemy w)
     ((HERO)
        (match-let (((HERO Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr)
@@ -405,9 +406,22 @@
       ((#f) ;case BATTLE-MENU
    (BATTLE
       (cond
-        ((< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) ;SLEEP処理
+        ;SILENCEは魔法メニューを出させないようにする
+        ;POISONは毎ターン固定ダメージで？
+        ((< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) ;SLEEP処理　動けず手番移行（＋ダメージ倍）
              (phase-turn w)
              (set-BATTLE-C-LIST! w  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))  (BATTLE-C-LIST w))
+        ((< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 2)) ;PATALYSYS　動けず手番移行（＋ステダウン）
+             (phase-turn w)
+             (set-BATTLE-C-LIST! w  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))  (BATTLE-C-LIST w))
+        ((< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 4)) ;STONE処理　動けず手番移行
+             (only-phase-turn w) ;TURNで減衰しない
+             (set-BATTLE-C-LIST! w  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))  (BATTLE-C-LIST w))
+        ((and (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 5)) ;CURSE処理　50％で動けない（＋ステダウン）
+              (even? (random 1 21)))
+             (only-phase-turn w) ;TURNで減衰しない
+             (set-BATTLE-C-LIST! w  `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))  (BATTLE-C-LIST w))
+        
         ((key=? a-key "m") (set-BATTLE-MENU! w #t) (set-BATTLE-ITEM! w #f) (set-BATTLE-U-ITEM! w #f)
                            (set-BATTLE-C-MAGIC! w #f) (set-BATTLE-MAGIC! w #f) (BATTLE-C-LIST w))
      ((key=? a-key " ") (phase-turn w) `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w))))
@@ -638,26 +652,13 @@
     (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
     (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
 
- #;
-(when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  
-    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) 
-      `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
-
-   #;(when (list-satisfies? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) (compose not zero? ));先頭がバッドステ持ちなら
-    (abnormal (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) w))
- ; (when (< 0 (list-ref chara 4)) (set-BATTLE-TEXT! w 'stone))
-;  (when (< 0 (list-ref chara 2)) (set-BATTLE-TEXT! w 'paralisys))
-  (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  
-    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0))))
- ; (when (< 0 (list-ref chara 5)) (set-BATTLE-TEXT! w 'curse))
- ; (when (< 0 (list-ref chara 3)) (set-BATTLE-TEXT! w 'silence))
-  ;(when (< 0 (list-ref chara 1)) (set-BATTLE-TEXT! w 'poison))
-
-
- #; (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0))
-     #;(sleep 4)  (phase-turn w) (set-BATTLE-C-LIST! w    
-              `(,@(cdr (BATTLE-C-LIST w))
-                ,(car (BATTLE-C-LIST w)))))
+  (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  ;バドステ表示用破壊的変更
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0)))
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 5)) (set-BATTLE-TEXT! w '(CURSE . 0)))
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 3)) (set-BATTLE-TEXT! w '(SILENCE . 0)))
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 1)) (set-BATTLE-TEXT! w '(POISON . 0)))
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 4)) (set-BATTLE-TEXT! w '(STONE . 0)))
+    (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 2)) (set-BATTLE-TEXT! w '(PARALISYS . 0))))
   
    (let ((dir (posn->d-pair (cdr (car (BATTLE-C-LIST w)))))) ;攻撃エフェクトの消去
      (let ((x (car dir)) (y (cdr dir)))
