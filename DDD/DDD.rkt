@@ -340,37 +340,12 @@
                                  (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((ENEMY EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-      (let* ((damage-pre (if C-flag
-                        (if hit? (begin
-                                   (set-BATTLE-TEXT! w "CH")
-                                   (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
-                                         (cdr (BUKI-Bcrit (car Arm)))) (Mbonus Str)))                           
-                            (begin
-                                   (set-BATTLE-TEXT! w "H")
-                                   (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str))))
-                        (if hit? (begin
-                                   (set-BATTLE-TEXT! w "H")
-                                   (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
-                            (begin
-                                   (set-BATTLE-TEXT! w "M") 0))))
-             (damage (cond ()
-        (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
-        (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
-        (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp))))
-          (cond  ((< 0 (car new-EHp)) ;破壊的変更にした
-                (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
-                        ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
-                (set-CHARACTER-Hp! (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp)
-                 (phase-turn w)
-                `(,@(cdr (BATTLE-C-LIST w)) ,(car (BATTLE-C-LIST w)))))
-   
-                 (else
-         (let ((new-Clist
-                (filter (lambda (z) ((compose not equal?)
-                                     (cdr z) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))) (BATTLE-C-LIST w))))
-              (phase-turn w)
+     (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli ;直接攻撃
+                                   ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
+                                   ECon EChr x x-dir y y-dir))) ;CHARACTERのHpが破壊的変更を経て返って来る
+               (phase-turn w)
                 `(,@(filter (lambda (q) (< 0 (car (CHARACTER-Hp (car q)))))  (cdr (BATTLE-C-LIST w)))
-                  ,(car (BATTLE-C-LIST w))))))))))) ;filterでHp0以下を消す
+                  ,(car (BATTLE-C-LIST w))))
 
            
 ;近接戦闘処理ENEMY C-LIST->C-LIST
@@ -383,7 +358,8 @@
                           (equal?  (cdr z) teki-zahyo)) (BATTLE-C-LIST w)))))
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
-　　　(cond ((and (even? (random 1 21)) (CHARACTER-Skill (car (car (BATTLE-C-LIST w))))) ;20麺ダイスで偶数かつSkillがあれば
+　　　(cond ((and (even? (random 1 21)) (CHARACTER-Skill (car (car (BATTLE-C-LIST w)))) ;20面ダイスで偶数かつSkillがあれば
+               (list-satisfies? (CHARACTER-Ali (car Target)) zero?)) ;さらにターゲットが状態異常でなければ
                 (attack-select (car (car (BATTLE-C-LIST w))) (car Target)))　;特殊攻撃
               (else 　;でなければ通常攻撃
       (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli　;直接攻撃
