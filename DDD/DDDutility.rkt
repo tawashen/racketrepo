@@ -47,8 +47,9 @@
 
 ;命中判定
 (define (hit? Attack EAc Target)
-  (if (< 0 (list-ref (CHARACTER-Ali Target) (or 0 2))) #t ;sleepとparalsysなら必中
-  (if (< EAc Attack) #t #f)))
+  (if (< 0 (list-ref (CHARACTER-Ali (car Target)) 0)) #t ;sleepとparalsysなら必中
+  (cond ((< EAc Attack) #t)
+        (else #f))))
 
 ;数字の表示桁数揃える関数
 (define (align-num num)
@@ -68,24 +69,26 @@
 (define hit-attack (lambda (C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli
                                    ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
                                    ECon EChr x x-dir y y-dir)
-      (let* ((damage-pre (if C-flag
-                        (if hit? (begin
+      (let* ((damage-pre (if C-flag ;ダメージ計算
+                        (if (hit? Attack EAc Target)
+                            (begin
                                    (set-BATTLE-TEXT! w "CH")
                                    (+ (* (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm))))
                                          (cdr (BUKI-Bcrit (car Arm)))) (Mbonus Str)))                           
                             (begin
                                    (set-BATTLE-TEXT! w "H")
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str))))
-                        (if hit? (begin
+                        (if (hit? Attack EAc Target) (begin
                                    (set-BATTLE-TEXT! w "H")
                                    (+ (random (car (BUKI-BdamageM (car Arm))) (cdr (BUKI-BdamageM (car Arm)))) (Mbonus Str)))
                             (begin
                                    (set-BATTLE-TEXT! w "M") 0))))
              (damage (if (< 0 (list-ref (CHARACTER-Ali (car Target)) 0)) ;スリープ状態か？
-                         (begin (set-CHARACTER-Ali! (car Target) '(0 0 0 0 0 0)) ;攻撃がヒットすると目が覚める
-                                (* 2 damage-pre)) damage-pre))) ;sleep状態ならダメージ倍
+                         
+                                (* 2 damage-pre) damage-pre))) ;sleep状態ならダメージ倍
         (set-BATTLE-TEXT! w (cons (BATTLE-TEXT w) damage)) (set-BATTLE-STATUS! w (cons Name EName))
-        (if (< 0 damage) (set-BATTLE-E-ZAHYO! w teki-zahyo) (set-BATTLE-E-ZAHYO! w #f))
+        (if (< 0 damage) (begin (set-CHARACTER-Ali! (car Target) '(0 0 0 0 0 0)) ;攻撃がヒットすると目が覚める
+                                (set-BATTLE-E-ZAHYO! w teki-zahyo)) (set-BATTLE-E-ZAHYO! w #f))
        (let ((new-EHp (cons (- (car EHp) damage) (cdr EHp)))) 
              (let ((new-target (cons (HERO EName EImage ERace EClass EAli ELv new-EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (d-pair->posn (cons (+ x x-dir) (+ y y-dir))))))
