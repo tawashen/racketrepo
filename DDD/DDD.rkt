@@ -359,7 +359,7 @@
     (match-let (((HERO EName EImage ERace EClass EAli ELv EHp EAc EExp EMoney EMove EArm EArmor
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
 　　　(cond ((and (even? (random 1 21)) (CHARACTER-Skill (car (car (BATTLE-C-LIST w)))) ;20面ダイスで偶数かつSkillがあれば
-               (list-satisfies? (CHARACTER-Ali (car Target)) (compose not zero?))) ;さらにターゲットが状態異常でなければ
+               (list-satisfies? (CHARACTER-Ali (car Target)) zero?)) ;さらにターゲットが状態異常でなければ
                 (attack-select (car (car (BATTLE-C-LIST w))) (car Target)))　;特殊攻撃
               (else 　;でなければ通常攻撃
       (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli　;直接攻撃

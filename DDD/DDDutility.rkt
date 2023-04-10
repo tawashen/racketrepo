@@ -43,7 +43,8 @@
 ;攻撃ボーナス関数
 (define (Bbonus w Name Race Class Lv Hp Arm Str Dex Con)
   (case Class
-    (("FIGHTER") (+ 10 Lv (Mbonus Str)  0 (D20)))))
+    (("FIGHTER") (+ 10 Lv (Mbonus Str)  0 (D20)))
+    (else (+ 10 Lv 0 (D20)))))
 
 ;命中判定
 (define (hit? Attack EAc Target)
