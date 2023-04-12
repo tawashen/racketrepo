@@ -30,8 +30,6 @@
 (struct ITEM (Iname Icost Ikind Ipower) #:transparent)
 (struct MAGIC (Mname Mkind Mlv Matt Mpower) #:transparent)
 
-(struct STATUS (sleep poison paralysis confuse blind silence) #:transparent #:mutable)
-(define status (STATUS 0 0 0 0 0 0))
 
 (struct CLASS (NAME REQUIRE))
 (define FIGHTER (CLASS "FIGHTER" 'Str))
@@ -41,18 +39,3 @@
 (define *class-list-human* `(,FIGHTER ,MAGIC-USER ,CLERIC ,THIEF))
 (define *class-list-elf* `(,FIGHTER ,MAGIC-USER ,THIEF))
 
-
-;(define test '(0 0 0 0 0 0 ))
-#;
-(define test-hero (HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" '(0 0 0 0 0 0) 1 '(120 . 100) 10 0 90 '(6 . 6)
-                 `(,B001) `(,A001) `(,S001) `((,I001 . 1) (,I002 . 2) (,I003 . 2) (,I004 . 2)) `((,M001 . 3) (,M002 . 2) (,M003 . 3) (,M004 . 3)) 10 18 6 11 9 10))
-(define sleep-attack (lambda (x) `(,(random 1 3) 0 0 0 0 0)))
-(define poison-attack (lambda (x) `(0 ,(random 1 3) 0 0 0 0)))
-(define hit-attack (lambda (x) (set-CHARACTER-Hp! x (cons (- (car (CHARACTER-Hp x)) 10) (cdr (CHARACTER-Hp x))))))
-
-#|
-(define test-skill `(,sleep-attack ,poison-attack))
-((list-ref test-skill 1) test)
-(hit-attack test-hero)
-(CHARACTER-Hp test-hero)
-|#

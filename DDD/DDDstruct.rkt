@@ -39,3 +39,28 @@
 (define *class-list-human* `(,FIGHTER ,MAGIC-USER ,CLERIC ,THIEF))
 (define *class-list-elf* `(,FIGHTER ,MAGIC-USER ,THIEF))
 
+
+
+;(define HUMAN (struct-copy ability HUMAN [RACE "human"]))
+(define-syntax set-struct
+  (syntax-rules ()
+  ((_ ins type field val)
+        `(,@(struct-copy type ins [field val])))))
+
+(ABILITY-RACE (set-struct HUMAN ABILITY RACE "human"))
+
+
+;(substring (symbol->string (object-name HUMAN)) 0)
+;(define human (struct-copy ABILITY HUMAN [RACE "human"]))
+;(ABILITY-RACE human)
+
+;(object-name human)
+
+#;
+(define-syntax set-struct
+  (syntax-rules ()
+    ((_ struct field val)
+     (let ((new-struct (struct-copy struct)))
+       (struct-set! new-struct field val)
+       new-struct))))
+

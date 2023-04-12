@@ -109,4 +109,4 @@
 (define stone-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 0 ,(random 1 3) 0))))
 (define curse-attack (lambda (x)   (set-CHARACTER-Ali! x `(0 0 0 0 0 ,(random 1 3)))))
 
-
+ 
