@@ -96,13 +96,17 @@
                 (set-CHARACTER-Hp!  (car (car (filter (lambda (z) (equal? teki-zahyo (cdr z))) (BATTLE-C-LIST w)))) new-EHp))))))
 
 
-(define (attack-select chara target) ;CHARACTER->CHARACTER
-  ((list-ref (CHARACTER-Skill chara) (random 0 (length (CHARACTER-Skill chara)))) target))
+(define (attack-select chara target w) ;CHARACTER->CHARACTER　wを追加
+  ((list-ref (CHARACTER-Skill chara) (random 0 (length (CHARACTER-Skill chara)))) target chara w)) ;y wを追加
 
 
 ;攻撃
 ;(sleep poison paralsys silence stone curse)
-(define sleep-attack (lambda (x) (set-CHARACTER-Ali! x `(,(random 5 9) 0 0 0 0 0)))) ;xはCHARACTER
+(define sleep-attack (lambda (x y w)
+                       (set-BATTLE-TEXT! w (cons "SPECIAL-A-CON" 0))
+                       (set-BATTLE-STATUS! w (list (CHARACTER-Name y) "SLEEP-ATTACK" (CHARACTER-Name x) "昏睡"))
+                       (sleep 1)
+                       (set-CHARACTER-Ali! x `(,(random 1 5) 0 0 0 0 0)))) ;xはtarget　yはChara　wはw
 (define poison-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 ,(random 1 3) 0 0 0 0))))
 (define paralsys-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 ,(random 1 3) 0 0 0))))
 (define silence-attack (lambda (x)  (set-CHARACTER-Ali! x `(0 0 0 ,(random 1 3) 0 0))))

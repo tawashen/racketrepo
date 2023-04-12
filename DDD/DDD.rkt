@@ -76,7 +76,7 @@
                                                   (("AS") enemy-list))
                                                    ))) "left" "bottom"
                                                                             (place-item w))))))
-;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 
 
@@ -178,12 +178,20 @@
                                                   (("H") (format "~aの攻撃!~%ヒット!~%~aに~%~aのダメージ!"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
                                                   (("M") (format "ミス!~%~aは~%~aにダメージを与えられない!"
-                                                                 (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w)))))
-                                                    20 (if (member (car (BATTLE-STATUS w))
+                                                                 (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))))
+                                                  (("MAGIC-A-CON") (format "~aは~%~aの魔法を唱えた！~%~aは~%~aしてしまった！"
+                                                                     (car (BATTLE-STATUS w)) (cadr (BATTLE-STATUS w)) (caddr (BATTLE-STATUS w))
+                                                                     (cadddr (BATTLE-STATUS w))))
+                                                  (("SPECIAL-A-CON") (format "~aは~%~aの~%特殊攻撃！~%~aは~%~aしてしまった！"
+                                                                     (car (BATTLE-STATUS w)) (cadr (BATTLE-STATUS w)) (caddr (BATTLE-STATUS w))
+                                                                     (cadddr (BATTLE-STATUS w))))
+                                                                             
+                                                        )
+                                                    18 (if (member (car (BATTLE-STATUS w))
                                                           (map (lambda (y) (CHARACTER-Name (car y)))
                                                                (filter (lambda (x) (symbol=? 'HERO (variant (car x)))) C-LIST))) 
                                                        "white"
-                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))))
+                                                       "red")) 630 530 "left" "bottom" (place-gamen w)))))
         (else (place-gamen w)))))
          
                                                        
@@ -360,7 +368,7 @@
                         ESield EItem ESkill EStr EInt EWis EDex ECon EChr) (car Target))) ;ENEMY情報を読み込む
 　　　(cond ((and (even? (random 1 21)) (CHARACTER-Skill (car (car (BATTLE-C-LIST w)))) ;20面ダイスで偶数かつSkillがあれば
                (list-satisfies? (CHARACTER-Ali (car Target)) zero?)) ;さらにターゲットが状態異常でなければ
-                (attack-select (car (car (BATTLE-C-LIST w))) (car Target)))　;特殊攻撃
+                (attack-select (car (car (BATTLE-C-LIST w))) (car Target) w))　;特殊攻撃 wを追加
               (else 　;でなければ通常攻撃
       (hit-attack C-flag Attack teki-zahyo Target w Arm Str Name EName EHp EImage ERace EClass EAli　;直接攻撃
                                    ELv EAc EExp EMoney EMove EArm EArmor ESield EItem ESkill EStr EInt EWis EDex
@@ -625,9 +633,8 @@
          (empty-scene *width* *height* "black"))))
 
 (define (set-on-tick w) ;On-tickでの処理
-    (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
+  (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
     (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
-
   (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  ;バドステ表示用破壊的変更
     (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 0)) (set-BATTLE-TEXT! w '(SLEEP . 0)))
     (when (< 0 (list-ref (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))) 5)) (set-BATTLE-TEXT! w '(CURSE . 0)))
@@ -653,14 +660,6 @@
  
   ;
 
-(define (abnormal chara w) ;メッセ更新
-  (when (< 0 (list-ref chara 4)) (set-BATTLE-TEXT! w 'stone))
-  (when (< 0 (list-ref chara 2)) (set-BATTLE-TEXT! w 'paralisys))
-  (when (< 0 (list-ref chara 0)) (set-BATTLE-TEXT! w '(SLEEP . 0)))
-  (when (< 0 (list-ref chara 5)) (set-BATTLE-TEXT! w 'curse))
-  (when (< 0 (list-ref chara 3)) (set-BATTLE-TEXT! w 'silence))
-  (when (< 0 (list-ref chara 1)) (set-BATTLE-TEXT! w 'poison))
-  w)
 
 #|
 バッドステは一種類のみ
