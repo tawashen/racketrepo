@@ -14,7 +14,7 @@
 
 ;構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (struct BATTLE (C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) #:transparent #:mutable) 
-(struct ABILITY (RACE STR INT WIS DEX CON CHR) #:transparent)
+(struct ABILITY (RACE STR INT WIS DEX CON CHR) )
 (struct CHARACTER (Name Image Race Class Ali Lv Hp Ac Exp Money Move Arm Armor Sield Item Skill Str Int Wis Dex Con Chr) #:transparent #:mutable)
 (struct HERO CHARACTER () #:transparent #:mutable)
 (struct ENEMY CHARACTER () #:transparent #:mutable)
@@ -41,26 +41,5 @@
 
 
 
-;(define HUMAN (struct-copy ability HUMAN [RACE "human"]))
-(define-syntax set-struct
-  (syntax-rules ()
-  ((_ ins type field val)
-        `(,@(struct-copy type ins [field val])))))
 
-(ABILITY-RACE (set-struct HUMAN ABILITY RACE "human"))
-
-
-;(substring (symbol->string (object-name HUMAN)) 0)
-;(define human (struct-copy ABILITY HUMAN [RACE "human"]))
-;(ABILITY-RACE human)
-
-;(object-name human)
-
-#;
-(define-syntax set-struct
-  (syntax-rules ()
-    ((_ struct field val)
-     (let ((new-struct (struct-copy struct)))
-       (struct-set! new-struct field val)
-       new-struct))))
 
