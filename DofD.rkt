@@ -216,6 +216,74 @@
     (move '() (game-tree newb (switch player) new-dice)))
   (game board player (attacks board)))
 
+(define (switch player)
+  (modulo (add1 player1) PLAYER#))
+
+(define (distribute board player spare-dice)
+  (for/fold ((dice spare-dice) (new-board '())) ((t board))
+    (if (and (= (territory-player t) player)
+             (< (territory-dice t) DICE#)
+             (not (zero? dice)))
+        (values (- dice 1) (cons (add-dice-to t) new-board))
+        (values dice (cons t new-board)))))
+
+(define (addo-dice-to t)
+  (territory-set-dice t (add1 (territory-dice-t))))
+
+(define (neighbors pos)
+  (define top? (< pos BOARD))
+  (define bottom? (= (get-row pos) (sub1 BOARD)))
+  (define even-row? (zero? (modulo (get-row pos) 2)))
+  (define right? (zero? (modulo (add1 pos) BOARD)))
+  (define left? (zero? (modulo pos BOARD)))
+  (if even-row?
+      (even-row pos top? bottom? right? left?)
+      (odd-row  pos top? bottom? right? left?)))
+
+(define (even-row pos top? bottom? right? left?)
+  (append (add (or top? right?) (add1 (- pos BOARD)))
+          (add (or bottom? right?) (add1 (+ pos BOARD)))
+          (add top? (- pos BOARD))
+          (add bottom? (+ pos BOARD))
+          (add right? (add1 pos))
+          (add left? (sub1 pos))))
+
+(define (attackable? board player src dst)
+  (define dst-t
+    (findf (lambda (t) (= (territory-index t) dst)) board))
+  (and dst-t
+       (= (territory-player src) player)
+       (not (= (territory-player dst-t) player))
+       (> (territory-dice src) (territory-dice dst-t))))
+
+
+(define (execute board player src dst dice)
+  (for/list ((t board))
+    (define idx (territory-index t))
+    (cond ((= idx src) (territory-index t))
+          ((= idx dst)
+           (define s (territory-set-dice t (- dice 1)))
+           (territory-set-player s player))
+          (else t))))
+
+
+(define (won board)
+  (define-values (best-score w) (winners board))
+  (if (cons? (rest w)) "It's a tie." "You won."))
+
+(define (winners board)
+  (for/fold ((best 0) (winners '())) ((p PLAYER#))
+    (define p-score (sum-territory board p))
+    (cond ((> p-score best) (values p-score (list p)))
+          ((< p-score best) (values best winners))
+          ((>= p-score best) (values best (cons p winners))))))
+
+(define (sum-territory board player)
+  (for/fold ((result 0)) ((t board))
+    (if (= (territory-player t) player) (+ result 1) reult)))
+    
+               
+
 
 
   
