@@ -13,6 +13,18 @@
 (require "DDDutility.rkt")
 
 
+(define *bgx* 310)
+(define *bgy* 279)
+
+(define *background*
+ (place-image (place-images (map (lambda (i)
+           (list-ref *images* (if (= i 1) i 0)))
+         (apply append *map-data*)) ;map-dataを平坦化 (11111111111000000001...)
+        *image-posns*
+        (empty-scene *width* *height*)) *bgx* *bgy* ;310 279
+                             (place-image/align (rectangle 192 160 "outline" "white") 624 552 "left" "bottom"
+                                        (rectangle 820 558 "solid" "black"))))
+
 ;テスト用バトル構造体;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define test-battle-struct (BATTLE (sort `(
          (,(HERO "tawa" (bitmap/file "picture/03.png") "ELF" "FIGHTER" '(0 0 0 0 0 0) 1 '(120 . 100) 10 0 90 '(6 . 6)
@@ -245,7 +257,14 @@
            ,(posn-y (cdr x))))
          C-LIST))))
     (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
-    (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) *background*
+    (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) ;*background*
+            (place-image (place-images (map (lambda (i)
+           (list-ref *images* (if (= i 1) i 0)))
+         (apply append *map-data*)) ;map-dataを平坦化 (11111111111000000001...)
+        *image-posns*
+        (empty-scene *width* *height*)) *bgx* *bgy* ;310 279
+                             (place-image/align (rectangle 192 160 "outline" "white") 624 552 "left" "bottom"
+                                        (rectangle 820 558 "solid" "black")))
     (map (lambda (x) 
          `(,(if (< 0 (car (CHARACTER-Hp (car x)))) (CHARACTER-Image (car x)) "")
            ,(posn-x (cdr x))
@@ -656,6 +675,9 @@
          (empty-scene *width* *height* "black"))))
 
 (define (set-on-tick w) ;On-tickでの処理
+
+ (set! *bgx* (posn-x (cdr (car (BATTLE-C-LIST w)))))
+  
   (when (= (BATTLE-PHASE w) (length (BATTLE-C-LIST w))) ;PHASE TURN計算
     (begin (set-BATTLE-TURN! w (+ 1 (BATTLE-TURN w))) (set-BATTLE-PHASE! w 0)))
   (when (list? (CHARACTER-Ali (car (car (BATTLE-C-LIST w)))))  ;バドステ表示用破壊的変更
