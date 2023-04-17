@@ -172,6 +172,26 @@
                                             20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
                                                        "white"
                                                        "red")) 630 510 "left" "bottom" (place-gamen w)))
+          ((PARALISYS) (sleep 0.5) (place-image/align (text (format "~aは麻痺している" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
+          ((STONE) (sleep 0.5) (place-image/align (text (format "~aは石化している" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
+          ((CURSE) (sleep 0.5) (place-image/align (text (format "~aは呪われている" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
+          ((SILENCE) (sleep 0.5) (place-image/align (text (format "~aは沈黙している" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
+          ((POISN) (sleep 0.5) (place-image/align (text (format "~aは毒に冒されている" (CHARACTER-Name (car (car C-LIST))))
+                                            20 (if (symbol=? 'HERO (variant (car (car C-LIST)))) 
+                                                       "white"
+                                                       "red")) 630 510 "left" "bottom" (place-gamen w)))
           (else (sleep 0.5) (place-image/align (text  (case (car (BATTLE-TEXT w))
                                                   (("CH") (format "~aの攻撃!~%クリティカルヒット!~%~aに~%~aのダメージ!"
                                                                   (car (BATTLE-STATUS w)) (cdr (BATTLE-STATUS w))  (cdr (BATTLE-TEXT w))))
@@ -183,6 +203,9 @@
                                                                      (car (BATTLE-STATUS w)) (cadr (BATTLE-STATUS w)) (caddr (BATTLE-STATUS w))
                                                                      (cadddr (BATTLE-STATUS w))))
                                                   (("SPECIAL-A-CON") (format "~aは~%~aの~%特殊攻撃！~%~aは~%~aしてしまった！"
+                                                                     (car (BATTLE-STATUS w)) (cadr (BATTLE-STATUS w)) (caddr (BATTLE-STATUS w))
+                                                                     (cadddr (BATTLE-STATUS w))))
+                                                  (("SPECIAL-A-CON2") (format "~aは~%~aの~%特殊攻撃!~%~aは~%~aを受けてしまった!"
                                                                      (car (BATTLE-STATUS w)) (cadr (BATTLE-STATUS w)) (caddr (BATTLE-STATUS w))
                                                                      (cadddr (BATTLE-STATUS w))))
                                                                              
