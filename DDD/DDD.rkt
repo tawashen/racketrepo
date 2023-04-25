@@ -167,13 +167,16 @@
                                ([i C-LIST] [j '(88 128 168 208 248 288 328 368)])
                         (values (rectangle 192 40 "outline" "white")
                         (make-posn 624 j)))))
-                (place-images/align l1 l2 "left" "bottom" (place-name w)))))
+                (place-images/align l1 l2 "left" "bottom"
+                                    (place-image/align (rectangle 192 160 "outline" "white") 624 552 "left" "bottom"
+                                                       (place-name w))))))
 
 (define (place-name w)
         (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+             (let ((CX (- 310 (posn-x (cdr (car C-LIST))))) (CY (- 279 (posn-y (cdr (car C-LIST))))))
    (place-images (map (lambda (x) (text (CHARACTER-Name (car x)) 13 "black")) C-LIST)
-                 (map (lambda (y) (make-posn (posn-x (cdr y)) (- (posn-y (cdr y)) 20))) C-LIST)
-                 (place-mes w))))
+                 (map (lambda (y) (make-posn (+ CX (posn-x (cdr y))) (+ CY (- (posn-y (cdr y)) 20)))) C-LIST)
+                 (place-mes w)))))
 
 
 (define (place-mes w) ;ここを特殊攻撃対応にする
@@ -241,31 +244,34 @@
                         (make-posn 630 j)))))
                 (place-images/align l1 l2 "left" "bottom"
                                     (place-image/align
-                                     (text (format "TURN ~a" (BATTLE-TURN w)) 18 "green") 630 30 "left" "bottom" (place-character w))))))
+                                     (text (format "TURN ~a" (BATTLE-TURN w)) 18 "green") 630 30 "left" "bottom"
+                                     (place-image/align
+                                      (rectangle 196 558 "solid" "black") 622 558 "left" "bottom" (place-hit w)))))))
 
+
+(define (place-hit w)
+  (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
+        (let ((CX (- 310 (posn-x (cdr (car C-LIST))))) (CY (- 279 (posn-y (cdr (car C-LIST))))))
+    (if E-ZAHYO ;攻撃時のヒットマーク
+    (place-image (circle 31 "solid" "red") (+ CX (posn-x (BATTLE-E-ZAHYO w)))
+                (+ CY (posn-y (BATTLE-E-ZAHYO w)))
+                 (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
+                              (place-character w)))
+    (place-character w)))))
 
 (define (place-character w)
   (match-let (((BATTLE C-LIST PHASE TURN ITEM MAGIC MONEY EXP E-ZAHYO STATUS TEXT MENU U-ITEM C-MAGIC) w))
-    (if E-ZAHYO
-    (place-image (circle 31 "solid" "red") (posn-x (BATTLE-E-ZAHYO w))
-                 (posn-y (BATTLE-E-ZAHYO w))
-                 (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
-    (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) *background*
-    (map (lambda (x) 
-         `(,(if (< 0 (car (CHARACTER-Hp (car x)))) (CHARACTER-Image (car x)) "")
-           ,(posn-x (cdr x))
-           ,(posn-y (cdr x))))
-         C-LIST))))
-    (place-image (square 62 "outline" "red") (posn-x (cdr (car C-LIST))) (posn-y (cdr (car C-LIST)))
-    (foldr (lambda (data initial) (place-image (car data) (cadr data) (caddr data) initial)) ;*background*
-            (place-image (place-images (map (lambda (i)
+    (let ((CX (- 310 (posn-x (cdr (car C-LIST))))) (CY (- 279 (posn-y (cdr (car C-LIST))))))
+    (place-image (square 62 "outline" "red") (+ CX (posn-x (cdr (car C-LIST)))) (+ CY (posn-y (cdr (car C-LIST))))
+    (foldr (lambda (data initial) (place-image (car data) (+ CX (cadr data)) (+ CY (caddr data)) initial)) ;*background*
+            (place-image (place-images (map (lambda (i) ;initial
            (list-ref *images* (if (= i 1) i 0)))
          (apply append *map-data*)) ;map-dataを平坦化 (11111111111000000001...)
         *image-posns*
-        (empty-scene *width* *height*)) *bgx* *bgy* ;310 279
-                             (place-image/align (rectangle 192 160 "outline" "white") 624 552 "left" "bottom"
-                                        (rectangle 820 558 "solid" "black")))
-    (map (lambda (x) 
+        (empty-scene *width* *height*)) (+ 310 CX) (+ 279 CY);*bgx* *bgy* ;310 279
+                            ; (place-image/align (rectangle 192 160 "outline" "white") 624 552 "left" "bottom"
+                                        (rectangle 820 558 "solid" "black"))
+    (map (lambda (x) ;data
          `(,(if (< 0 (car (CHARACTER-Hp (car x)))) (CHARACTER-Image (car x)) "")
            ,(posn-x (cdr x))
            ,(posn-y (cdr x))))
