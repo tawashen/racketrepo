@@ -14,21 +14,17 @@
 (struct CARD (SUIT NUM KIND MES ENEMY ITEM ON COORD) #:transparent)
 (struct ENEMY (NAME AT HP ITEM GOLD))
 (struct ITEM (NAME COST KIND POWER))
-(struct PLAYER (NAME SKILLP HITP MAGICP EQUIP GOLD SPECIAL WIN))
-(struct WORLD (PLAYERS SMAP PMAP PHASE COORD WIN))
+(struct PLAYER (NAME SKILLP HITP MAGICP EQUIP GOLD SPECIAL COORD WIN))
+(struct WORLD (PLAYERS SMAP PMAP PHASE WIN))
 
 ;テスト用インスタンス類
-(define world (WORLD '(SJ) string-map players-map 0 '(12 5 19 29) #f))
-(define SJ (PLAYER "勇者スペードのジャック" '(11 . 11) '(22 . 22) '(9 . 9) 'sord 20 #f 12 #f))
+(define world (WORLD '(SJ) string-map players-map 0 #f))
+(define SJ (PLAYER "勇者スペードのジャック" '(11 . 11) '(22 . 22) '(9 . 9) 'sord 20 #f SA #f))
 (define sord (ITEM "剣" #f 'one-hand-sord 0))
 (define rune-blade (ITEM "ルーンブレード" #f 'one-hand-sword 2))
 (define zakura (ENEMY "戦士ザクラ" 12 12 rune-blade 0))
 (define SA (CARD "S" "A" "BATTLE" 'mes-sa 'enemy-zakura "" #t #f))
 
-;整形後のPlayers配置マップを作る関数、これで移動後にworldを作り直す
-(define (make-players-map new-coord)
-  (split-list (map align-string (map (lambda (x) (number->string x)) (put-player *player-zero* 1 new-cord)))))
-                                                 
 
 ;;;;;;;;;;;;;;;;;;;4人のジャックテーブル
 (define jack-table (make-hash))
@@ -50,20 +46,6 @@
 
 ;;;;;;;;;;;;;;;;;イベントテーブル
 (hash-set! jack-table 'direct go-direct)
-
-
-
-(define (change-coord direct w num)
-  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) w))
-    (let* ((new-coord (list-set COORD PHASE (+ (list-ref COORD PHASE) num)))
-           (new-pmap (make-players-map new-coord)))
-      (WORLD PLAYERS SMAP new-pmap PHASE new-cord WIN))))
-  
-  
-(define (go-direct direct w) ;新たなwを返す予定　COORDとplayer-mapを更新する
-  (let ((current (PLAYER-COORD ;PLAYER構造体から座標（INT)を呼び出す
-                  (list-ref (WORLD-PLAYERS w) (WORLD-PHASE w))))) ;現在のPLYAER構造体を返す
-    (cond ((and (string=? direct "r") (ue? direct)) (main-eval (change-coord direct w -7))) 
 
 
 
@@ -89,7 +71,7 @@
   (display-map (WORLD-SMAP w) (WORLD-PMAP w) '())
   (display (format (hash-ref jack-table 'mes-read) (list-ref (WORLD-PLAYERS w) (WORLD-PHASE w))))
   (let ((direct (read-line)))
-    (cond ((string=? direct (or "r" "d" "c" "f")) ((hash-ref jack-tale 'direct) direct w))
+    (cond ((string=? direct (or "r" "d" "c" "f")) ((hash-ref jack-tale 'direct) direct))
           (else (main-read w)))))
   
 ;メインEVAL　移動後イベント発生　ゲーム最初は任意の場所からスタートするので初期化後はまずここへ来る

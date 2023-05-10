@@ -70,7 +70,8 @@
                      (0 0 0 0 0 0 0)
                      )))
 
-
+;仮のプレイヤー座標データ
+(define players '(12 5 19 29)) 
 
 ;プレイヤー配置関数 多人数プレイ対応
 (define (put-player map num players)
@@ -78,8 +79,10 @@
       map
       (put-player (list-set map (car players) num) (+ 1 num) (cdr players))))
 
+;整形後のPlayers配置マップを束縛
+(define players-map (split-list (map align-string (map (lambda (x) (number->string x)) (put-player *player-zero* 1 players))))) 
 
-;整形後のカードマップを作る関数 こっちは固定
+;整形後のカードマップ
 (define string-map (split-list (map align-string (map (lambda (x)  (symbol->string x)) *map*))))
 
 ;カードマップとPlayersマップと行ごとに交互に合体させて7要素ごとに整形
