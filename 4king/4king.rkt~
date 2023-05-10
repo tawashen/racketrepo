@@ -2,116 +2,80 @@
 
 
 (require 2htdp/universe 2htdp/image lang/posn)
-(require srfi/1)
-(require srfi/13)
+;(require srfi/1)
+;(require srfi/13)
 (require racket/struct)
 (require racket/match)
+(require "4king-print.rkt")
 
 
-(define battle (lambda (x) (+ x 100)))
-(define end (lambda () (display "end")))
-(define event-hash (make-hash))
-(hash-set! event-hash "battle" battle)
-(hash-set! event-hash "end" end)
-
-
-
- 
-(define ns (make-base-namespace))
 
 (struct CARD (SUIT NUM KIND MES ENEMY ITEM ON COORD) #:transparent)
 (struct ENEMY (NAME AT HP ITEM GOLD))
-(define suit '("♠" "◆" "♥" "♣"))
-(define num '("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "J" "Q" "K"))
+(struct ITEM (NAME COST KIND POWER))
+(struct PLAYER (NAME SKILLP HITP MAGICP EQUIP GOLD SPECIAL COORD WIN))
+(struct WORLD (C-CARD PLAYERS MAP-S MAP-P PHASE WIN))
 
-;(for*/list ((a suit) (b num)) (eval `(define ,(string->symbol (string-append a b)) (CARD ,a ,b "" "" "" "" "" "")) ns))
+;テスト用インスタンス類
+(define world (WORLD 'sa '(SJ) string-map players-map 0 #f))
+(define SJ (PLAYER "勇者スペードのジャック" '(11 . 11) '(22 . 22) '(9 . 9) 'sord 20 #f #f #f))
+(define sord (ITEM "剣" #f 'one-hand-sord 0))
+(define rune-blade (ITEM "ルーンブレード" #f 'one-hand-sword 2))
+(define zakura (ENEMY "戦士ザクラ" 12 12 rune-blade 0))
+(define sa-mes '("untara-kantara"))
+(define SA (CARD "S" "A" "BATTLE" 'sa-mes 'zakura "" #t #f))
 
-;(for*/list ((a suit) (b num)) (eval `(define ,(string->symbol (string-append a b)) 12) ns))
-;(for*/list ((a suit) (b num)) (eval `(list ,a ,b) ns))
+;;;;;;;;;;;;;;;;;;カードテーブル
+(define card-table (make-hash))
+(hash-set! card-table 'sa SA)
 
-(define ZAKURA (ENEMY "戦士ザクラ" 12 12 "ルーンブレード（仮）" 0))
-(define SA (CARD "S" "A" "BATTLE" "" ZAKURA "" #t ""))
+;;;;;;;;;;;;;;;;;メッセージテーブル
+(define mes-table (make-hash))
+(hash-set! mes-table 'sa-mes "うんたらかんたら")
 
-;(ENEMY-NAME (CARD-ENEMY SA))
+;;;;;;;;;;;;;;;;;アイテムテーブル
+(define item-table (make-hash))
+(hash-set! item-table 'sord sord)
 
-(define *map-zero* (apply append '(
-                     (0 0 0 0 0 0 0)
-                     (0 0 0 0 0 0 0)
-                     (0 0 1 1 1 0 0)
-                     (0 0 1 2 1 0 0)
-                     (0 0 1 1 1 0 0)
-                     (0 0 0 0 0 0 0)
-                     (0 0 0 0 0 0 0)
-                     )))
+;;;;;;;;;;;;;;;;;アイテム属性テーブル 装備コマンドの時参照する感じ？
+(define item-att-table (make-hash))
 
-(define card-list (map string->symbol (for*/list ((s suit) (n num)) (string-append s n))))
+;;;;;;;;;;;;;;;;;エネミーテーブル
+(define enemy-table (make-hash))
+(hash-set! enemy-table 'zakura zakura)
 
-
-(define num-list '(#\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
-(define q-to-k-list '(#\Q #\K))
-(define zihuda (shuffle (filter (lambda (x) (member (string-ref (symbol->string x) 1) num-list)) card-list)))
-(define q-to-k (shuffle (filter (lambda (x) (member (string-ref (symbol->string x) 1) q-to-k-list)) card-list)))
-
-
-
-;(define ZIHUDA (apply append (list zihuda (iota (- (length *map-zero*) (length zihuda))))))
-;(define Q-TO-K (apply append (list q-to-k (iota (- (length *map-zero*) (length q-to-k))))))
-
-#;
-(define *map* (fold-right (lambda (a b c d)
-                       (cond ((= c 0) (cons a d))
-                      ((= c 1) (cons b d))
-                      (else (cons "JOKER" d)))) '() ZIHUDA Q-TO-K *map-zero*))
-#;
-(for/fold ((d '()))
-          ((a ZIHUDA) (b Q-TO-K) (c *map-zero*))
-                    (cond ((= c 0) (cons a d))
-                      ((= c 1) (cons b d))
-                      (else (cons "JOKER" d))))
-
-;(display *map*)
-;(display ZIHUDA)
-
-;(define JOK '('JOK))
-(define (narabi a b c d)
-  (if (null? c)
-     (reverse d)
-      (cond ((= (car c) 0)  (narabi (cdr a) b (cdr c) (cons (car a) d)))
-            ((= (car c) 1) (narabi a (cdr b) (cdr c) (cons (car b) d)))
-            (else (narabi a b (cdr c) (cons 'JOK d))))))
-
-(define *map* (narabi zihuda q-to-k *map-zero* '()))
-(define (split-list lst)
-  (if (null? lst)
-      '()
-      (cons (take lst 7) (split-list (drop lst 7)))))
-
-;表示桁数揃える関数
-(define (align-string string)
-      (cond
-                     ((= 2 (string-length string)) (string-append string "___" ))
-                     ((= 3 (string-length string)) (string-append string "__" ))))
-       
-
-(define players '(12 5 19 29)) ;仮のプレイヤー座標データ
-(define string-map (split-list (map align-string (map (lambda (x)  (symbol->string x)) *map*))))
-(define (display-map map) ;マップ表示関数
-  (for-each display-lines (split-list string-map)))
-
-
-(display-map string-map)
+;;;;;;;;;;;;;;;;;イベントテーブル
+(define event-table (make-hash))
 
 
 
 
 
-;(define *map* (
-               
-;0-15 19-22 26-29 33-48 すべての字札
-;16-18 23 25 30-32　KとQ
-;24　JOKER
-               
-;(display *map-zero*)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;バトル部分
+;(define (battle-print w))
+;(define (battle-read w))
+;(define (battle-eval w))
+;(define (battl-loop w))
+;(define battle (lambda (x y) ()))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;メイン部分
+;メインPRINT マップ表示                             
+(define (main-print w)
+  (display-map (WORLD-MAP-S w) (WORLD-MAP-P w) '())
+  (display (hash-ref mes-table (CARD-MES (hash-ref card-table (WORLD-C-CARD w))))))
+;メインREAD マップの移動入力
+;(define (main-read w))
+;メインEVAL　移動後イベント発生
+;(define (main-eval world event-table key arg))
+;メインLOOP　次のプレイヤーか自身の次ターン
+;(define (main-loop w))
+
+;(main-print world)
+
+
+
+
+
+
 
 
 
