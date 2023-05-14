@@ -29,3 +29,11 @@
 (define (sita? current)
   (if (< 42 current) #f #t))
 
+
+
+;PHASE用Circular関数
+(define (circular lst)
+  (flatten (cons (cdr lst) (car lst))))
+
+
+
