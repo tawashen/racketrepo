@@ -1,5 +1,7 @@
 #lang racket
 
+(require "4king-data.rkt")
+(require "4king-print.rkt")
 (provide (all-defined-out))
 
 
@@ -34,6 +36,21 @@
 ;PHASE用Circular関数
 (define (circular lst)
   (flatten (cons (cdr lst) (car lst))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;関数
+(define (change-coord direct w num)
+  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) w))
+    (let* ((new-coord (list-set COORD PHASE (+ (list-ref COORD PHASE) num)))
+           (new-pmap (make-players-map new-coord)))
+      (WORLD PLAYERS SMAP new-pmap PHASE new-coord WIN))))
+  
+  
+
+
+;整形後のPlayers配置マップを作る関数、これで移動後にworldを作り直す
+(define (make-players-map new-coord)
+  (split-list (map align-string (map (lambda (x) (number->string x)) (put-player *player-zero* 1 new-coord)))))
+   
 
 
 

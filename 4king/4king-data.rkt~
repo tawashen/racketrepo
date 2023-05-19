@@ -1,0 +1,41 @@
+#lang racket
+
+(provide (all-defined-out))
+
+(struct CARD (SUIT NUM KIND MES ENEMY ITEM ON FLIP) #:transparent)
+(struct ENEMY (NAME AT HP ITEM GOLD))
+(struct ITEM (NAME COST KIND POWER))
+(struct PLAYER (NAME SKILLP HITP MAGICP EQUIP GOLD ITEMS SPECIAL WIN))
+(struct WORLD (PLAYERS SMAP PMAP PHASE COORD WIN))
+
+
+(define SJ (PLAYER "勇者スペードのジャック" '(11 . 11) '(22 . 22) '(9 . 9) 'sword 20 '() #f 'win-sj))
+(define DJ (PLAYER "恋人ダイヤのジャック" '(10 . 10) '(20 . 20) '(10 . 10) 'sword 20 '() 'skill-miracle 'win-dj))
+(define HJ (PLAYER "弟子ハートのジャック" '(9 . 9) '(18 . 18) '(11 . 11) 'sword 20 '() 'skill-ilusion 'win-hj))
+(define CJ (PLAYER "悪魔クラブのジャック" '(10 . 10) '(20 . 20) '(9 . 9) 'sword 20 '() 'skill-recover 'win-cj))
+
+
+
+(define sord (ITEM "剣" #f 'one-hand-sword 0))
+(define rune-blade (ITEM "ルーンブレード" #f 'one-hand-sword 2))
+(define silver-short-sord (ITEM "銀の短剣" 10 'sacred-weapon 0))
+(define war-hammer (ITEM "ウォーハンマー" 35 'physical-slayer 0))
+(define long-sword (ITEM "ロングソード" 30 'two-handed-sword 1))
+(define throwing-knife (ITEM "投げナイフ" 10 'preemptive-strike 2))
+(define magic-gloves (ITEM "魔法の手袋" 10 'glove 1))
+(define shield (ITEM "盾" 'shield 10 0))
+(define chain-mail (ITEM "鎖かたびら" 40 'armor 1))
+(define horse (ITEM "馬" 40 'speed-up 0))
+(define numbing-medicine(ITEM "しびれ薬" 5 'numbing 0))
+(define anesthetic (ITEM "眠り薬" 5 'anesthetic 0))
+(define medicinal-herb (ITEM "薬草" 3 'heal 4))
+(define skill-herb (ITEM "技の薬" 15 'skill 0))
+(define power-herb (ITEM "力の薬" 15 'power 0))
+(define luck-herb (ITEM "ツキの薬" 15 'luck 0))
+
+(define zakura (ENEMY "戦士ザクラ" 12 12 'item-rune-blade 0))
+(define SA (CARD 'S 'A 'BATTLE 'mes-sa 'enemy-zakura "" #t #t))
+(define S2 (CARD 'S 2 'SHOP 'mes-s1 #f '(silver-short-sord war-hammer long-sord throwing-knife) #t #f))
+(define S3 (CARD 'S 3 'SHOP 'mes-s2 #f '(magic-gloves shield chain-mail) #t #f))
+(define S4 (CARD 'S 4 'SHOP 'mes-s3 #f '(horse) #t #f))
+(define S5 (CARD 'S 5 'SHOP 'mes-s4 #f '(numbing-medicine anesthetic medicinal-herb skill-herb power-herb luck-herb) #t #f))
