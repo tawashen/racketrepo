@@ -1,0 +1,10 @@
+#lang racket
+
+(require racket/struct)
+(require racket/match)
+(require "4king-data.rkt")
+
+(define test '(("tawa" 30)))
+
+ (for-each display (map (match-lambda (`(,name ,hit)
+                                        (format "[~a:~a]" name hit))) test))

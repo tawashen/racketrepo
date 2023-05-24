@@ -38,7 +38,7 @@
                  '(LUCK-TRY (numbing-medicine wine) (enemy SKILLP -3) (player HITP -2 24))
                  ;↑#tで続く（）で必要アイテム、次の（）で成功効果　最後の（）で失敗効果最後の真偽はJOK(24)行きかどうか
                  '(LUCKP -2) ;存在した場合は降服可能、BATTLEで参照してメニューを出す
-                 'mes-s1 (list enemy-zakura) (list rune-blade) #f #t #t))
+                 'mes-s1 '(enemy-zakura) '(rune-blade) #f #t #t))
 (define zakura (ENEMY "戦士ザクラ" 12 12))
 (define rune-blade (ITEM "ルーンブレード" #f 'one-hand-weapon '(2 0)))
 

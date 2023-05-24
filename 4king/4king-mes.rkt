@@ -7,7 +7,7 @@
 
 
 ;;;;;;;;;;;;;;;;;メッセージテーブル
-(hash-set! jack-table 'mes-read "~aのターン どこへ移動する?北[r] 西[d] 南[c] 東[f]")
+(hash-set! jack-table 'mes-read "~aのターン~% どこへ移動する?北[r] 西[d] 南[c] 東[f]")
 (hash-set! jack-table 'mes-s1 "SAだよ")
 (hash-set! jack-table 'mes-s2 "S2だよ")
 (hash-set! jack-table 'mes-s3 "S3だよ")
