@@ -176,13 +176,20 @@
                      ))))))
 
 (define (battle-read2 player enemy world)
+  (when (null? enemy) (battl-win player enemy world))
   (for-each display (map (match-lambda (`(,name ,hit)
                                               (format "[~a HIT:~a]~%" name hit)))
                                                  (map (lambda (x) `(,(ENEMY-NAME x) ,(ENEMY-HITP x))) enemy)))  
   (for-each display (map (match-lambda (`(,name ,hit ,skill)
                                               (format "[~a HIT:~a SKILL:~a]~%" name hit skill)))
                                                  (map (lambda (x) `(,(PLAYER-NAME x) ,(PLAYER-HITP x))) enemy)))
-  (
+  (display (format "どれと戦う？[1]~[~a]~%" (+ 1 (length enemy)))) 
+  (when CARD-SECOND (display "もしくは降参する[0]") (newline)) ;降参オプション有効なとき表示
+      (let ((answer (string->number (read-line))))
+        (cond  ((or ((compose not number?) answer) (> answer (length enemy))) (battle-read2 player enemy world))
+               ((and (not CARD-SECOND) (= 0 answer)) (battle-read2 player enemy world))
+               ((= anser 0) (hash-ref jack-table 
+                                      
 
 
 
