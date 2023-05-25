@@ -176,19 +176,35 @@
                      ))))))
 
 (define (battle-read2 player enemy world)
+          (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+           (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
+                                                              (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
   (when (null? enemy) (battl-win player enemy world))
-  (for-each display (map (match-lambda (`(,name ,hit)
+  (when CARD-SECOND (display "降参する?[y/n]") (newline)) ;降参オプション有効なとき表示
+             (let ((kousan-answer (read-line)))
+               (cond ((string=? "y" kousan-answer) ((hash-ref jack-table 'SURRENDER) SECOND world)) ;戦闘中に降参する 未実装
+                    (else
+                      (for-each display (map (match-lambda (`(,name ,hit)
                                               (format "[~a HIT:~a]~%" name hit)))
                                                  (map (lambda (x) `(,(ENEMY-NAME x) ,(ENEMY-HITP x))) enemy)))  
-  (for-each display (map (match-lambda (`(,name ,hit ,skill)
+                      (for-each display (map (match-lambda (`(,name ,hit ,skill)
                                               (format "[~a HIT:~a SKILL:~a]~%" name hit skill)))
-                                                 (map (lambda (x) `(,(PLAYER-NAME x) ,(PLAYER-HITP x))) enemy)))
-  (display (format "どれと戦う？[1]~[~a]~%" (+ 1 (length enemy)))) 
-  (when CARD-SECOND (display "もしくは降参する[0]") (newline)) ;降参オプション有効なとき表示
+                                                 (map (lambda (x) `(,(PLAYER-NAME x) ,(PLAYER-HITP x))) player)))
+  (let ((command-list (input-command player enemy '())))
+  (battle-eval player enemy world command-list))))))))
+ 
+
+(define (input-command player enemy numlist)
+  (display (format "どれと戦う?[1]~[~a]~%" (+ 1 (length enemy)))) 
+  (cond ((null? player) (reverse numlist))
+        (else
       (let ((answer (string->number (read-line))))
-        (cond  ((or ((compose not number?) answer) (> answer (length enemy))) (battle-read2 player enemy world))
-               ((and (not CARD-SECOND) (= 0 answer)) (battle-read2 player enemy world))
-               ((= anser 0) (hash-ref jack-table 
+        (cond  ((or ((compose not number?) answer) (> answer (length enemy)) (> 1 answer))
+                (input-command player enemy numlist))
+               (else (input-command (cdr player) enemy (cons answer numlist))))))))
+  
+
+                
                                       
 
 
