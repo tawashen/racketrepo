@@ -173,6 +173,15 @@
                      (battle-read2 c-player c-enemy x)
                      ))))))
 
+(define (input-command player enemy numlist)
+  (display (format "どれと戦う?[1]~[~a]~%" (+ 1 (length enemy)))) 
+  (cond ((null? player) (reverse numlist))
+        (else
+      (let ((answer (string->number (read-line))))
+        (cond  ((or ((compose not number?) answer) (> answer (length enemy)) (> 1 answer))
+                (input-command player enemy numlist))
+               (else (input-command (cdr player) enemy (cons answer numlist))))))))
+
 (define (battle-read2 player enemy world)
           (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
            (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
@@ -194,21 +203,14 @@
 
 (define (battle-eval player enemy world command-list)
   (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-     (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
+     (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP) ;現在のカード
                                                               (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
-       (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) player))
-         (match-let (((ENEMY NAME SKILLP HITP) enemy))
+       (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
+         (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
 
               
 
-(define (input-command player enemy numlist)
-  (display (format "どれと戦う?[1]~[~a]~%" (+ 1 (length enemy)))) 
-  (cond ((null? player) (reverse numlist))
-        (else
-      (let ((answer (string->number (read-line))))
-        (cond  ((or ((compose not number?) answer) (> answer (length enemy)) (> 1 answer))
-                (input-command player enemy numlist))
-               (else (input-command (cdr player) enemy (cons answer numlist))))))))
+
   
 
                 
