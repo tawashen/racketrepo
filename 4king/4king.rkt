@@ -49,8 +49,6 @@
 ;;;;;;;;;;;;;;;;;アイテム属性テーブル 装備コマンドの時参照する感じ？
 
 
-;;;;;;;;;;;;;;;;;エネミーテーブル
-(hash-set! jack-table 'enemy-zakura zakura)
 
 ;;;;;;;;;;;;;;;;;イベントテーブル
 (hash-set! jack-table 'direct go-direct)
@@ -192,7 +190,16 @@
                                                  (map (lambda (x) `(,(PLAYER-NAME x) ,(PLAYER-HITP x))) player)))
   (let ((command-list (input-command player enemy '())))
   (battle-eval player enemy world command-list))))))))
- 
+
+
+(define (battle-eval player enemy world command-list)
+  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+     (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
+                                                              (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
+       (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) player))
+         (match-let (((ENEMY NAME SKILLP HITP) enemy))
+
+              
 
 (define (input-command player enemy numlist)
   (display (format "どれと戦う?[1]~[~a]~%" (+ 1 (length enemy)))) 
