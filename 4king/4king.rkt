@@ -212,7 +212,31 @@
 
 
   
+(define (battle-eval player enemy world command-list counter)
+  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+     (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP)                                (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
+       (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
+         (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
+		(let ((enemy-attack-list (random-list (length player))
+		(let loop ((player enemy command-list enemy-attack-list counter pdamage edamege))
+		(if (null? player) (values pdamage edamage)
+			(loop (cdr player) enemy (car command-list) enemy-attack-list (+ 1 counter)
+		(cond ((= (car command-list) x)  (taiman (car player) (list-ref enemy (- (car command-list) 1)
+			  ((and ((not equal) (car command-list) x)) (= (+ 1 counter) x)) (bousen (car plyer) (list-ref enemy (- (car command-list) 1)
+			 ((and ((not equal) (car command-list) x)) (= (car command-list) (+ 1(list-index x))) (ippouteki (car player) (list-ref enemy (list-index x))
 
+
+
+P(1 2 3)
+E(1 1 2)
+
+
+(define (random-list e-num p-num e-attack-list)
+	(if (null? e-num) (reverse e-attack-list)
+		(random-list (cdr e-num) p-num (cons (random (length p-num)) e-attack-lisT)))
+
+ 
+ 
                 
                                       
 
