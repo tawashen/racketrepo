@@ -51,7 +51,7 @@
 (define (make-players-map new-coord)
   (split-list (map align-string (map (lambda (x) (number->string x)) (put-player *player-zero* 1 new-coord)))))
 
-;幸運判定用サイコロ関数
+;判定用サイコロ関数
 (define (dice)
   (+ (+ 1 (random 6)) (+ 1 (random 6))))
    

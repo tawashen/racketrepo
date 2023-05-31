@@ -104,6 +104,7 @@
 (define hole-devil (ENEMY "穴悪魔" 12 15))
 
 
+
 (define test-map (list SA S2 S3 S4))
 (define test-list (flatten (map (lambda (x) (list (CARD-NAME x))) test-map)))
 

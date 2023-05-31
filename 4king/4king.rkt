@@ -210,31 +210,9 @@
        (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
          (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
 		(let ((enemy-attack-list (random-list (length player)))) ;ex (1 1 2)
-		(let loop ((player enemy command-list enemy-attack-list counter damage-list))
-		(if (null? player) (values pdamage edamage) ;ex (-2 -1 0) (0 0 -1)
-			(loop (cdr player) enemy (car command-list) enemy-attack-list (+ 1 counter)
-		(cond ((= (car command-list) x)  (taiman (car player) (list-ref enemy (- (car command-list) 1))))
-                      ;Playerの狙う相手が1（実際は−1してList-ref）で相手も1（実際は0）だった場合普通の対決、返り値はvalues ex (-1) (0)
-		       ((and ((not equal) (car command-list) x) (= (+ 1 counter) x))
-                            (bousen (car plyer) (list-ref enemy (- (car command-list) 1))))
-                       ;Playerの狙う相手と違う相手がPlayerを攻撃した場合
-		       ((and ((not equal) (car command-list) x) (= (car command-list) (+ 1　(list-index x))))
-                            (ippouteki (car player) (list-ref enemy (list-index x))))
-                       ;Playerだけが相手を狙った場合
-                       (else (values 0 0)
+                  
 
-(define (battle-zero car-player enemy car-command-list enemy-attack-list counter damage-list);counterは一つ上のLoopで1から増やす
-  (cond ((null? enemy-attack-list) (reverse damage-list))
-        ((= car-command-list (car enemy-attack-list))
-         (battle-zero car-player (cdr enemy) car-command-list (cdr enemy-attack-list) counter
-                      (cons (taiman car-player (car enemy)) damage-list)))
-        ((and ((not equal) car-command-list (car enemy-attack-list)) (= counter (car enemy-attack-list)))
-         (battle-zero car-player (cdr enemy) car-command-list (cdr enemy-attack-list) counter
-         (cons (bousen car-player (car enemy)) damage-list)))
-        ((and ((not equal) car-command-list (car enemy-attack-list)) ((not eqaul) counter (car enemy-attack-list)))
-         (battle-zero car-player (cdr enemy) car-command-list (cdr enemy-attack-list) counter
-         (cons (ippouteki car-player (car enemy)))))
-        (else (vales 0 0))))
+
       
 
 
