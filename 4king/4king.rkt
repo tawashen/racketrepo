@@ -201,15 +201,6 @@
   (battle-eval player enemy world command-list))))))))
 
 
-(define (battle-eval player enemy world command-list)
-  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-     (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP) ;現在のカード
-                                                              (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
-       (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
-         (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
-
-              
-
 
   
 (define (battle-eval player enemy world command-list counter)
