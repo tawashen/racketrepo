@@ -203,7 +203,7 @@
 
 
   
-(define (battle-eval player enemy world command-list counter)
+(define (battle-eval player enemy world command-list)
   (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
      (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP)
                   (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
