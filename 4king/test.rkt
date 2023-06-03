@@ -103,8 +103,10 @@
                     (let((new-players (damage-apply-player-map player battle-result-list '())) ;ダメージの結果を各インスタンスにMapする関数                                        
                          (new-enemies (damage-apply-enemy-map enemy battle-result-list '())))
                       (battle-print new-players new-enemies world battle-result-list)))))))
-
 ;;;;ここまでコピー済み
+
+(define (battle-print new-player new-enemies world battle-result-list)
+  (display 
                     
 #;
 (damage-apply-player-map `(,SJ ,DJ ,HJ)
