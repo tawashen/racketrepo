@@ -55,6 +55,15 @@
 (define (dice)
   (+ (+ 1 (random 6)) (+ 1 (random 6))))
    
+;LIST内の特定の要素の場所を返す
+(define (list-index num lst count)
+  (cond ((null? lst) #f)
+         ((= num (car lst)) count)
+         (else (list-index num (cdr lst) (+ 1 count)))))
 
 
+;敵ごとにランダムで味方へ攻撃対象を決める(IndexのListで)
+(define (random-list e-num p-num e-attack-list)
+	(if (null? e-num) (reverse e-attack-list)
+		(random-list (cdr e-num) p-num (cons (random (length p-num)) e-attack-list))))
 
