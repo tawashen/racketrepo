@@ -67,3 +67,32 @@
 	(if (null? e-num) (reverse e-attack-list)
 		(random-list (cdr e-num) p-num (cons (random (length p-num)) e-attack-list))))
 
+;多次元リストを1次元リストに
+(define (flat-list lst new-list)
+  (if (null? lst) (reverse new-list)
+      (flat-list (cdr lst) (append
+      (let loop ((lst2 (car lst)) (new-list0 '()))
+        (if (null? lst2) new-list0
+            (loop (cdr lst2) (cons (car lst2) new-list0))))
+            new-list))))
+
+
+#;
+(flatten-list '(((battle-ressei "勇者スペードのジャック" "大ねずみA" -2 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0))
+  ((battle-nasi "" "" 0 0) (battle-ressei "恋人ダイヤのジャック" "大ねずみB" -2 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0))
+  ((battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0) (battle-kawasare "弟子ハートのジャック" "大ねずみC" 0 0) (battle-nasi "" "" 0 0))))
+
+#;
+(flat-list '(((battle-ressei "勇者スペードのジャック" "大ねずみA" -2 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0))
+  ((battle-nasi "" "" 0 0) (battle-ressei "恋人ダイヤのジャック" "大ねずみB" -2 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0))
+  ((battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0) (battle-kawasare "弟子ハートのジャック" "大ねずみC" 0 0) (battle-nasi "" "" 0 0))) '())
+
+(define lst2 '(((battle-ressei "勇者スペードのジャック" "大ねずみA" -2 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0))
+  ((battle-nasi "" "" 0 0) (battle-ressei "恋人ダイヤのジャック" "大ねずみB" -2 0) (battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0))
+  ((battle-nasi "" "" 0 0) (battle-nasi "" "" 0 0) (battle-kawasare "弟子ハートのジャック" "大ねずみC" 0 0) (battle-nasi "" "" 0 0))))
+
+
+            
+  
+
+
