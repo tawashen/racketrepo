@@ -63,7 +63,7 @@
 
 ;(battle-zero SJ  `(,mouse1 ,mouse2 ,mouse3 ,mouse4) 1 '(1 2 4 4) 1 1 '())
 
-(flat-list (battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '()) '())
+;(flat-list (battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '()) '())
 
 
 
@@ -95,20 +95,61 @@
 
 (define (battle-eval player enemy world command-list)
   (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-    ; (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP)
-            ;      (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
        (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
          (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
 		(let* ((enemy-attack-list (random-list (length player))) ;ex (1 1 2)
-                        (battle-result-list (battle-map player enemy world command-list enemy-attack-list 1 '())))                      
-                    (let((new-players (damage-apply-player-map player battle-result-list '())) ;ダメージの結果を各インスタンスにMapする関数                                        
+                        (battle-result-list
+                         (battle-map player enemy world command-list enemy-attack-list 1 '())))                      
+                    (let((new-players (damage-apply-player-map player battle-result-list '()))       
                          (new-enemies (damage-apply-enemy-map enemy battle-result-list '())))
                       (battle-print new-players new-enemies world battle-result-list)))))))
 ;;;;ここまでコピー済み
 
 (define (battle-print new-player new-enemies world battle-result-list)
-  (display "totyuu")) 
+  (display "kari")
+  (battle-messages-print new-player new-enemies world (flat-list battle-result-list)))
 
+(define (battle-messages-print players enemies world battle-result-flat-list)
+  (cond ((null? battle-result-flat-list) (display "to battle-loop")) ;(battle-loop players enemies world))
+        (else (begin ((hash-ref jack-table 'battle-mes-print) (car battle-result-flat-list))
+                     (battle-messages-print players enemies world (cdr battle-result-flat-list))))))
+
+(define battle-mes-print
+  (match-lambda (`(,mes ,p-name ,e-name ,p-damage ,e-damage)
+                 (case mes
+                   ((battle-gokaku)
+                    (display (format "~aと~aは互角の勝負！Σ(´∀｀；)~%" p-name e-name)))
+                   ((battle-yusei)
+                    (display (format "~aは~aに[~a]ダメージを与えた！(^o^)~%" p-name e-name e-damage)))
+                   ((battle-ressei)
+                    (display (format "~aは~aから[~a]ダメージを受けた(-_-;)~%"　p-name e-name (- p-damage))))
+                   ((battle-kawasi)
+                    (display (format "~aは~aの攻撃をかわした(^o^)！~%" p-name e-name)))
+                   ((battle-kawasare)
+                    (display (format "~aは~aに攻撃をかわされた(-_-;)~%" p-name e-name)))
+                   ((battle-nasi) (void))))))
+
+(hash-set! jack-table 'battle-mes-print battle-mes-print)
+
+(define test-list
+  (flat-list (battle-map `(,SJ ,DJ ,HJ)
+                         `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '()) '()))
+
+
+(battle-messages-print '() '() '() test-list)
+
+
+
+
+
+
+
+(define (battle-loop world)
+  (display "test"))
+  
+  
+
+                                
 
 #;
 (damage-apply-player-map `(,SJ ,DJ ,HJ)
