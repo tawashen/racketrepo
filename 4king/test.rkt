@@ -62,7 +62,8 @@
                   (cons (battle-zero (car players) enemies (car command-list) enemy-attack-list p-count 1 '()) damage-lists))))
 
 ;(battle-zero SJ  `(,mouse1 ,mouse2 ,mouse3 ,mouse4) 1 '(1 2 4 4) 1 1 '())
-(battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '())
+
+(flat-list (battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '()) '())
 
 
 
@@ -106,13 +107,8 @@
 ;;;;ここまでコピー済み
 
 (define (battle-print new-player new-enemies world battle-result-list)
-  (let ((mes-data (flatten battle-result-list)))
-    (display mes-data)))
+  (display "totyuu")) 
 
-(define (flat-list lst new-lst)
-  (cond ((null? lst) '())
-        ((list? (car lst)) (flat-list (cdr lst) (cons (car lst) new-lst)))))
-        
 
 #;
 (damage-apply-player-map `(,SJ ,DJ ,HJ)
