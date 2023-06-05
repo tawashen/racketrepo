@@ -102,17 +102,13 @@
                          (battle-map player enemy world command-list enemy-attack-list 1 '())))                      
                     (let((new-players (damage-apply-player-map player battle-result-list '()))       
                          (new-enemies (damage-apply-enemy-map enemy battle-result-list '())))
-                      (battle-print new-players new-enemies world battle-result-list)))))))
-;;;;ここまでコピー済み
+                      (battle-print new-players new-enemies world (flat-list battle-result-list '()))))))))　;変更
 
-(define (battle-print new-player new-enemies world battle-result-list)
-  (display "kari")
-  (battle-messages-print new-player new-enemies world (flat-list battle-result-list)))
 
-(define (battle-messages-print players enemies world battle-result-flat-list)
-  (cond ((null? battle-result-flat-list) (display "to battle-loop")) ;(battle-loop players enemies world))
+(define (battle-print new-players new-enemies world battle-result-flat-list)
+   (cond ((null? battle-result-flat-list) (display "to battle-loop")) ;(battle-loop players enemies world))
         (else (begin ((hash-ref jack-table 'battle-mes-print) (car battle-result-flat-list))
-                     (battle-messages-print players enemies world (cdr battle-result-flat-list))))))
+                     (battle-print new-players new-enemies world (cdr battle-result-flat-list))))))
 
 (define battle-mes-print
   (match-lambda (`(,mes ,p-name ,e-name ,p-damage ,e-damage)
@@ -131,21 +127,26 @@
 
 (hash-set! jack-table 'battle-mes-print battle-mes-print)
 
+
 (define test-list
-  (flat-list (battle-map `(,SJ ,DJ ,HJ)
+ (flat-list (battle-map `(,SJ ,DJ ,HJ)
                          `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 3 2) 1  '()) '()))
 
-
-(battle-messages-print '() '() '() test-list)
-
-
+(battle-print '() '() '() test-list)
+;(battle-messages-print '() '() '() test-list)
 
 
 
 
-
-(define (battle-loop world)
-  (display "test"))
+(define (battle-loop players enemies world);このworldはまだ古いWORLD
+  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+    (let ((new-players (filter (lambda (x) (< 0 (car (PLAYER-HITP x)))) players))
+          (new-enemies (filter (lambda (x) (< 0 (car (ENEMY-HITP x)))) enemies)))
+      (cond ((null? new-players) (display "to game-over"))
+            ((null? new-enemies) (display "to main-read"))
+            (else (display "battle-read2"))))))
+       ;     (else (battle-read2 (WORLD new-players new-enemies SMAP PMAP 1 COORD WIN)))))))
+              
   
   
 
@@ -163,21 +164,3 @@
 
 
                 
-
-
-#|
-(battle-map '(1 2 3 4) '(2 2 3 4) 1 '())
-
-
-(define test-i '(1 2 3))
-(define test-j '(2 2 2))
-
-(for/list ((k (iota (length test-i) 1 1)))
-(for/list ((i test-i)
-           (j test-j))
-     ;      (k (iota (length test-i) 1 1)))
-  (cond ((and (= i k) (= j i)) (list i j k "taiman"))
-        ((and (not (= i k)) (= j k))  (list i j k "bousen"))
-        ((and (= i k) (not (= j k))) (list i j k "ippouteki"))
-        (else (list i j k "sonota")))))
-|#

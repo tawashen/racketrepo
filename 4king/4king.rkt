@@ -81,7 +81,8 @@
   (let ((c-card (list-ref *map* (list-ref (WORLD-COORD w) (car (WORLD-PHASE w))))))
   (if (CARD-ON c-card) ;CARD-ONが#fなら何も起きないので次のプレイヤーへ
       ((hash-ref jack-table (CARD-KIND c-card)));#tならCARD-KINDを実行
-      (main-loop (WORLD PLAYERS SMAP PMAP PHASE COORD WIN)))))) ;main-loopで勝利条件の判定
+      (display "to main-loop")))))
+      ;(main-loop (WORLD PLAYERS SMAP PMAP PHASE COORD WIN)))))) ;main-loopで勝利条件の判定
 
   
 ;メインLOOP　次のプレイヤーか自身の次ターン
@@ -101,7 +102,7 @@
                                     (satisfy-item? (cadr (CARD-FIRST c-card)) (PLAYER-ITEMS c-player)));必要アイテムを持っている？
                                ((hash-ref jack-table (car (CARD-FIRST c-card))) x) ;真ならCARD-FIRSTのキーで発動
                                ((hash-ref jack-table 'BATTLE) x)) ;#fならすぐにバトル開始
-                           (eval-read (WORLD PLAYERS SMAP PMAP (circular PHASE) COORD)) ;受けない場合次へ
+                           (main-read (WORLD PLAYERS SMAP PMAP (circular PHASE) COORD)) ;受けない場合次へ
                            ))))))
 
 ;CARDが要請するアイテムをPLAYERが全て持っているか？をチェックする関数
@@ -109,7 +110,7 @@
   (if (null? card-item)
       #t
       (if (member (car card-item player-item))
-          (satisfy? (cdr card-item) player-item)
+          (satisfy-item? (cdr card-item) player-item)
           #f)))
 
 (hash-set! jack-table 'SELECT select)
@@ -128,10 +129,10 @@
 ;luck 運試し
 (define luck (lambda (x)
                 (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) x))
-                  (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP);現在のカード
-                               (list-ref *map* (list-ref COORD (list-ref PHASE 0))))) 
+                 (let ((c-card  (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
+                  (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) c-card));現在のカード                         
                    (let ((c-player (list-ref PLAYERS (list-ref PHASE 0))));今のPLAYERインスタンス
-                     (if (>= (car (PLAYER-SKILLP c-player)) (dice));運試し実行
+                     (if (>= (car (PLAYER-LUCKP c-player)) (dice));運試し実行
                          ((hash-ref jack-table 'BATTLE) (WORLD PLAYERS SMAP PMAP PHASE COORD #t))
                          ;↑#tならCARDの成功効果を適用してBATTLEへ。実際はBATTLEで処理、最後の#tがBATTLEでの判定用
                          (main-read (WORLD (list-set PLAYERS
@@ -139,7 +140,7 @@
                                            SMAP PMAP (circular PHASE)
                                            (force-coord COORD PHASE (list-ref (list-ref (CARD-FIRST) 3) 3) #f)))
                          ;↑#fならCARDの失敗処理を施したデータで構造体を作り直して次のプレイヤーへ
-                         ))))))
+                         )))))))
 
 (hash-set! jack-table 'LUCK luck)
 
@@ -163,7 +164,7 @@
                  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) x))
                   (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
                                                               (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
-                    (match-let (((ENEMY ENAME ESKILLP EHITP) ENEMY));今のENEMY
+                    (match-let (((ENEMY ENAME ESKILLP EHITP) ENEMY));今のENEMY ＊今、ENEMIESになってるのでミスマッチ
                    (let* ((c-player (list-ref PLAYERS (list-ref PHASE 0)));今のPLAYERインスタンス
                          (c-enemy (if WIN;運試しに勝ったか？
                                       (case (list-ref (list-ref FIRST 2) 1);勝った場合
