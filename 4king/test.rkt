@@ -120,7 +120,7 @@
                    ((battle-gokaku)
                     (display (format "~aと~aは互角の勝負！Σ(´∀｀；)~%" p-name e-name)))
                    ((battle-yusei)
-                    (display (format "~aは~aに[~a]ダメージを与えた！(^o^)~%" p-name e-name e-damage)))
+                    (display (format "~aは~aに[~a]ダメージを与えた！(^o^)~%" p-name e-name (- e-damage))))
                    ((battle-ressei)
                     (display (format "~aは~aから[~a]ダメージを受けた(-_-;)~%"　p-name e-name (- p-damage))))
                    ((battle-kawasi)
@@ -133,7 +133,7 @@
 
 (define test-list
   (flat-list (battle-map `(,SJ ,DJ ,HJ)
-                         `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '()) '()))
+                         `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 3 2) 1  '()) '()))
 
 
 (battle-messages-print '() '() '() test-list)
