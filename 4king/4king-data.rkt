@@ -40,8 +40,6 @@
                  '(LUCKP -2) ;存在した場合は降服可能、BATTLEで参照してメニューを出す
                  'mes-s1 (list zakura) (list rune-blade) #f #t #t))
 
-
-
 (define S2 (CARD "S2" 'S 2 'SHOP 'mes-s2 '() '(silver-short-sord war-hammer long-sord throwing-knife) #f #t #f))
 (define silver-short-sord (ITEM "銀の短剣" 10 'sacred-weapon '(0 0)))
 (define war-hammer (ITEM "ウォーハンマー" 35 'physical-slayer '(0 0)))
@@ -85,11 +83,13 @@
 (define D5 (CARD "D5" 'D 5 'THEATER 'mes-d5 '() '() 15 #t #t))
 (define D6 (CARD "D6" 'D 6 'PICKPOCKET'mes-d6 '(pickpoketer) '() 18 #t #t))
 (define pickpocketer (ENEMY "スリ" 7 7))
-(define D7 (CARD "D7" 'select 7 'BATTLE 'mes-d7 '(mouse1 mouse2 mouse3 mouse4) '() 21 #t #t)) ;悪臭ステータス追加
+
 (define mouse1 (ENEMY "大ねずみA" 120 5))
 (define mouse2 (ENEMY "大ねずみB" 120 4))
 (define mouse3 (ENEMY "大ねずみC" 120 4))
 (define mouse4 (ENEMY "大ねずみD" 120 4))
+(define D7 (CARD "D7" 'select 7 'BATTLE 'mes-d7 `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '() 21 #t #t)) ;悪臭ステータス追加
+
 (define D8 (CARD "D8" 'D 8 'PICKPOCKET 'mes-d7 '() '() 24 #t #t))
 (define D9 (CARD "D9" 'D 9 'BATTLE 'mes-d8 '(monster-fish) '() 27 #t #t))
 (define D10 (CARD "D10" 'D 10 'BATTLE 'mes-d9 '(oltergeist) '() 30 #t #t))
@@ -104,9 +104,18 @@
 (define hole-devil (ENEMY "穴悪魔" 12 15))
 
 
-
-(define test-map (list SA S2 S3 S4))
-(define test-list (flatten (map (lambda (x) (list (CARD-NAME x))) test-map)))
-
+(define test-zihuda-list  `(,SA ,S2 ,S3 ,S4 ,S5 ,S6 ,S7 ,S8 ,S9 ,S10
+                            ,DA ,D2 ,D3 ,D4 ,D5 ,D6 ,D7 ,D8 ,D9 ,D10))
 
 
+(define test-string-list (flatten (map (lambda (x) (list (CARD-NAME x))) test-zihuda-list)))
+
+
+ (for-each display (map (match-lambda (`(,name ,hit ,skill)
+                             (format "[~a HIT:~a SKILL:~a]~%" name hit skill)))
+                                (map (lambda (x) `(,(PLAYER-NAME x) ,(car (PLAYER-HITP x)) ,(car (PLAYER-SKILLP x))))
+                                     `(,SJ ,DJ ,HJ ,CJ))))
+
+
+
+;(length `(,SJ ,DJ ,HJ ,CJ))

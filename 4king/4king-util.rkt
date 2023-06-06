@@ -64,8 +64,8 @@
 
 ;敵ごとにランダムで味方へ攻撃対象を決める(IndexのListで)
 (define (random-list e-num p-num e-attack-list)
-	(if (null? e-num) (reverse e-attack-list)
-		(random-list (cdr e-num) p-num (cons (random (length p-num)) e-attack-list))))
+	(if (= 1 e-num) (reverse e-attack-list)
+		(random-list (- e-num 1) p-num (cons (random 1 (+ 1 p-num)) e-attack-list))))
 
 ;多次元リストを1次元リストに
 (define (flat-list lst new-list)
@@ -75,6 +75,8 @@
         (if (null? lst2) new-list0
             (loop (cdr lst2) (cons (car lst2) new-list0))))
             new-list))))
+
+;(random-list (length '(1 2 3 4)) '(1 2 3 4) '())
 
 
   
