@@ -24,7 +24,9 @@
 
 
 
-(define *card-list* (map string->symbol (for*/list ((s suit) (n num)) (string-append s n))))
+;(define *card-list* (map string->symbol (for*/list ((s suit) (n num)) (string-append s n))))
+(define *zihuda-list* `(,SA ,S2 ,S3 ,S4 ,S5 ,S6 ,S7 ,S8 ,S9 ,S10 ,DA ,D2 ,D3
+(define *q&k-list* `(,SQ ,SK ,DQ ,DK ,HQ ,HK ,CQ ,CK))
 
 
 (define num-list '(#\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
@@ -34,12 +36,12 @@
 
 
 ;元マップに対して字札・絵札・JOKを配置する
-(define (narabi a b c d)
-  (if (null? c)
-     (reverse d)
-      (cond ((= (car c) 0)  (narabi (cdr a) b (cdr c) (cons (car a) d)))
-            ((= (car c) 1) (narabi a (cdr b) (cdr c) (cons (car b) d)))
-            (else (narabi a b (cdr c) (cons 'JOK d))))))
+(define (narabi zihuda q-to-k map-zero new-list)
+  (if (null? map-zero)
+     (reverse new-list)
+      (cond ((= (car map-zero) 0)  (narabi (cdr zihuda) q-to-k (cdr map-zero) (cons (car zihuda) new-list)))
+            ((= (car map-zero) 1) (narabi zihuda (cdr q-to-k) (cdr map-zero) (list (car q-to-k) new-list)))
+            (else (narabi zihuda q-to-k (cdr map-zero) (list 'JOK new-list))))))
 
 ;字札・絵札・JOKを配置したマップ
 (define *map* (narabi zihuda q-to-k *map-zero* '()))
@@ -79,8 +81,8 @@
       (put-player (list-set map (car players) num) (+ 1 num) (cdr players))))
 
 
-;整形後のカードマップを作る関数 こっちは固定
-(define string-map (split-list (map align-string (map (lambda (x)  (symbol->string x)) *map*))))
+;整形後のカードマップを作る関数 こっちは固定 改善必要　どうやってインスタンスのリストを文字列にするか？
+;(define string-map (split-list (map align-string (map (lambda (x)  (symbol->string x)) *map*))))
 
 ;カードマップとPlayersマップと行ごとに交互に合体させて7要素ごとに整形
 (define (display-map map players combine)

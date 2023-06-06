@@ -81,7 +81,8 @@
   (let ((c-card (list-ref *map* (list-ref (WORLD-COORD w) (car (WORLD-PHASE w))))))
   (if (CARD-ON c-card) ;CARD-ONが#fなら何も起きないので次のプレイヤーへ
       ((hash-ref jack-table (CARD-KIND c-card)));#tならCARD-KINDを実行
-      (main-loop (WORLD PLAYERS SMAP PMAP PHASE COORD WIN)))))) ;main-loopで勝利条件の判定
+      (display "to main-loop")))))
+      ;(main-loop (WORLD PLAYERS SMAP PMAP PHASE COORD WIN)))))) ;main-loopで勝利条件の判定
 
   
 ;メインLOOP　次のプレイヤーか自身の次ターン
@@ -101,7 +102,7 @@
                                     (satisfy-item? (cadr (CARD-FIRST c-card)) (PLAYER-ITEMS c-player)));必要アイテムを持っている？
                                ((hash-ref jack-table (car (CARD-FIRST c-card))) x) ;真ならCARD-FIRSTのキーで発動
                                ((hash-ref jack-table 'BATTLE) x)) ;#fならすぐにバトル開始
-                           (eval-read (WORLD PLAYERS SMAP PMAP (circular PHASE) COORD)) ;受けない場合次へ
+                           (main-read (WORLD PLAYERS SMAP PMAP (circular PHASE) COORD)) ;受けない場合次へ
                            ))))))
 
 ;CARDが要請するアイテムをPLAYERが全て持っているか？をチェックする関数
@@ -109,7 +110,7 @@
   (if (null? card-item)
       #t
       (if (member (car card-item player-item))
-          (satisfy? (cdr card-item) player-item)
+          (satisfy-item? (cdr card-item) player-item)
           #f)))
 
 (hash-set! jack-table 'SELECT select)
@@ -128,10 +129,10 @@
 ;luck 運試し
 (define luck (lambda (x)
                 (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) x))
-                  (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP);現在のカード
-                               (list-ref *map* (list-ref COORD (list-ref PHASE 0))))) 
+                 (let ((c-card  (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
+                  (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) c-card));現在のカード                         
                    (let ((c-player (list-ref PLAYERS (list-ref PHASE 0))));今のPLAYERインスタンス
-                     (if (>= (car (PLAYER-SKILLP c-player)) (dice));運試し実行
+                     (if (>= (car (PLAYER-LUCKP c-player)) (dice));運試し実行
                          ((hash-ref jack-table 'BATTLE) (WORLD PLAYERS SMAP PMAP PHASE COORD #t))
                          ;↑#tならCARDの成功効果を適用してBATTLEへ。実際はBATTLEで処理、最後の#tがBATTLEでの判定用
                          (main-read (WORLD (list-set PLAYERS
@@ -139,7 +140,7 @@
                                            SMAP PMAP (circular PHASE)
                                            (force-coord COORD PHASE (list-ref (list-ref (CARD-FIRST) 3) 3) #f)))
                          ;↑#fならCARDの失敗処理を施したデータで構造体を作り直して次のプレイヤーへ
-                         ))))))
+                         )))))))
 
 (hash-set! jack-table 'LUCK luck)
 
@@ -163,7 +164,7 @@
                  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) x))
                   (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
                                                               (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
-                    (match-let (((ENEMY ENAME ESKILLP EHITP) ENEMY));今のENEMY
+                    (match-let (((ENEMY ENAME ESKILLP EHITP) ENEMY));今のENEMY ＊今、ENEMIESになってるのでミスマッチ
                    (let* ((c-player (list-ref PLAYERS (list-ref PHASE 0)));今のPLAYERインスタンス
                          (c-enemy (if WIN;運試しに勝ったか？
                                       (case (list-ref (list-ref FIRST 2) 1);勝った場合
@@ -201,73 +202,103 @@
   (battle-eval player enemy world command-list))))))))
 
 
+;;;;バトルEval部分
+(define (taiman car-player enemy e-count)
+  (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) car-player))
+    (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (list-ref enemy (- e-count 1))))
+      (let ((p-attack (+ (car SKILLP) (dice))) (e-attack (+ E-SKILLP (dice))))
+        (cond ((= p-attack e-attack) (values 'battle-gokaku NAME E-NAME 0 0))
+              ((> p-attack e-attack) (values 'battle-yusei NAME E-NAME 0 -2))
+              (else (values 'battle-ressei NAME E-NAME -2 0)))))))
+
+(define (bousen car-player enemy e-count)
+  (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) car-player))
+    (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (list-ref enemy (- e-count 1))))
+      (let ((p-attack (+ (car SKILLP) (dice))) (e-attack (+ E-SKILLP (dice))))
+        (cond ((>= p-attack e-attack) (values 'battle-kawasi NAME E-NAME 0 0))
+              (else (values 'battle-ressei NAME E-NAME -2 0)))))))
+
+(define (ippouteki car-player enemy e-count)
+  (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) car-player))
+    (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (list-ref enemy (- e-count 1))))
+      (let ((p-attack (+ (car SKILLP) (dice))) (e-attack (+ E-SKILLP (dice))))
+        (cond ((<= p-attack e-attack) (values 'battle-kawasare NAME E-NAME 0 0))
+              (else (values 'battle-yusei NAME E-NAME 0 -2)))))))
+
+(define (battle-zero car-player enemy car-command-list enemy-attack-list p-count e-count damage-list)
+  (cond ((null? enemy-attack-list) (reverse damage-list))
+        ((and (= e-count car-command-list) (= p-count (car enemy-attack-list)));タイマン通常戦闘
+          (battle-zero car-player enemy car-command-list (cdr enemy-attack-list) p-count (+ 1 e-count)
+           (cons (let-values (((mes name e-name p-damage e-damage) (taiman car-player enemy e-count)))
+                   `(,mes ,name ,e-name ,p-damage ,e-damage)) damage-list)))
+         ((= p-count (car enemy-attack-list));敵だけがこちらを攻撃
+         (battle-zero car-player enemy car-command-list (cdr enemy-attack-list) p-count (+ 1 e-count)
+           (cons (let-values (((mes name e-name p-damage e-damage) (bousen car-player enemy e-count)))
+                   `(,mes ,name ,e-name ,p-damage ,e-damage)) damage-list)))
+         ((and (not (= p-count (car enemy-attack-list))) (= e-count car-command-list));こちらだけ攻撃
+          (battle-zero car-player enemy car-command-list (cdr enemy-attack-list) p-count (+ 1 e-count)
+           (cons (let-values (((mes name e-name p-damage e-damage) (ippouteki car-player enemy e-count)))
+                   `(,mes ,name ,e-name ,p-damage ,e-damage)) damage-list)))
+         (else  (battle-zero car-player enemy car-command-list (cdr enemy-attack-list)  p-count (+ 1 e-count);どちらも狙ってない
+           (cons (let-values (((mes name e-name p-damage e-damage) (values 'battle-nasi "" "" 0 0)))
+                   `(,mes ,name ,e-name ,p-damage ,e-damage)) damage-list)))))
+
+
+(define (battle-map players enemies command-list enemy-attack-list p-count damage-lists);player enemyはそれぞれリストのまま
+  (if (null? command-list) (reverse damage-lists)
+      (battle-map (cdr players) enemies (cdr command-list) enemy-attack-list (+ 1 p-count)
+                  (cons (battle-zero (car players) enemies (car command-list) enemy-attack-list p-count 1 '()) damage-lists))))
+
+;(battle-zero SJ  `(,mouse1 ,mouse2 ,mouse3 ,mouse4) 1 '(1 2 4 4) 1 1 '())
+;(battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '())
+
+
+
+
+;ダメージを適用したPlayerインスタンスのリストを返す単体
+(define (damage-apply-player-zero car-player car-battle-result-list)
+  (let ((player-total (foldl (lambda (y x) (+ x y)) 0 (map (lambda (z) (list-ref z 3)) car-battle-result-list))))
+    (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) car-player))
+        (PLAYER NAME SKILLP (cons (+ player-total (car HITP)) (cdr HITP)) LUCKP EQUIP GOLD ITEMS SPECIAL WIN))));PLAYERインスタンス
+;↑のマップ版
+(define (damage-apply-player-map player battle-result-list new-players)
+  (if (null? player) (reverse new-players)
+      (damage-apply-player-map (cdr player) (cdr battle-result-list)
+                               (cons (damage-apply-player-zero (car player) (car battle-result-list)) new-players))))
+
+;ダメージを利用したEnemyインスタンスのリストを返す単体版
+(define (damage-apply-enemy-zero car-enemy car-battle-result-list)
+  (let ((enemy-total (foldl (lambda (y x) (+ x y)) 0 (map (lambda (z) (list-ref z 4)) car-battle-result-list))));縦貫通
+    (match-let (((ENEMY ENAME ESKILLP EHITP) car-enemy))
+      (ENEMY ENAME ESKILLP (+ enemy-total EHITP)))));ENEMYインスタンス
+
+;↑のマップ版
+(define (damage-apply-enemy-map enemy battle-result-list-v new-enemies)
+  (define battle-result-list-v2 (apply map list battle-result-list-v))
+  (if (null? enemy) (reverse new-enemies)
+       (damage-apply-enemy-map (cdr enemy) (cdr battle-result-list-v2)
+                               (cons (damage-apply-enemy-zero (car enemy) (car battle-result-list-v2)) new-enemies))))
+  
+
 (define (battle-eval player enemy world command-list)
   (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-     (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP) ;現在のカード
-                                                              (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
+    ; (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP)
+            ;      (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
        (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
          (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
+		(let* ((enemy-attack-list (random-list (length player))) ;ex (1 1 2)
+                        (battle-result-list (battle-map player enemy world command-list enemy-attack-list 1 '())))                      
+                    (let((new-players (damage-apply-player-map player battle-result-list '())) ;ダメージの結果を各インスタンスにMapする関数                                        
+                         (new-enemies (damage-apply-enemy-map enemy battle-result-list '())))
+                      (battle-print new-players new-enemies world battle-result-list)))))))
+                  
+;;;;;;;;;;;ここまで
 
-              
 
 
-  
-(define (battle-eval player enemy world command-list counter)
-  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-     (match-let (((CARD C-NAME KIND FIRST SECOND MES ENEMY C-ITEM C-GOLD ON FLIP)
-                  (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
-       (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) (car player)))
-         (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
-		(let ((enemy-attack-list (random-list (length player)))) ;ex (1 1 2)
-		(let loop ((player enemy command-list enemy-attack-list counter damage-list))
-		(if (null? player) (values pdamage edamage) ;ex (-2 -1 0) (0 0 -1)
-			(loop (cdr player) enemy (car command-list) enemy-attack-list (+ 1 counter)
-		(cond ((= (car command-list) x)  (taiman (car player) (list-ref enemy (- (car command-list) 1))))
-                      ;Playerの狙う相手が1（実際は−1してList-ref）で相手も1（実際は0）だった場合普通の対決、返り値はvalues ex (-1) (0)
-		       ((and ((not equal) (car command-list) x) (= (+ 1 counter) x))
-                            (bousen (car plyer) (list-ref enemy (- (car command-list) 1))))
-                       ;Playerの狙う相手と違う相手がPlayerを攻撃した場合
-		       ((and ((not equal) (car command-list) x) (= (car command-list) (+ 1　(list-index x))))
-                            (ippouteki (car player) (list-ref enemy (list-index x))))
-                       ;Playerだけが相手を狙った場合
-                       (else (values 0 0)
 
-(define (battle-zero car-player enemy car-command-list enemy-attack-list counter damage-list);counterは一つ上のLoopで1から増やす
-  (cond ((null? enemy-attack-list) (reverse damage-list))
-        ((= car-command-list (car enemy-attack-list))
-         (battle-zero car-player (cdr enemy) car-command-list (cdr enemy-attack-list) counter
-                      (cons (taiman car-player (car enemy)) damage-list)))
-        ((and ((not equal) car-command-list (car enemy-attack-list)) (= counter (car enemy-attack-list)))
-         (battle-zero car-player (cdr enemy) car-command-list (cdr enemy-attack-list) counter
-         (cons (bousen car-player (car enemy)) damage-list)))
-        ((and ((not equal) car-command-list (car enemy-attack-list)) ((not eqaul) counter (car enemy-attack-list)))
-         (battle-zero car-player (cdr enemy) car-command-list (cdr enemy-attack-list) counter
-         (cons (ippouteki car-player (car enemy)))))
-        (else (vales 0 0))))
+
       
-
-
-
-P(1 2 3)
-E(1 1 2)
-
-;LIST内の特定の要素の場所を返す
-(define (list-index num lst count)
-  (cond ((null? lst) #f)
-         ((= num (car lst)) count)
-         (else (list-index num (cdr lst) (+ 1 count)))))
-      
-;敵ごとにランダムで味方へ攻撃対象を決める（IndexのListで）
-(define (random-list e-num p-num e-attack-list)
-	(if (null? e-num) (reverse e-attack-list)
-		(random-list (cdr e-num) p-num (cons (random (length p-num)) e-attack-lisT)))
-
- 
- 
-                
-                                      
-
-
 
 
  
@@ -283,7 +314,7 @@ E(1 1 2)
                
 
 ;(main-print world)
-(main-read world)
+;(main-read world)
 
 
 
