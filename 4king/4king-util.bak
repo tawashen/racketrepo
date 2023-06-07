@@ -51,10 +51,34 @@
 (define (make-players-map new-coord)
   (split-list (map align-string (map (lambda (x) (number->string x)) (put-player *player-zero* 1 new-coord)))))
 
-;幸運判定用サイコロ関数
+;判定用サイコロ関数
 (define (dice)
   (+ (+ 1 (random 6)) (+ 1 (random 6))))
    
+;LIST内の特定の要素の場所を返す
+(define (list-index num lst count)
+  (cond ((null? lst) #f)
+         ((= num (car lst)) count)
+         (else (list-index num (cdr lst) (+ 1 count)))))
 
+
+;敵ごとにランダムで味方へ攻撃対象を決める(IndexのListで)
+(define (random-list e-num p-num e-attack-list)
+	(if (= 1 e-num) (reverse e-attack-list)
+		(random-list (- e-num 1) p-num (cons (random 1 (+ 1 p-num)) e-attack-list))))
+
+;多次元リストを1次元リストに
+(define (flat-list lst new-list)
+  (if (null? lst) (reverse new-list)
+      (flat-list (cdr lst) (append
+      (let loop ((lst2 (car lst)) (new-list0 '()))
+        (if (null? lst2) new-list0
+            (loop (cdr lst2) (cons (car lst2) new-list0))))
+            new-list))))
+
+;(random-list (length '(1 2 3 4)) '(1 2 3 4) '())
+
+
+  
 
 

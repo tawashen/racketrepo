@@ -22,8 +22,6 @@
           (range start (+ (length seq) start))
           seq))))
 
-(enumerate '(a b c))
-
 ;プロンプト付きINPUT関数
 (define input
  (case-lambda

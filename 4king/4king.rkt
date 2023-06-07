@@ -2,7 +2,7 @@
 
 
 (require 2htdp/universe 2htdp/image lang/posn)
-;(require srfi/1)
+(require srfi/1)
 ;(require srfi/13)
 (require racket/struct)
 (require racket/match)
@@ -157,51 +157,71 @@
   (list-set COORD (car PHASE) int))
 
 ;BATTLE関数 一時コメントアウト
-#|
+
 (define (battle-read wolrd)
                  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-                  (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
-                                                              (list-ref *map* (list-ref COORD (list-ref PHASE 0)))))
-                  ;  (match-let (((ENEMY ENAME ESKILLP EHITP) ENEMY));今のENEMY ＊今、ENEMIESになってるのでミスマッチ
-                   (let* ((c-player (list-ref PLAYERS (list-ref PHASE 0)));今のPLAYERインスタンス
-                         (c-enemy (if WIN;運試しに勝ったか？
-                                      (case (list-ref (list-ref FIRST 2) 1);勝った場合 ここは大幅に書き換えないと駄目
-                                        ((SKILLP) (ENEMY ENAME (+ ESKILLP (list-ref (list-ref FIRST 2) 2)))))
-                                      ENEMY)));負けてたらそのまま
-                     (display (format "~aとの戦闘だ！" ENAME)) (newline)
-                     (battle-read2 x)
+         (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
+                                                              (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
+                   (let* ((c-player (list-ref PLAYERS (list-ref PHASE 0))));今のPLAYERインスタンス
+                      ;   (c-enemy (if WIN;運試しに勝ったか？
+                           ;           (case (list-ref (list-ref FIRST 2) 1);勝った場合 ここは大幅に書き換えないと駄目
+                           ;             ((SKILLP) (ENEMY ENAME (+ ESKILLP (list-ref (list-ref FIRST 2) 2)))))
+                           ;           ENEMY)));負けてたらそのまま
+                     (display (format "~aとの戦闘だ！" (ENEMY-NAME (car ENEMY)))) (newline)
+                     (battle-read2 world ENEMY)
                      ))))
-|#
+
 
 (define (input-command player enemy numlist)
-  (display (format "どれと戦う?[1]〜[~a]~%" (length enemy))) 
+  (newline)
   (cond ((null? player) (reverse numlist))
         (else
+     (display (format "~aはどれと戦う?[1]〜[~a]~%" (PLAYER-NAME (car player)) (length enemy))) 
       (let ((answer (string->number (read-line))))
         (cond  ((or ((compose not number?) answer) (> answer (length enemy)) (> 1 answer))
                 (input-command player enemy numlist))
                (else (input-command (cdr player) enemy (cons answer numlist))))))))
 
-(define (battle-read2 world)
+(define (battle-read2 world enemy)
           (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
            (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
                                                               (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
              (let ((c-player (list-ref PLAYERS (car PHASE))))
-  ;(when (null? enemy) (battle-win player enemy world)) これはLoopに持たせるべき
-  (when CARD-SECOND (display NAME) (display ENEMY) (display "降参する?[y/n]") (newline)) ;降参オプション有効なとき表示
+  (when  (symbol? FIRST)
+         (if  (symbol=? 'BATTLE-CAN-SURRENDER FIRST)
+         (surrender? world) (void)))
+   (when (symbol? SECOND)
+         (if (symbol=?  'BATTLE-CAN-SURRENDER SECOND)
+         (surrender? world) (void)))
+ (battle-start world enemy)))))
+
+(define (surrender? world)
+           (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+           (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
+                          (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
+              (display "降参する?[y/n]") (newline) ;降参オプション有効なとき表示
              (let ((kousan-answer (read-line)))
                (cond ((string=? "y" kousan-answer) ((hash-ref jack-table 'SURRENDER) SECOND world)) ;戦闘中に降参する 未実装
-                    ((not (string=? "y"))
-                      (for-each display (map (match-lambda (`(,name ,hit)
-                                              (format "[~a HIT:~a]~%" name hit)))
-                                                 (map (lambda (x) `(,(ENEMY-NAME x) ,(ENEMY-HITP x))) ENEMY)))                        
+                    ((not (string=? "y" kousan-answer)) (battle-start world))
+                    (else (void)))))))
+
+(define (battle-start world enemy)
+            (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+              (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
+                                                              (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
+             (let ((c-player (list-ref PLAYERS (car PHASE))))                  
+                      (for-each display (map (match-lambda (`(,num ,name . ,hit)
+                                              (format "[~a][~a HIT:~a]~%" num name hit)))
+                                                 (enumerate (map (lambda (x) `(,(ENEMY-NAME x) ,(ENEMY-HITP x))) enemy) 1)))
+               (newline)
                       (for-each display (map (match-lambda (`(,name ,hit ,skill)
                                               (format "[~a HIT:~a SKILL:~a]~%" name hit skill)))
                                 (map (lambda (x) `(,(PLAYER-NAME x) ,(car (PLAYER-HITP x)) ,(car (PLAYER-SKILLP x))))
-                                     `(,SJ ,DJ ,HJ ,CJ)))))
-                    (else (void)))
-  (let ((command-list (input-command (list-ref PLAYERS (car PHASE)) ENEMY '())))
-  (battle-eval c-player ENEMY world command-list)))))))
+                                     (list-ref PLAYERS (car PHASE)))))
+              (let ((command-list (input-command (list-ref PLAYERS (car PHASE)) enemy '())))
+                    (battle-eval c-player enemy world command-list))))))
+
+
 
 
 ;;;;バトルEval部分
@@ -242,7 +262,7 @@
            (cons (let-values (((mes name e-name p-damage e-damage) (ippouteki car-player enemy e-count)))
                    `(,mes ,name ,e-name ,p-damage ,e-damage)) damage-list)))
          (else  (battle-zero car-player enemy car-command-list (cdr enemy-attack-list)  p-count (+ 1 e-count);どちらも狙ってない
-           (cons (let-values (((mes name e-name p-damage e-damage) (values 'battle-nasi "" "" 0 0)))
+           (cons (let-values (((mes name e-name p-damage e-damage) (values 'battle-nasi "nasi" "nasi" 0 0)))
                    `(,mes ,name ,e-name ,p-damage ,e-damage)) damage-list)))))
 
 
@@ -250,11 +270,6 @@
   (if (null? command-list) (reverse damage-lists)
       (battle-map (cdr players) enemies (cdr command-list) enemy-attack-list (+ 1 p-count)
                   (cons (battle-zero (car players) enemies (car command-list) enemy-attack-list p-count 1 '()) damage-lists))))
-
-;(battle-zero SJ  `(,mouse1 ,mouse2 ,mouse3 ,mouse4) 1 '(1 2 4 4) 1 1 '())
-;(battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '())
-
-
 
 
 ;ダメージを適用したPlayerインスタンスのリストを返す単体
@@ -275,27 +290,24 @@
       (ENEMY ENAME ESKILLP (+ enemy-total EHITP)))));ENEMYインスタンス
 
 ;↑のマップ版
-(define (damage-apply-enemy-map enemy battle-result-list-v new-enemies)
-  (define battle-result-list-v2 (apply map list battle-result-list-v))
+(define (damage-apply-enemy-map enemy battle-result-listv new-enemies)
   (if (null? enemy) (reverse new-enemies)
-       (damage-apply-enemy-map (cdr enemy) (cdr battle-result-list-v2)
-                               (cons (damage-apply-enemy-zero (car enemy) (car battle-result-list-v2)) new-enemies))))
+       (damage-apply-enemy-map (cdr enemy) (cdr battle-result-listv)
+                               (cons (damage-apply-enemy-zero (car enemy) (car battle-result-listv)) new-enemies))))
   
 
 (define (battle-eval player enemy world command-list) ;playerは`(,SJ ,DJ ,HJ ,CJ)
   (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-      ; (match-let (((PLAYER P-NAME P-SKILLP P-HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) player))
-       ;  (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (car enemy)))
 		(let* ((enemy-attack-list (random-list (length enemy) (length player) '())) ;ex (1 1 2)
                         (battle-result-list
-                         (battle-map player enemy command-list enemy-attack-list 1 '())))                      
+                         (battle-map player enemy command-list enemy-attack-list 1 '())))
                     (let((new-players (damage-apply-player-map player battle-result-list '()))       
-                         (new-enemies (damage-apply-enemy-map enemy battle-result-list '())))
+                         (new-enemies (damage-apply-enemy-map enemy (apply map list battle-result-list) '())))
                       (battle-print new-players new-enemies world (flat-list battle-result-list '()))))))
 
 
 (define (battle-print new-players new-enemies world battle-result-flat-list)
-   (cond ((null? battle-result-flat-list) (display "to battle-loop")) ;(battle-loop players enemies world))
+   (cond ((null? battle-result-flat-list)  (battle-loop new-players new-enemies world))
         (else (begin ((hash-ref jack-table 'battle-mes-print) (car battle-result-flat-list))
                      (battle-print new-players new-enemies world (cdr battle-result-flat-list))))))
 
@@ -316,25 +328,28 @@
 
 (hash-set! jack-table 'battle-mes-print battle-mes-print)
 
+(define (battle-loop players enemies world);このworldはまだ古いWORLD players enemiesはHP変更後
+  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
+    (let ((new-players (filter (lambda (x) (< 0 (car (PLAYER-HITP x)))) players))
+          (new-enemies (filter (lambda (x) (< 0 (ENEMY-HITP x))) enemies)))
+      (cond ((null? new-players) (display "to game-over"))
+            ((null? new-enemies) (display "to main-read"))
+          ;  (else (display "battle-read2"))))))
+          (else (battle-read2 (WORLD (list-set PLAYERS (car PHASE) new-players) SMAP PMAP PHASE COORD WIN) new-enemies))))))
+
 
 (define test-list
  (flat-list (battle-map `(,SJ ,DJ ,HJ)
                          `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 3 2) 1  '()) '()))
 
 
-;(battle-messages-print '() '() '() test-list)
+
+;(battle-print '() '() '() test-list)
 
 
 
 
-(define (battle-loop players enemies world);このworldはまだ古いWORLD
-  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
-    (let ((new-players (filter (lambda (x) (< 0 (car (PLAYER-HITP x)))) players))
-          (new-enemies (filter (lambda (x) (< 0 (car (ENEMY-HITP x)))) enemies)))
-      (cond ((null? new-players) (display "to game-over"))
-            ((null? new-enemies) (display "to main-read"))
-          ;  (else (display "battle-read2"))))))
-          (else (battle-read2 (WORLD new-players new-enemies SMAP PMAP 1 COORD WIN)))))))
+
 
 
 
@@ -343,7 +358,7 @@
 (define world (WORLD `((,SJ ,DJ ,HJ ,CJ)()) test-string-list test-zihuda-list phase-list players #f))
 
 
-(battle-read2 world)
+(battle-read world)
   
 
                                 

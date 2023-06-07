@@ -84,11 +84,11 @@
 (define D6 (CARD "D6" 'D 6 'PICKPOCKET'mes-d6 '(pickpoketer) '() 18 #t #t))
 (define pickpocketer (ENEMY "スリ" 7 7))
 
-(define mouse1 (ENEMY "大ねずみA" 120 5))
-(define mouse2 (ENEMY "大ねずみB" 120 4))
-(define mouse3 (ENEMY "大ねずみC" 120 4))
-(define mouse4 (ENEMY "大ねずみD" 120 4))
-(define D7 (CARD "D7" 'select 7 'BATTLE 'mes-d7 `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '() 21 #t #t)) ;悪臭ステータス追加
+(define mouse1 (ENEMY "大ねずみA" 2 5))
+(define mouse2 (ENEMY "大ねずみB" 1 4))
+(define mouse3 (ENEMY "大ねずみC" 1 4))
+(define mouse4 (ENEMY "大ねずみD" 10 5))
+(define D7 (CARD "D7" 'select  'BATTLE #f 'mes-d7 `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '() 21 #t #t)) ;悪臭ステータス追加
 
 (define D8 (CARD "D8" 'D 8 'PICKPOCKET 'mes-d7 '() '() 24 #t #t))
 (define D9 (CARD "D9" 'D 9 'BATTLE 'mes-d8 '(monster-fish) '() 27 #t #t))
@@ -110,11 +110,6 @@
 
 (define test-string-list (flatten (map (lambda (x) (list (CARD-NAME x))) test-zihuda-list)))
 
-
- (for-each display (map (match-lambda (`(,name ,hit ,skill)
-                             (format "[~a HIT:~a SKILL:~a]~%" name hit skill)))
-                                (map (lambda (x) `(,(PLAYER-NAME x) ,(car (PLAYER-HITP x)) ,(car (PLAYER-SKILLP x))))
-                                     `(,SJ ,DJ ,HJ ,CJ))))
 
 
 

@@ -132,7 +132,7 @@
  (flat-list (battle-map `(,SJ ,DJ ,HJ)
                          `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 3 2) 1  '()) '()))
 
-(battle-print '() '() '() test-list)
+;(battle-print '() '() '() test-list)
 ;(battle-messages-print '() '() '() test-list)
 
 
@@ -154,13 +154,13 @@
 
 #;
 (damage-apply-player-map `(,SJ ,DJ ,HJ)
-                         (battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 3 3) 1  '()) '())
+                         (battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(3 3 3 3) 1  '()) '())
 
 #;
 (damage-apply-enemy-map `(,mouse1 ,mouse2 ,mouse3 ,mouse4)
-                        (battle-map `(,SJ ,DJ ,HJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(1 2 3) '(1 2 4 4) 1  '()) '())
+                        (battle-map `(,SJ ,DJ ,HJ ,CJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(2 2 2 2) '(1 2 4 4) 1  '()) '())
 
 
-
+(battle-map `(,SJ ,DJ ,HJ ,CJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(2 2 2 2) '(1 2 4 4) 1  '())
 
                 
