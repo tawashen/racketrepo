@@ -95,7 +95,7 @@
             (loop (cdr lst2) (cons (car lst2) new-list0))))
             new-list))))
 
-(random-list (length '(1 2 3 4)) (length '(1 2 3 4)) '())
+;(random-list (length '(1 2 3 4)) (length '(1 2 3 4)) '())
 
 
   

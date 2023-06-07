@@ -209,7 +209,8 @@
             (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) world))
               (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
                                                               (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
-             (let ((c-player (list-ref PLAYERS (car PHASE))))                  
+             (let ((c-player (list-ref PLAYERS (car PHASE))))
+               (newline)
                       (for-each display (map (match-lambda (`(,num ,name . ,hit)
                                               (format "[~a][~a HIT:~a]~%" num name hit)))
                                                  (enumerate (map (lambda (x) `(,(ENEMY-NAME x) ,(ENEMY-HITP x))) enemy) 1)))
@@ -308,7 +309,7 @@
 
 (define (battle-print new-players new-enemies world battle-result-flat-list)
    (cond ((null? battle-result-flat-list)  (battle-loop new-players new-enemies world))
-        (else (begin ((hash-ref jack-table 'battle-mes-print) (car battle-result-flat-list))
+        (else (begin ((hash-ref jack-table 'battle-mes-print) (car battle-result-flat-list)) (sleep 0.3)
                      (battle-print new-players new-enemies world (cdr battle-result-flat-list))))))
 
 (define battle-mes-print
