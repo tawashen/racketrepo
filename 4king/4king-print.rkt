@@ -58,13 +58,13 @@
       '()
       (cons (take lst 7) (split-list (drop lst 7)))))
 
-;表示桁数揃える関数
+;表示桁数揃える関数　全角版
 (define (align-string string)
       (cond
-         ((string= "0" string) "_____")
-                     ((= 2 (string-length string)) (string-append string "___" ))
-                     ((= 3 (string-length string)) (string-append string "__" ))
-                     ((= 1 (string-length string)) (string-append string "____" ))))
+         ((string=? "0" string) "＿＿＿＿＿")
+                     ((= 2 (string-length string)) (string-append string "＿＿＿" ))
+                     ((= 3 (string-length string)) (string-append string "＿＿" ))
+                     ((= 1 (string-length string)) (string-append string "＿＿＿＿" ))))
                     
 
 ;プレイヤー配置マップ空状態
@@ -87,14 +87,13 @@
       (put-player (list-set map (car players) num) (+ 1 num) (cdr players))))
 
 
-;整形後のカードマップを作る関数 こっちは固定 改善必要　どうやってインスタンスのリストを文字列にするか？
-;(define string-map (split-list (map align-string (map (lambda (x)  (symbol->string x)) *map*))))
+
+
 
 ;カードマップとPlayersマップと行ごとに交互に合体させて7要素ごとに整形
 (define (display-map map players combine)
   (if (null? map)
       (display-lines (split-list (flatten (reverse combine))))
       (display-map (cdr map) (cdr players) (cons (list (car map) (car players)) combine))))
-
 
 

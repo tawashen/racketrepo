@@ -50,10 +50,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;関数
 (define (change-coord direct w num)
-  (match-let (((WORLD PLAYERS SMAP PMAP PHASE COORD WIN) w))
+  (match-let (((WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) w))
     (let* ((new-coord (list-set COORD PHASE (+ (list-ref COORD PHASE) num)))
            (new-pmap (make-players-map new-coord)))
-      (WORLD PLAYERS SMAP new-pmap PHASE new-coord WIN))))
+      (WORLD PLAYERS MAPLIST SMAP new-pmap PHASE new-coord WIN))))
   
   
 (define (remove-empty-lists lst)
