@@ -22,14 +22,14 @@
 
 
 ;ITEMインスタンス　アイテムはリストにしなくても良い？
-(define sord (ITEM "剣" #f 'one-hand-weapon '(0 0)))
+(define sord (ITEM "剣" #f 'one-hand-weapon '(0 0))) 
 
-(define rune-blade (ITEM "ルーンブレード" #f 'one-hand-weapon '(2 0)))                     
+(define rune-blade (ITEM "ルーンブレード" #f 'one-hand-weapon '(2 0)))                 
 (define zakura (ENEMY "戦士ザクラ" 12 12))
-(define SA (CARD "♠Ａ" 'SELECT ;初期Eval用キー　ここではselectクロージャを呼び出す
-                 '(LUCK-TRY (numbing-medicine wine) (enemy SKILLP -3) (player HITP -2 24))
+(define SA (CARD "♠Ａ" 'SELECT ;初期Eval用キー　ここではselectクロージャを呼び出す ;CARD-KIND
+                 '(LUCK-TRY (numbing-medicine wine) (enemy SKILLP -3) (player HITP -2 24));CARD-FIRST
                  ;↑#tで続く（）で必要アイテム、次の（）で成功効果　最後の（）で失敗効果最後の真偽はJOK(24)行きかどうか
-                 '(LUCKP -2) ;存在した場合は降服可能、BATTLEで参照してメニューを出す
+                 '(LUCKP -2) ;存在した場合は降服可能、BATTLEで参照してメニューを出す CARD-SECIND
                  'mes-s1 (list zakura) (list rune-blade) #f #t #t))
 
 (define silver-short-sord (ITEM "銀の短剣" 10 'sacred-weapon '(0 0)))

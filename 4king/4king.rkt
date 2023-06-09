@@ -15,7 +15,7 @@
 
 
 
-(define players '(17 10 9 10))
+(define players '(0 10 9 10))
 (define phase-list '(0 1 2 3))
 
 ;整形後のPlayers配置マップを束縛（初期値）
@@ -75,11 +75,11 @@
 (define (main-eval w)
   (match-let (((WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) w))
   (display-map SMAP PMAP '()) (newline)
-  (let ((c-card (list-ref test-zihuda-list (list-ref (WORLD-COORD w) (car (WORLD-PHASE w))))))
-  (if (CARD-ON c-card) ;CARD-ONが#fなら何も起きないので次のプレイヤーへ
-      ((hash-ref jack-table (CARD-KIND c-card)));#tならCARD-KINDを実行
+  (let ((c-card (list-ref test-zihuda-list (list-ref (WORLD-COORD w) (car (WORLD-PHASE w))))));現在いるカード
+  (if (list-ref MAPLIST (list-ref COORD PHASE)) ;CARD-ONが#fなら何も起きないので次のプレイヤーへ
+      ((hash-ref jack-table (CARD-KIND c-card)) w);#tならCARD-KINDを worldを引数に実行
       (display "to main-loop")))))
-      ;(main-loop (WORLD PLAYERS SMAP PMAP PHASE COORD WIN)))))) ;main-loopで勝利条件の判定
+     ; (main-loop (WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN)))))) ;main-loopで勝利条件の判定
 
   
 ;メインLOOP　次のプレイヤーか自身の次ターン
@@ -88,13 +88,13 @@
 
 
 ;select 戦うかどうか選択のクロージャ 引数はworld
-(define select (lambda (x)
+(define select-battle (lambda (x)
                  (match-let (((WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) x))
                    (let ((c-player (list-ref PLAYERS (list-ref PHASE 0)));今のPLAYERインスタンス
                          (c-card (list-ref COORD (list-ref PHASE 0))));今のCARDインスタンス
                      (display "受けるか?") (newline)
-                     (let ((answer (read-line)))
-                       (if (string=? "y" answer)
+                     (let ((answer (read-line))) 
+                       (if (string=? "y" answer) ;戦闘を受ける場合
                            (if (and (CARD-FIRST c-card) ;CARD-FIRSTの真偽
                                     (satisfy-item? (cadr (CARD-FIRST c-card)) (PLAYER-ITEMS c-player)));必要アイテムを持っている？
                                ((hash-ref jack-table (car (CARD-FIRST c-card))) x) ;真ならCARD-FIRSTのキーで発動
@@ -110,7 +110,7 @@
           (satisfy-item? (cdr card-item) player-item)
           #f)))
 
-(hash-set! jack-table 'SELECT select)
+(hash-set! jack-table 'SELECT select-battle)
 
 ;運試しするか？関数
 (define luck-try (lambda (x)
@@ -169,7 +169,7 @@
                                       ENEMY)));負けてたらそのまま
                      (display (format "~aとの戦闘だ！" (if (< 1 (length ENEMY)) "まもののむれ" (ENEMY-NAME (car ENEMY))))) (newline)
                      (battle-read2 world ENEMY)
-                     ))))
+                     )))
 
 
 (define (input-command player enemy numlist)
