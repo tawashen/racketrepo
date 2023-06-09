@@ -185,15 +185,15 @@
 (define (battle-read2 world enemy)
           (match-let (((WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) world))
            (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
-                                                              (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
+                        (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
              (let ((c-player (list-ref PLAYERS (car PHASE))))
-  (when  (symbol? FIRST)
+   (when  (symbol? FIRST)
          (if  (symbol=? 'BATTLE-CAN-SURRENDER FIRST)
-         (surrender? world) (void)))
+         (surrender? world enemy) (void)))
    (when (symbol? SECOND)
          (if (symbol=?  'BATTLE-CAN-SURRENDER SECOND)
-         (surrender? world) (void)))
- (battle-start world enemy)))))
+         (surrender? world　enemy) (void)))
+   (battle-start world enemy)))))
 
 (define (surrender? world)
            (match-let (((WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) world))
@@ -202,7 +202,7 @@
               (display "降参する?[y/n]") (newline) ;降参オプション有効なとき表示
              (let ((kousan-answer (read-line)))
                (cond ((string=? "y" kousan-answer) ((hash-ref jack-table 'SURRENDER) SECOND world)) ;戦闘中に降参する 未実装
-                    ((not (string=? "y" kousan-answer)) (battle-start world))
+                    ((not (string=? "y" kousan-answer)) (battle-start world enemy))
                     (else (void)))))))
 
 (define (battle-start world enemy)
@@ -226,6 +226,8 @@
 
 
 ;;;;バトルEval部分
+
+;戦闘の種類別判定
 (define (taiman car-player enemy e-count)
   (match-let (((PLAYER NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) car-player))
     (match-let (((ENEMY E-NAME E-SKILLP E-HITP) (list-ref enemy (- e-count 1))))
@@ -316,7 +318,7 @@
   (match-lambda (`(,mes ,p-name ,e-name ,p-damage ,e-damage)
                  (case mes
                    ((battle-gokaku)
-                    (display (format "~aと~aは互角の勝負!Σ( ́∀`;)~%" p-name e-name)))
+                    (display (format "~aと~aは互角の勝負!(ﾟＡﾟ;)~%" p-name e-name)))
                    ((battle-yusei)
                     (display (format "~aは~aに[~a]ダメージを与えた(^o^)~%" p-name e-name (- e-damage))))
                    ((battle-ressei)

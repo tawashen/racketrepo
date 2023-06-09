@@ -161,6 +161,6 @@
                         (battle-map `(,SJ ,DJ ,HJ ,CJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(2 2 2 2) '(1 2 4 4) 1  '()) '())
 
 
-(battle-map `(,SJ ,DJ ,HJ ,CJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(2 2 2 2) '(1 2 4 4) 1  '())
+(for-each displayln (battle-map `(,SJ ,DJ ,HJ ,CJ) `(,mouse1 ,mouse2 ,mouse3 ,mouse4) '(2 2 2 2) '(1 2 4 4) 1  '()))
 
                 
