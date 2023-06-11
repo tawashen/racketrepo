@@ -26,3 +26,5 @@
                      (display (format "~aとの戦闘だ!" (if (< 1 (length ENEMY)) "まもののむれ" (ENEMY-NAME (car ENEMY))))) (newline)
                      (battle-read2 world ENEMY)
                      )))
+
+                   

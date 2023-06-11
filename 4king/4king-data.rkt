@@ -8,7 +8,7 @@
 (define jack-table (make-hash))
 
 ;構造体
-(struct CARD (NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) #:transparent)
+(struct CARD (NAME FLIST ALIST MES ENEMY ITEM GOLD FLIP) #:transparent)
 (struct ENEMY (NAME SKILLP HITP) #:transparent)
 (struct ITEM (NAME COST KIND POWER) #:transparent)
 (struct PLAYER (NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) #:transparent)
