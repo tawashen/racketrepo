@@ -14,17 +14,24 @@
                  'mes-s1 (list zakura) (list rune-blade) #f #t #t))
 
 
-(define (battle-read wolrd)
-                 (match-let (((WORLD PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) world))
-         (match-let (((CARD NAME KIND FIRST SECOND MES ENEMY ITEM GOLD ON FLIP) ;現在のカード
-                                                              (list-ref test-zihuda-list (- (list-ref COORD (list-ref PHASE 0)) 1))))
-                   (let* ((
-                         (c-enemy (if WIN;運試しに勝ったか?
-                                      (case (list-ref (list-ref FIRST 2) 1);勝った場合 ここは大幅に書き換えないと駄目
-                                        ((SKILLP) (ENEMY ENAME (+ ESKILLP (list-ref (list-ref FIRST 2) 2)))))
-                                      ENEMY)));負けてたらそのまま
-                     (display (format "~aとの戦闘だ!" (if (< 1 (length ENEMY)) "まもののむれ" (ENEMY-NAME (car ENEMY))))) (newline)
-                     (battle-read2 world ENEMY)
-                     )))
+;SELECT?> SATISFY-ITEM? > LUCK-TRY? > BATTLE
+;ALISTの中にNoの場合の行き先を含める
 
-                   
+;select 戦うかどうか選択のクロージャ 引数はworld
+(define select? (lambda (W A)
+                 (match-let (((WORLD PLAYERS ENEMIES MAPLIST SMAP PMAP PHASE COORD WIN) W))
+               ;    (let ((c-player (list-ref PLAYERS (list-ref PHASE 0)));今のPLAYERインスタンス
+                ;         (c-card (list-ref COORD (list-ref PHASE 0))));今のCARDインスタンス
+                     (display "受けるか?") (newline)
+                     (let ((answer (read-line))) 
+                       (if (string=? "y" answer) ;戦闘を受ける場合
+                           W
+             ;              (if (and (CARD-FIRST c-card) ;CARD-FIRSTの真偽
+              ;                      (satisfy-item? (cadr (CARD-FIRST c-card)) (PLAYER-ITEMS c-player)));必要アイテムを持っている?
+               ;                ((hash-ref jack-table (car (CARD-FIRST c-card))) x) ;真ならCARD-FIRSTのキーで発動
+                ;               ((hash-ref jack-table 'BATTLE) x)) ;#fならすぐにバトル開始
+                 ;          (main-read (WORLD PLAYERS MAPLIST SMAP PMAP (circular PHASE) COORD)) ;受けない場合次へ
+                  ;         ))))))
+
+
+                           

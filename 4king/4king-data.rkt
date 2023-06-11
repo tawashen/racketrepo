@@ -12,7 +12,7 @@
 (struct ENEMY (NAME SKILLP HITP) #:transparent)
 (struct ITEM (NAME COST KIND POWER) #:transparent)
 (struct PLAYER (NAME SKILLP HITP LUCKP EQUIP GOLD ITEMS SPECIAL WIN) #:transparent)
-(struct WORLD (PLAYERS MAPLIST SMAP PMAP PHASE COORD WIN) #:transparent)
+(struct WORLD (PLAYERS ENEMIES MAPLIST SMAP PMAP PHASE COORD WIN) #:transparent)
 
 ;PLAYERインスタンス
 (define SJ (PLAYER "勇者スペードのジャック" '(11 . 11) '(22 . 22) '(9 . 9) 'sword 20 '() #f 'win-sj))
@@ -26,11 +26,13 @@
 
 (define rune-blade (ITEM "ルーンブレード" #f 'one-hand-weapon '(2 0)))                 
 (define zakura (ENEMY "戦士ザクラ" 12 12))
-(define SA (CARD "♠Ａ" 'SELECT ;初期Eval用キー　ここではselectクロージャを呼び出す ;CARD-KIND
-                 '(LUCK-TRY (numbing-medicine wine) (enemy SKILLP -3) (player HITP -2 24));CARD-FIRST
+(define SA (CARD "♠Ａ" `(,SELECT ,LUCK-TRY)
+                 '(() ((numbing-medicine wine) (enemy SKILLP -3) (player HITP -2 24)))
+                  'mes-s1 (list zakura) (list rune-blade) #f #t));初期Eval用キー　ここではselectクロージャを呼び出す ;CARD-KIND
+               ;  '(LUCK-TRY (numbing-medicine wine) (enemy SKILLP -3) (player HITP -2 24));CARD-FIRST
                  ;↑#tで続く（）で必要アイテム、次の（）で成功効果　最後の（）で失敗効果最後の真偽はJOK(24)行きかどうか
-                 '(LUCKP -2) ;存在した場合は降服可能、BATTLEで参照してメニューを出す CARD-SECIND
-                 'mes-s1 (list zakura) (list rune-blade) #f #t #t))
+                ; '(LUCKP -2) ;存在した場合は降服可能、BATTLEで参照してメニューを出す CARD-SECIND
+                
 
 (define silver-short-sord (ITEM "銀の短剣" 10 'sacred-weapon '(0 0)))
 (define war-hammer (ITEM "ウォーハンマー" 35 'physical-slayer '(0 0)))

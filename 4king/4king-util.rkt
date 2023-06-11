@@ -98,6 +98,23 @@
 ;(random-list (length '(1 2 3 4)) (length '(1 2 3 4)) '())
 
 
+;CARDが要請するアイテムをPLAYERが全て持っているか?をチェックする関数
+(define (satisfy-item? card-item player-item)
+  (if (null? card-item)
+      #t
+      (if (member (car card-item player-item))
+          (satisfy-item? (cdr card-item) player-item)
+          #f)))
+
   
+(define (go-direct direct w) ;新たなwを返す予定 COORDとplayer-mapを更新する
+  (let ((current ;PLAYER構造体から座標(INT)を束縛
+                  (list-ref (WORLD-COORD w) (car (WORLD-PHASE w))))) ;現在のPLYAER構造体を返す
+    (cond ((and (string=? direct "r") (ue? current)) (main-eval (change-coord direct w -7)))
+          ((and (string=? direct "d") (hidari? current)) (main-eval (change-coord direct w -1)))
+          ((and (string=? direct "c") (sita? current)) (main-eval (change-coord direct w 7)))
+          ((and (string=? direct "f") (migi? current)) (main-eval (change-coord direct w 1)))
+          (else (main-read w)))))
+
 
 
